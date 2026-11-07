@@ -1,0 +1,110 @@
+/* Custom CSS for IRNIS School Prototype - Alia Islamic School Identity */
+/* Namespaced with .irnis-* to prevent collisions with Bootstrap 3 & AdminLTE 2 */
+
+:root {
+  --irnis-blue-deep: #1a365d;
+  --irnis-blue-primary: #2b6cb0;
+  --irnis-blue-light: #ebf8ff;
+  --irnis-purple-deep: #44337a;
+  --irnis-purple-primary: #6b46c1;
+  --irnis-purple-light: #faf5ff;
+}
+
+/* Header & Brand Navbar Styling */
+.skin-blue .main-header .navbar {
+  background: linear-gradient(135deg, #1a365d 0%, #2b6cb0 60%, #44337a 100%) !important;
+}
+
+.skin-blue .main-header .logo {
+  background-color: #152945 !important;
+  color: #ffffff !important;
+  border-bottom: 0 solid transparent;
+  font-weight: 600;
+}
+
+.skin-blue .main-header .logo:hover {
+  background-color: #0f1e33 !important;
+}
+
+.skin-blue .main-header .navbar .sidebar-toggle:hover {
+  background-color: rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Active sidebar item */
+.skin-blue .sidebar-menu > li.active > a {
+  border-left-color: #805ad5 !important;
+  background: #1e282c;
+}
+
+.skin-blue .sidebar-menu > li > a:hover {
+  border-left-color: #9f7aea !important;
+}
+
+/* Custom Irnis Badges & Components */
+.irnis-badge-purple {
+  background-color: #6b46c1;
+  color: #fff;
+}
+
+.irnis-badge-blue {
+  background-color: #2b6cb0;
+  color: #fff;
+}
+
+.irnis-brand-title {
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.irnis-brand-subtitle {
+  font-size: 11px;
+  opacity: 0.85;
+  display: block;
+  font-weight: 400;
+}
+
+.irnis-role-badge {
+  display: inline-block;
+  padding: 3px 8px;
+  font-size: 11px;
+  border-radius: 12px;
+  font-weight: bold;
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  margin-top: 14px;
+  margin-right: 10px;
+}
+
+/* Prototype helper banners */
+.irnis-demo-banner {
+  background: #ebf8ff;
+  border-left: 4px solid #3182ce;
+  padding: 10px 15px;
+  margin-bottom: 15px;
+  color: #2b6cb0;
+}
+
+.irnis-demo-badge {
+  font-size: 10px;
+  text-transform: uppercase;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 3px;
+  background: #e2e8f0;
+  color: #4a5568;
+}
+
+/* Card / Box tweaks */
+.box.box-irnis-blue {
+  border-top-color: #2b6cb0;
+}
+
+.box.box-irnis-purple {
+  border-top-color: #6b46c1;
+}
+
+/* Table action buttons spacing */
+.irnis-actions > .btn {
+  margin-right: 4px;
+}
+
