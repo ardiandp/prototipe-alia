@@ -184,54 +184,6 @@
                       </button>
                     </td>
                   </tr>
-
-                  <!-- Modal Detail Rombel -->
-                  <div class="modal fade" id="modal-detail-cls-{{ $c['id'] }}" tabindex="-1" role="dialog">
-                    <div class="modal-dialog" role="document">
-                      <div class="modal-content">
-                        <div class="modal-header bg-primary" style="background:#2b6cb0; color:#fff;">
-                          <button type="button" class="close" data-dismiss="modal" style="color:#fff;">&times;</button>
-                          <h4 class="modal-title"><i class="fa fa-sitemap"></i> Detail Rombel: {{ $c['name'] }}</h4>
-                        </div>
-                        <div class="modal-body">
-                          <table class="table table-bordered table-striped">
-                            <tr>
-                              <th style="width: 35%;">Kode Rombel</th>
-                              <td><code>{{ $c['id'] }}</code></td>
-                            </tr>
-                            <tr>
-                              <th>Unit Pendidikan</th>
-                              <td>{{ $unitObj['name'] ?? $c['unit_id'] }}</td>
-                            </tr>
-                            <tr>
-                              <th>Tingkat / Jenjang</th>
-                              <td>Tingkat {{ $c['grade'] ?? '-' }}</td>
-                            </tr>
-                            <tr>
-                              <th>Wali Kelas</th>
-                              <td><strong>{{ $teacher['name'] ?? 'Ust. Ahmad Dahlan' }}</strong></td>
-                            </tr>
-                            <tr>
-                              <th>Ruangan Belajar</th>
-                              <td>{{ $c['room'] ?? 'Ruang Belajar' }}</td>
-                            </tr>
-                            <tr>
-                              <th>Kapasitas & Okupansi</th>
-                              <td><b>{{ $c['student_count'] }}</b> santri terdaftar dari kuota maksimal <b>{{ $c['capacity'] }}</b> santri ({{ $pct }}%)</td>
-                            </tr>
-                            <tr>
-                              <th>Status Operasional</th>
-                              <td><x-badge :status="$c['status'] ?? 'aktif'" /></td>
-                            </tr>
-                          </table>
-                        </div>
-                        <div class="modal-footer">
-                          <a href="{{ route('akademik.presensi') }}" class="btn btn-success btn-flat pull-left"><i class="fa fa-check-square"></i> Presensi Kelas</a>
-                          <button type="button" class="btn btn-default btn-flat" data-dismiss="modal">Tutup</button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
                 @endforeach
               </tbody>
             </table>
@@ -240,6 +192,61 @@
       </x-card>
     </div>
   </div>
+
+  <!-- Detail Rombel Modals (Moved outside table) -->
+  @foreach($classes as $c)
+    @php
+      $teacher = collect($teachers)->firstWhere('id', $c['homeroom_teacher_id'] ?? '');
+      $unitObj = collect($units)->firstWhere('id', $c['unit_id'] ?? '');
+      $pct = ($c['capacity'] > 0) ? round(($c['student_count'] / $c['capacity']) * 100) : 0;
+    @endphp
+    <div class="modal fade" id="modal-detail-cls-{{ $c['id'] }}" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header bg-primary" style="background:#2b6cb0; color:#fff;">
+            <button type="button" class="close" data-dismiss="modal" style="color:#fff;">&times;</button>
+            <h4 class="modal-title"><i class="fa fa-sitemap"></i> Detail Rombel: {{ $c['name'] }}</h4>
+          </div>
+          <div class="modal-body">
+            <table class="table table-bordered table-striped">
+              <tr>
+                <th style="width: 35%;">Kode Rombel</th>
+                <td><code>{{ $c['id'] }}</code></td>
+              </tr>
+              <tr>
+                <th>Unit Pendidikan</th>
+                <td>{{ $unitObj['name'] ?? $c['unit_id'] }}</td>
+              </tr>
+              <tr>
+                <th>Tingkat / Jenjang</th>
+                <td>Tingkat {{ $c['grade'] ?? '-' }}</td>
+              </tr>
+              <tr>
+                <th>Wali Kelas</th>
+                <td><strong>{{ $teacher['name'] ?? 'Ust. Ahmad Dahlan' }}</strong></td>
+              </tr>
+              <tr>
+                <th>Ruangan Belajar</th>
+                <td>{{ $c['room'] ?? 'Ruang Belajar' }}</td>
+              </tr>
+              <tr>
+                <th>Kapasitas & Okupansi</th>
+                <td><b>{{ $c['student_count'] }}</b> santri terdaftar dari kuota maksimal <b>{{ $c['capacity'] }}</b> santri ({{ $pct }}%)</td>
+              </tr>
+              <tr>
+                <th>Status Operasional</th>
+                <td><x-badge :status="$c['status'] ?? 'aktif'" /></td>
+              </tr>
+            </table>
+          </div>
+          <div class="modal-footer">
+            <a href="{{ route('akademik.presensi') }}" class="btn btn-success btn-flat pull-left"><i class="fa fa-check-square"></i> Presensi Kelas</a>
+            <button type="button" class="btn btn-default btn-flat" data-dismiss="modal">Tutup</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  @endforeach
 
   <!-- Modal Tambah Rombel Baru (Bootstrap 3) -->
   <div class="modal fade" id="modal-add-kelas" tabindex="-1" role="dialog">
@@ -320,4 +327,3 @@
   </div>
 
 @endsection
-
