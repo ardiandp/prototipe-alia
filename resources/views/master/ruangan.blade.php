@@ -170,61 +170,6 @@
                       </button>
                     </td>
                   </tr>
-
-                  <!-- Modal Detail Ruangan -->
-                  <div class="modal fade" id="modal-detail-rng-{{ $r['id'] }}" tabindex="-1" role="dialog">
-                    <div class="modal-dialog" role="document">
-                      <div class="modal-content">
-                        <div class="modal-header bg-primary" style="background:#2b6cb0; color:#fff;">
-                          <button type="button" class="close" data-dismiss="modal" style="color:#fff;">&times;</button>
-                          <h4 class="modal-title"><i class="fa fa-building-o"></i> Detail Ruangan: {{ $r['name'] }}</h4>
-                        </div>
-                        <div class="modal-body">
-                          <table class="table table-bordered table-striped">
-                            <tr>
-                              <th style="width: 35%;">Kode Ruang</th>
-                              <td><code>{{ $r['id'] }}</code></td>
-                            </tr>
-                            <tr>
-                              <th>Nama Fasilitas</th>
-                              <td><strong>{{ $r['name'] }}</strong></td>
-                            </tr>
-                            <tr>
-                              <th>Tipe / Kategori</th>
-                              <td><span class="label label-info">{{ $r['type'] }}</span></td>
-                            </tr>
-                            <tr>
-                              <th>Lokasi Kampus</th>
-                              <td>{{ $r['location'] }}</td>
-                            </tr>
-                            <tr>
-                              <th>Unit Pengguna</th>
-                              <td>{{ $unitObj['name'] ?? 'Umum / Terpadu' }}</td>
-                            </tr>
-                            <tr>
-                              <th>Kapasitas Tampung</th>
-                              <td><b>{{ $r['capacity'] }}</b> Santri / Pengguna</td>
-                            </tr>
-                            <tr>
-                              <th>Status Kelayakan</th>
-                              <td>
-                                @if(($r['condition'] ?? '') === 'baik')
-                                  <span class="label label-success">Baik & Layak Pakai</span>
-                                @elseif(($r['condition'] ?? '') === 'perbaikan')
-                                  <span class="label label-warning">Sedang Pemeliharaan</span>
-                                @else
-                                  <span class="label label-danger">Perlu Perbaikan</span>
-                                @endif
-                              </td>
-                            </tr>
-                          </table>
-                        </div>
-                        <div class="modal-footer">
-                          <button type="button" class="btn btn-default btn-flat" data-dismiss="modal">Tutup</button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
                 @endforeach
               </tbody>
             </table>
@@ -233,6 +178,66 @@
       </x-card>
     </div>
   </div>
+
+  <!-- Detail Ruangan Modals (Moved outside table) -->
+  @foreach($rooms as $r)
+    @php
+      $unitObj = collect($units)->firstWhere('id', $r['unit_id'] ?? '');
+    @endphp
+    <div class="modal fade" id="modal-detail-rng-{{ $r['id'] }}" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header bg-primary" style="background:#2b6cb0; color:#fff;">
+            <button type="button" class="close" data-dismiss="modal" style="color:#fff;">&times;</button>
+            <h4 class="modal-title"><i class="fa fa-building-o"></i> Detail Ruangan: {{ $r['name'] }}</h4>
+          </div>
+          <div class="modal-body">
+            <table class="table table-bordered table-striped">
+              <tr>
+                <th style="width: 35%;">Kode Ruang</th>
+                <td><code>{{ $r['id'] }}</code></td>
+              </tr>
+              <tr>
+                <th>Nama Fasilitas</th>
+                <td><strong>{{ $r['name'] }}</strong></td>
+              </tr>
+              <tr>
+                <th>Tipe / Kategori</th>
+                <td><span class="label label-info">{{ $r['type'] }}</span></td>
+              </tr>
+              <tr>
+                <th>Lokasi Kampus</th>
+                <td>{{ $r['location'] }}</td>
+              </tr>
+              <tr>
+                <th>Unit Pengguna</th>
+                <td>{{ $unitObj['name'] ?? 'Umum / Terpadu' }}</td>
+              </tr>
+              <tr>
+                <th>Kapasitas Tampung</th>
+                <td><b>{{ $r['capacity'] }}</b> Santri / Pengguna</td>
+              </tr>
+              <tr>
+                <th>Status Kelayakan</th>
+                <td>
+                  @if(($r['condition'] ?? '') === 'baik')
+                    <span class="label label-success">Baik & Layak Pakai</span>
+                  @elseif(($r['condition'] ?? '') === 'perbaikan')
+                    <span class="label label-warning">Sedang Pemeliharaan</span>
+                  @else
+                    <span class="label label-danger">Perlu Perbaikan</span>
+                  @endif
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default btn-flat" data-dismiss="modal">Tutup</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  @endforeach
 
   <!-- Modal Tambah Ruangan Baru (Bootstrap 3) -->
   <div class="modal fade" id="modal-add-ruangan" tabindex="-1" role="dialog">
@@ -313,4 +318,3 @@
   </div>
 
 @endsection
-
