@@ -182,4 +182,178 @@ class HrisController extends Controller
 
         return redirect()->route('hris.pegawai')->with('info', "Data pegawai ID: {$id} berhasil dinonaktifkan/dihapus dari sesi demo.");
     }
+
+    /**
+     * T10.2 - Staff Attendance (Presensi Pegawai)
+     */
+    public function presensi(Request $request)
+    {
+        $demo = DemoDataManager::getInstance();
+        $teachers = $demo->getTeachers();
+        $attendanceList = $demo->getStaffAttendance();
+        $units = $demo->getUnits();
+
+        $activeTab = $request->get('tab', 'harian'); // harian, rekap, mesin
+        $dateFilter = $request->get('date', '2026-11-09');
+        $unitFilter = $request->get('unit', 'all');
+        $statusFilter = $request->get('status', 'all');
+        $search = $request->get('search');
+
+        // Filter log presensi
+        $filteredAttendance = array_filter($attendanceList, function ($att) use ($dateFilter, $unitFilter, $statusFilter, $search) {
+            $matchDate = ($dateFilter === 'all') || (($att['date'] ?? '') === $dateFilter);
+            $matchUnit = ($unitFilter === 'all') || (($att['unit_id'] ?? '') === $unitFilter);
+            $matchStatus = ($statusFilter === 'all') || (($att['status'] ?? '') === $statusFilter);
+            $matchSearch = true;
+            if ($search) {
+                $matchSearch = stripos($att['name'], $search) !== false ||
+                               stripos($att['nip'] ?? '', $search) !== false ||
+                               stripos($att['device'] ?? '', $search) !== false;
+            }
+            return $matchDate && $matchUnit && $matchStatus && $matchSearch;
+        });
+
+        // Metrik Ringkasan Hari Ini
+        $totalStaff = count($teachers);
+        $totalHadir = count(array_filter($filteredAttendance, fn($a) => ($a['status'] ?? '') === 'hadir'));
+        $totalTerlambat = count(array_filter($filteredAttendance, fn($a) => ($a['status'] ?? '') === 'terlambat'));
+        $totalIzin = count(array_filter($filteredAttendance, fn($a) => ($a['status'] ?? '') === 'izin'));
+        $totalSakit = count(array_filter($filteredAttendance, fn($a) => ($a['status'] ?? '') === 'sakit'));
+        $totalAlpa = count(array_filter($filteredAttendance, fn($a) => ($a['status'] ?? '') === 'alpa'));
+
+        // Pegawai yang belum presensi (jika ada)
+        $attendedTeacherIds = array_column($attendanceList, 'teacher_id');
+        $unrecordedStaff = array_filter($teachers, function ($t) use ($attendedTeacherIds) {
+            return !in_array($t['id'], $attendedTeacherIds);
+        });
+
+        return view('hris.presensi', compact(
+            'filteredAttendance',
+            'attendanceList',
+            'teachers',
+            'units',
+            'activeTab',
+            'dateFilter',
+            'unitFilter',
+            'statusFilter',
+            'search',
+            'totalStaff',
+            'totalHadir',
+            'totalTerlambat',
+            'totalIzin',
+            'totalSakit',
+            'totalAlpa',
+            'unrecordedStaff'
+        ));
+    }
+
+    /**
+     * Simpan / Catat Presensi Manual Pegawai
+     */
+    public function storePresensi(Request $request)
+    {
+        $validated = $request->validate([
+            'teacher_id' => 'required|string',
+            'date' => 'required|date',
+            'check_in' => 'nullable|string',
+            'check_out' => 'nullable|string',
+            'status' => 'required|in:hadir,terlambat,izin,sakit,alpa',
+            'notes' => 'nullable|string|max:255',
+            'device' => 'nullable|string|max:100',
+        ]);
+
+        $demo = DemoDataManager::getInstance();
+        $teacher = $demo->findTeacher($validated['teacher_id']);
+        if (!$teacher) {
+            return redirect()->back()->withErrors(['teacher_id' => 'Pegawai tidak ditemukan.']);
+        }
+
+        // Hitung menit keterlambatan jika status terlambat
+        $lateMinutes = 0;
+        if ($validated['status'] === 'terlambat' && !empty($validated['check_in'])) {
+            $parts = explode(':', $validated['check_in']);
+            if (count($parts) === 2) {
+                $checkInMins = ((int)$parts[0] * 60) + (int)$parts[1];
+                $standardMins = (7 * 60); // Standar masuk 07:00
+                $lateMinutes = max(0, $checkInMins - $standardMins);
+            }
+        }
+
+        $newRecord = [
+            'id' => 'ATT-STF-' . rand(100, 999),
+            'teacher_id' => $teacher['id'],
+            'name' => $teacher['name'],
+            'nip' => $teacher['nip'] ?? '-',
+            'unit_id' => $teacher['unit_id'] ?? 'UNIT-SMA',
+            'date' => $validated['date'],
+            'check_in' => $validated['check_in'] ?: null,
+            'check_out' => $validated['check_out'] ?: null,
+            'status' => $validated['status'],
+            'late_minutes' => $lateMinutes,
+            'location' => 'Kampus Alia Islamic School',
+            'device' => $validated['device'] ?: 'Input Manual Admin HRIS',
+            'notes' => $validated['notes'] ?: '-'
+        ];
+
+        $sessionAdded = session('demo_staff_attendance_added', []);
+        $sessionAdded[] = $newRecord;
+        session(['demo_staff_attendance_added' => $sessionAdded]);
+
+        return redirect()->route('hris.presensi', ['date' => $validated['date']])->with('success', "Presensi {$teacher['name']} untuk tanggal {$validated['date']} berhasil dicatat!");
+    }
+
+    /**
+     * Aksi Cepat: Tandai Semua Hadir Tepat Waktu (Quick Attendance)
+     */
+    public function markAllPresent(Request $request)
+    {
+        $date = $request->get('date', '2026-11-09');
+        $demo = DemoDataManager::getInstance();
+        $teachers = $demo->getTeachers();
+        $currentAttendance = $demo->getStaffAttendance();
+        $existingTeacherIds = array_column(array_filter($currentAttendance, fn($a) => ($a['date'] ?? '') === $date), 'teacher_id');
+
+        $sessionAdded = session('demo_staff_attendance_added', []);
+
+        $addedCount = 0;
+        foreach ($teachers as $t) {
+            if (!in_array($t['id'], $existingTeacherIds)) {
+                $sessionAdded[] = [
+                    'id' => 'ATT-STF-' . rand(100, 999),
+                    'teacher_id' => $t['id'],
+                    'name' => $t['name'],
+                    'nip' => $t['nip'] ?? '-',
+                    'unit_id' => $t['unit_id'] ?? 'UNIT-SMA',
+                    'date' => $date,
+                    'check_in' => '06:45',
+                    'check_out' => '15:30',
+                    'status' => 'hadir',
+                    'late_minutes' => 0,
+                    'location' => 'Kampus Asrama Alia (Fingerprint/Face)',
+                    'device' => 'Terminal Biometrik Presensi Cepat',
+                    'notes' => 'Presensi serentak tepat waktu (Quick Check-in).'
+                ];
+                $addedCount++;
+            }
+        }
+
+        session(['demo_staff_attendance_added' => $sessionAdded]);
+
+        return redirect()->route('hris.presensi', ['date' => $date])->with('success', "Berhasil mencatat {$addedCount} pegawai hadir serentak pada tanggal {$date}!");
+    }
+
+    /**
+     * Hapus Presensi dari Sesi Demo
+     */
+    public function destroyPresensi(string $id)
+    {
+        $sessionDeleted = session('demo_staff_attendance_deleted', []);
+        if (!in_array($id, $sessionDeleted)) {
+            $sessionDeleted[] = $id;
+            session(['demo_staff_attendance_deleted' => $sessionDeleted]);
+        }
+
+        return redirect()->route('hris.presensi')->with('info', "Catatan presensi ID: {$id} berhasil dihapus dari sesi demo.");
+    }
 }
+

@@ -9,8 +9,8 @@ Catatan pemantauan progres implementasi prototipe Alia Islamic School.
 - **Batch Aktif**: Batch D (Learning, Islamic Programs, Student Affairs)
 - **Batch Aktif**: Batch E (Boarding, Finance, HRIS)
 - **Task Terakhir Selesai**:
-  - `T10.1`: Employee profiles/organization (SDM/HRIS: Profil Pegawai, Struktur Hierarki Organisasi 4 Tingkat, Penempatan Unit Pendidikan TK/SD/SMP/SMA, Komposisi Status GTY/Kontrak/Tendik, Modal Kartu Profil & Edit Pegawai, Form Registrasi Pegawai Baru Berbasis Sesi, dan Ekspor/Cetak Dokumen).
-- **Task Selanjutnya**: `T10.2`: Staff attendance (SDM/HRIS: Presensi Harian Pegawai/Guru, Jam Masuk/Pulang, Keterlambatan, Sakit, Izin, dan Rekapitulasi Presensi Bulanan).
+  - `T10.2`: Staff attendance (SDM/HRIS: Presensi Harian Pegawai & Guru, Jam Masuk/Pulang, Perhitungan Keterlambatan, Status Hadir/Terlambat/Izin/Sakit/Alpa, Rekapitulasi Indeks Kedisiplinan, Status Mesin Terminal Biometrik Online, Quick Attendance Hadirkan Semua, Modal Input Presensi Manual Berbasis Sesi, dan Ekspor Lembar Verifikasi).
+- **Task Selanjutnya**: `T10.3`: Leave/permission (SDM/HRIS: Pengajuan Cuti & Izin Kerja Pegawai, Jenis Cuti Tahunan/Melahirkan/Umroh/Sakit, Alur Persetujuan Kepala Sekolah/HRD, dan Kuota Cuti Tahunan).
 
 ---
 
@@ -201,6 +201,12 @@ Catatan pemantauan progres implementasi prototipe Alia Islamic School.
   - View: [`resources/views/hris/pegawai.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/hris/pegawai.blade.php) (3 Tab: Daftar Profil Pegawai, Bagan Struktur Organisasi 4 Tingkat, Analitik & Distribusi SDM, 4 KPI info box total pegawai/GTY/kontrak/tendik, modal kartu profil pegawai, modal edit pegawai berbasis sesi, form tambah pegawai baru, filter unit/status/gender/search, cetak).
   - Integrasi session update pegawai di [`DemoDataManager.php`](file:///c:/laragon/www/prototipe-alia/app/Support/DemoData/DemoDataManager.php).
   - Rute aktif `/hris/pegawai`, `/hris/pegawai` (POST), `/hris/pegawai/{id}/update` (POST), `/hris/pegawai/{id}/destroy`, serta link menu di [`resources/views/layouts/sidebar.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/layouts/sidebar.blade.php).
+- `[x] T10.2`: Staff Attendance (Presensi Pegawai & Guru):
+  - Dataset baseline presensi harian pegawai, jam masuk & pulang, mesin biometrik di [`DemoDataManager.php`](file:///c:/laragon/www/prototipe-alia/app/Support/DemoData/DemoDataManager.php) (`getStaffAttendance`, `findStaffAttendance`).
+  - Controller: [`HrisController.php`](file:///c:/laragon/www/prototipe-alia/app/Http/Controllers/HrisController.php) (`presensi`, `storePresensi`, `markAllPresent`, `destroyPresensi`).
+  - View: [`resources/views/hris/presensi.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/hris/presensi.blade.php) (3 Tab: Buku Presensi Harian, Rekapitulasi Kehadiran & Kedisiplinan, Status Mesin Biometrik Online, 5 info box kehadiran harian hadir/terlambat/izin/sakit/alpa, aksi Quick Attendance Hadirkan Semua, modal input presensi manual, modal lembar verifikasi presensi, filter tanggal/unit/status/search, cetak).
+  - Rute aktif `/hris/presensi`, `/hris/presensi` (POST), `/hris/presensi/quick-present` (POST), `/hris/presensi/{id}/destroy`, serta update link di sidebar.
+
 
 
 

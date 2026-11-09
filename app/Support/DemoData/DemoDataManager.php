@@ -60,6 +60,7 @@ class DemoDataManager
     private array $paymentTransactions = [];
     private array $financeExpenses = [];
     private array $scholarships = [];
+    private array $staffAttendance = [];
 
     public function __construct()
     {
@@ -3567,6 +3568,190 @@ class DemoDataManager
                 'notes' => 'Pengajuan berkas tasmi sekali duduk 5 juz sedang diverifikasi.'
             ]
         ];
+
+        // 17. Presensi Pegawai & Guru (Staff Attendance)
+        $this->staffAttendance = [
+            [
+                'id' => 'ATT-STF-001',
+                'teacher_id' => 'GUR-001',
+                'name' => 'Dr. H. Zulkifli, Lc., M.A.',
+                'nip' => '1985102010011001',
+                'unit_id' => 'UNIT-SMA',
+                'date' => '2026-11-09',
+                'check_in' => '06:45',
+                'check_out' => '15:30',
+                'status' => 'hadir', // hadir, terlambat, izin, sakit, alpa
+                'late_minutes' => 0,
+                'location' => 'Kampus Asrama Alia (Fingerprint/Face)',
+                'device' => 'Terminal Biomertik 01',
+                'notes' => 'Tepat waktu, memimpin apel pembina yayasan.'
+            ],
+            [
+                'id' => 'ATT-STF-002',
+                'teacher_id' => 'GUR-002',
+                'name' => 'Aisyah Salsabila, S.Pd.I.',
+                'nip' => '1985112010011002',
+                'unit_id' => 'UNIT-SMP',
+                'date' => '2026-11-09',
+                'check_in' => '06:40',
+                'check_out' => '15:15',
+                'status' => 'hadir',
+                'late_minutes' => 0,
+                'location' => 'Kampus Asrama Alia (Fingerprint/Face)',
+                'device' => 'Terminal Biomertik 02',
+                'notes' => 'Tepat waktu, halaqah subuh akhwat.'
+            ],
+            [
+                'id' => 'ATT-STF-003',
+                'teacher_id' => 'GUR-003',
+                'name' => 'Salman Al-Farisi, S.Sos.',
+                'nip' => '1985122010011003',
+                'unit_id' => 'UNIT-SMA',
+                'date' => '2026-11-09',
+                'check_in' => '06:50',
+                'check_out' => '16:00',
+                'status' => 'hadir',
+                'late_minutes' => 0,
+                'location' => 'Kampus Asrama Alia (Fingerprint/Face)',
+                'device' => 'Terminal Biomertik 01',
+                'notes' => 'Tepat waktu, mudir asrama siaga santri.'
+            ],
+            [
+                'id' => 'ATT-STF-004',
+                'teacher_id' => 'GUR-004',
+                'name' => 'Rahmat Hidayat, M.Sc.',
+                'nip' => '1985132010011004',
+                'unit_id' => 'UNIT-SMA',
+                'date' => '2026-11-09',
+                'check_in' => '07:18',
+                'check_out' => '15:35',
+                'status' => 'terlambat',
+                'late_minutes' => 18,
+                'location' => 'Kampus Asrama Alia (Fingerprint/Face)',
+                'device' => 'Terminal Biomertik 01',
+                'notes' => 'Kendala lalu lintas tol Becakayu (konfirmasi WA).'
+            ],
+            [
+                'id' => 'ATT-STF-005',
+                'teacher_id' => 'GUR-005',
+                'name' => 'Khadijah Nurul Fikri, S.Pd.',
+                'nip' => '1985142010011005',
+                'unit_id' => 'UNIT-SD',
+                'date' => '2026-11-09',
+                'check_in' => '06:48',
+                'check_out' => '14:45',
+                'status' => 'hadir',
+                'late_minutes' => 0,
+                'location' => 'Kampus Terpadu SD Islam Alia',
+                'device' => 'Terminal Biomertik SD',
+                'notes' => 'Hadir mengajar Bahasa Inggris dasar.'
+            ],
+            [
+                'id' => 'ATT-STF-006',
+                'teacher_id' => 'GUR-006',
+                'name' => 'Budi Santoso, S.Kom.',
+                'nip' => '1985152010011006',
+                'unit_id' => 'UNIT-SMA',
+                'date' => '2026-11-09',
+                'check_in' => '07:05',
+                'check_out' => '15:40',
+                'status' => 'terlambat',
+                'late_minutes' => 5,
+                'location' => 'Kampus Asrama Alia (Fingerprint/Face)',
+                'device' => 'Terminal Biomertik 01',
+                'notes' => 'Terlambat 5 menit, persiapan lab informatika.'
+            ],
+            [
+                'id' => 'ATT-STF-007',
+                'teacher_id' => 'GUR-007',
+                'name' => 'Nurul Hasanah, M.Pd.',
+                'nip' => '1985162010011007',
+                'unit_id' => 'UNIT-SMA',
+                'date' => '2026-11-09',
+                'check_in' => null,
+                'check_out' => null,
+                'status' => 'izin',
+                'late_minutes' => 0,
+                'location' => '-',
+                'device' => 'Form Izin HRIS',
+                'notes' => 'Izin menghadiri seminar PPG di Kemdikbud (Surat Terlampir).'
+            ],
+            [
+                'id' => 'ATT-STF-008',
+                'teacher_id' => 'GUR-008',
+                'name' => 'Irfan Maulana, S.Pd.',
+                'nip' => '1985172010011008',
+                'unit_id' => 'UNIT-SMP',
+                'date' => '2026-11-09',
+                'check_in' => '06:35',
+                'check_out' => '15:20',
+                'status' => 'hadir',
+                'late_minutes' => 0,
+                'location' => 'Lapangan Olahraga Alia',
+                'device' => 'Terminal Biomertik 02',
+                'notes' => 'Memimpin senam kesegaran jasmani santri.'
+            ],
+            [
+                'id' => 'ATT-STF-009',
+                'teacher_id' => 'GUR-009',
+                'name' => 'Drs. H. Mulyadi, M.Pd.',
+                'nip' => '1985182010011009',
+                'unit_id' => 'UNIT-SMA',
+                'date' => '2026-11-09',
+                'check_in' => '06:52',
+                'check_out' => '16:10',
+                'status' => 'hadir',
+                'late_minutes' => 0,
+                'location' => 'Kampus Asrama Alia (Fingerprint/Face)',
+                'device' => 'Terminal Biomertik 01',
+                'notes' => 'Kepala SMA memantau kegiatan KBM.'
+            ],
+            [
+                'id' => 'ATT-STF-010',
+                'teacher_id' => 'GUR-010',
+                'name' => 'Hj. Nurul Hidayati, S.E.',
+                'nip' => '1985192010011010',
+                'unit_id' => 'UNIT-SMA',
+                'date' => '2026-11-09',
+                'check_in' => '06:55',
+                'check_out' => '15:30',
+                'status' => 'hadir',
+                'late_minutes' => 0,
+                'location' => 'Gedung Rektorat Lt 1 (Keuangan)',
+                'device' => 'Terminal Biomertik 01',
+                'notes' => 'Hadir pembukuan kas bulanan.'
+            ],
+            [
+                'id' => 'ATT-STF-011',
+                'teacher_id' => 'GUR-011',
+                'name' => 'Ust. Muhammad Ihsan, S.Pd.I.',
+                'nip' => '1985202010011011',
+                'unit_id' => 'UNIT-SD',
+                'date' => '2026-11-09',
+                'check_in' => '06:42',
+                'check_out' => '15:00',
+                'status' => 'hadir',
+                'late_minutes' => 0,
+                'location' => 'Kampus Terpadu SD Islam Alia',
+                'device' => 'Terminal Biomertik SD',
+                'notes' => 'Kepala SD memimpin doa bersama pagi.'
+            ],
+            [
+                'id' => 'ATT-STF-012',
+                'teacher_id' => 'GUR-012',
+                'name' => 'Ustazah Siti Aminah, M.Pd.',
+                'nip' => '1985212010011012',
+                'unit_id' => 'UNIT-SMP',
+                'date' => '2026-11-09',
+                'check_in' => null,
+                'check_out' => null,
+                'status' => 'sakit',
+                'late_minutes' => 0,
+                'location' => '-',
+                'device' => 'Surat Dokter Terlampir',
+                'notes' => 'Sakit demam & flu (surat istirahat dokter klinik).'
+            ]
+        ];
     }
 
     // Getters
@@ -5229,6 +5414,43 @@ class DemoDataManager
         foreach ($this->getScholarships() as $sch) {
             if ($sch['id'] === $id) {
                 return $sch;
+            }
+        }
+        return null;
+    }
+
+    public function getStaffAttendance(): array
+    {
+        $sessionAdded = [];
+        $sessionDeleted = [];
+        $sessionUpdated = [];
+        try {
+            if (function_exists('session') && app()->has('session')) {
+                $sessionAdded = session('demo_staff_attendance_added', []);
+                $sessionDeleted = session('demo_staff_attendance_deleted', []);
+                $sessionUpdated = session('demo_staff_attendance_updated', []);
+            }
+        } catch (\Throwable $e) {}
+
+        $list = array_merge($this->staffAttendance, $sessionAdded);
+        $filtered = array_filter($list, function($att) use ($sessionDeleted) {
+            return !in_array($att['id'], $sessionDeleted);
+        });
+
+        foreach ($filtered as &$item) {
+            if (isset($sessionUpdated[$item['id']])) {
+                $item = array_merge($item, $sessionUpdated[$item['id']]);
+            }
+        }
+
+        return array_values($filtered);
+    }
+
+    public function findStaffAttendance(string $id): ?array
+    {
+        foreach ($this->getStaffAttendance() as $att) {
+            if ($att['id'] === $id) {
+                return $att;
             }
         }
         return null;
