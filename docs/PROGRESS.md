@@ -9,8 +9,8 @@ Catatan pemantauan progres implementasi prototipe Alia Islamic School.
 - **Batch Aktif**: Batch D (Learning, Islamic Programs, Student Affairs)
 - **Batch Aktif**: Batch E (Boarding, Finance, HRIS)
 - **Task Terakhir Selesai**:
-  - `T10.3`: Leave/permission (SDM/HRIS: Pengajuan Cuti & Izin Pegawai, 6 Kategori Cuti Tahunan/Sakit/Melahirkan/Umroh-Haji/Dinas/Penting, Alur Persetujuan Pimpinan/Kepala Sekolah, Surat Izin Cuti Resmi Berkop Alia, Pendelegasian Guru Badal Pengganti, Monitoring Saldo Hak Cuti 12 Hari/Tahun, dan Form Pengajuan Berbasis Sesi).
-- **Task Selanjutnya**: `T10.4`: Overtime (SDM/HRIS: Surat Perintah Lembur / SPL Pegawai, Jam Lembur Kegiatan Asrama/Ujian/PPDB, Kompensasi Lembur, dan Persetujuan).
+  - `T10.4`: Overtime (SDM/HRIS: Manajemen Lembur & Surat Perintah Kerja Lembur / SPKL, Rekapitulasi Jam Lembur & Hak Kompensasi per Pegawai, Standar Tarif Lembur Sore/Malam/Akhir Pekan, Modal Cetak Fisik SPKL Berkop Resmi Alia, Alur Approval Pimpinan & Penandaan Pembayaran, dan Form Penerbitan SPKL Baru).
+- **Task Selanjutnya**: `T10.5`: Performance evaluation (SDM/HRIS: Evaluasi Kinerja Pegawai / Penilaian Kinerja Guru & Tendik, Indikator Kompetensi Pedagogik/Profesional/Kepribadian/Sosial, Penilaian Kepala Sekolah, dan Rekapitulasi Skor Raport Kinerja).
 
 ---
 
@@ -211,6 +211,12 @@ Catatan pemantauan progres implementasi prototipe Alia Islamic School.
   - Controller: [`HrisController.php`](file:///c:/laragon/www/prototipe-alia/app/Http/Controllers/HrisController.php) (`cuti`, `storeCuti`, `approveCuti`, `destroyCuti`).
   - View: [`resources/views/hris/cuti.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/hris/cuti.blade.php) (Dwi-tab Daftar Permohonan Cuti & Monitoring Saldo Hak Cuti 12 Hari, 4 info box status cuti diajukan/disetujui/ditolak, modal surat izin cuti resmi berkop Alia Islamic School, modal keputusan persetujuan atasan/pimpinan, form pengajuan cuti baru dengan penugasan guru badal, filter status/kategori/unit/search, cetak).
   - Rute aktif `/hris/cuti`, `/hris/cuti` (POST), `/hris/cuti/{id}/approve` (POST), `/hris/cuti/{id}/destroy`, serta link menu di sidebar.
+- `[x] T10.4`: Overtime Management (Lembur Pegawai & SPKL):
+  - Dataset baseline surat perintah kerja lembur (SPKL), durasi jam, tarif per jam, dan kompensasi honor di [`DemoDataManager.php`](file:///c:/laragon/www/prototipe-alia/app/Support/DemoData/DemoDataManager.php) (`getStaffOvertimes`, `findStaffOvertime`).
+  - Controller: [`HrisController.php`](file:///c:/laragon/www/prototipe-alia/app/Http/Controllers/HrisController.php) (`lembur`, `storeLembur`, `approveLembur`, `destroyLembur`).
+  - View: [`resources/views/hris/lembur.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/hris/lembur.blade.php) (3 Tab: Daftar SPKL, Rekapitulasi Jam & Honor per Pegawai, Ketentuan Standar Tarif Yayasan, 4 info box total SPKL/jam/kompensasi honor/menunggu approval, modal fisik SPKL berkop Alia, modal approval & penandaan status pembayaran, form penerbitan SPKL baru, filter status/kategori/unit/search, cetak).
+  - Rute aktif `/hris/lembur`, `/hris/lembur` (POST), `/hris/lembur/{id}/approve` (POST), `/hris/lembur/{id}/destroy`, serta sub-menu di [`resources/views/layouts/sidebar.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/layouts/sidebar.blade.php).
+
 
 
 

@@ -62,6 +62,7 @@ class DemoDataManager
     private array $scholarships = [];
     private array $staffAttendance = [];
     private array $staffLeaves = [];
+    private array $staffOvertimes = [];
 
     public function __construct()
     {
@@ -3872,6 +3873,120 @@ class DemoDataManager
                 'remaining_quota' => 12
             ]
         ];
+
+        // 19. Lembur Pegawai & Surat Perintah Kerja Lembur (Staff Overtimes / SPKL)
+        $this->staffOvertimes = [
+            [
+                'id' => 'LMBR-001',
+                'spkl_number' => 'SPKL/ALIA/2026/XI/001',
+                'teacher_id' => 'GUR-006', // Budi Santoso
+                'name' => 'Budi Santoso, S.Kom.',
+                'nip' => '1985152010011006',
+                'unit_id' => 'UNIT-SMA',
+                'date' => '2026-11-07',
+                'start_time' => '16:00',
+                'end_time' => '20:30',
+                'duration_hours' => 4.5,
+                'hourly_rate' => 35000,
+                'compensation_amount' => 157500,
+                'activity_category' => 'it_lab', // it_lab, ppdb, asrama, ujian, sarpras, acara
+                'activity_category_label' => 'Instalasi Jaringan & Maintenance Lab Komputer',
+                'task_description' => 'Konfigurasi server CBT lokal dan pengecekan 40 client PC untuk simulasi Asesmen Nasional Berbasis Komputer (ANBK).',
+                'status' => 'disetujui', // diajukan, disetujui, ditolak, dibayarkan
+                'approver_role' => 'Kepala Sekolah SMA',
+                'approved_by' => 'Drs. H. Mulyadi, M.Pd.',
+                'approved_at' => '2026-11-06 13:00:00',
+                'approver_notes' => 'Lembur teknis disetujui, harap koordinasi dengan pengawas sarpras.'
+            ],
+            [
+                'id' => 'LMBR-002',
+                'spkl_number' => 'SPKL/ALIA/2026/XI/002',
+                'teacher_id' => 'GUR-003', // Salman Al-Farisi
+                'name' => 'Salman Al-Farisi, S.Sos.',
+                'nip' => '1985122010011003',
+                'unit_id' => 'UNIT-SMA',
+                'date' => '2026-11-08',
+                'start_time' => '20:00',
+                'end_time' => '04:00',
+                'duration_hours' => 8.0,
+                'hourly_rate' => 40000, // Tarif malam / asrama
+                'compensation_amount' => 320000,
+                'activity_category' => 'asrama',
+                'activity_category_label' => 'Piket Pengawasan & Qiyamul Lail Asrama Santri',
+                'task_description' => 'Piket malam khusus pengawasan intensif ujian tahfidz santri mukim dan koordinasi pos jaga keamanan malam.',
+                'status' => 'dibayarkan',
+                'approver_role' => 'Mudir Pesantren & Bendahara',
+                'approved_by' => 'Dr. H. Zulkifli, Lc., M.A.',
+                'approved_at' => '2026-11-07 10:30:00',
+                'approver_notes' => 'Honor lembur malam telah dibukukan dalam voucher kas operasional.'
+            ],
+            [
+                'id' => 'LMBR-003',
+                'spkl_number' => 'SPKL/ALIA/2026/XI/003',
+                'teacher_id' => 'GUR-010', // Nurul Hidayati (Keuangan)
+                'name' => 'Hj. Nurul Hidayati, S.E.',
+                'nip' => '1985192010011010',
+                'unit_id' => 'UNIT-SMA',
+                'date' => '2026-11-09',
+                'start_time' => '16:00',
+                'end_time' => '19:30',
+                'duration_hours' => 3.5,
+                'hourly_rate' => 35000,
+                'compensation_amount' => 122500,
+                'activity_category' => 'ppdb',
+                'activity_category_label' => 'Rekonsiliasi Keuangan PPDB Gelombang 1',
+                'task_description' => 'Rekonsiliasi bukti bayar daftar ulang calon santri baru dan verifikasi virtual account bank muamalat.',
+                'status' => 'disetujui',
+                'approver_role' => 'Ketua Yayasan',
+                'approved_by' => 'Dr. H. Zulkifli, Lc., M.A.',
+                'approved_at' => '2026-11-09 11:15:00',
+                'approver_notes' => 'Disetujui untuk percepatan rilis daftar peserta daftar ulang.'
+            ],
+            [
+                'id' => 'LMBR-004',
+                'spkl_number' => 'SPKL/ALIA/2026/XI/004',
+                'teacher_id' => 'GUR-008', // Irfan Maulana
+                'name' => 'Irfan Maulana, S.Pd.',
+                'nip' => '1985172010011008',
+                'unit_id' => 'UNIT-SMP',
+                'date' => '2026-11-14',
+                'start_time' => '13:00',
+                'end_time' => '17:00',
+                'duration_hours' => 4.0,
+                'hourly_rate' => 35000,
+                'compensation_amount' => 140000,
+                'activity_category' => 'acara',
+                'activity_category_label' => 'Pelatihan & Latihan Gabungan Silat Antar Ponpes',
+                'task_description' => 'Pendampingan santri kontingen Tapak Suci Alia dalam ajang latihan tanding se-DKI Jakarta di hari Sabtu.',
+                'status' => 'diajukan',
+                'approver_role' => 'Kepala SMP & Kesiswaan',
+                'approved_by' => null,
+                'approved_at' => null,
+                'approver_notes' => 'Menunggu persetujuan alokasi dana kesiswaan.'
+            ],
+            [
+                'id' => 'LMBR-005',
+                'spkl_number' => 'SPKL/ALIA/2026/XI/005',
+                'teacher_id' => 'GUR-004', // Rahmat Hidayat
+                'name' => 'Rahmat Hidayat, M.Sc.',
+                'nip' => '1985132010011004',
+                'unit_id' => 'UNIT-SMA',
+                'date' => '2026-11-12',
+                'start_time' => '16:00',
+                'end_time' => '18:30',
+                'duration_hours' => 2.5,
+                'hourly_rate' => 35000,
+                'compensation_amount' => 87500,
+                'activity_category' => 'ujian',
+                'activity_category_label' => 'Klinik Remedial & Bimbingan OSN Matematika',
+                'task_description' => 'Pembinaan intensif sore hari untuk santri delegasi Olimpiade Sains Nasional (OSN) bidang Matematika.',
+                'status' => 'diajukan',
+                'approver_role' => 'Kepala Sekolah SMA',
+                'approved_by' => null,
+                'approved_at' => null,
+                'approver_notes' => 'Pengajuan jadwal bimbingan sore.'
+            ]
+        ];
     }
 
     // Getters
@@ -5608,6 +5723,43 @@ class DemoDataManager
         foreach ($this->getStaffLeaves() as $leave) {
             if ($leave['id'] === $id || ($leave['leave_number'] ?? '') === $id) {
                 return $leave;
+            }
+        }
+        return null;
+    }
+
+    public function getStaffOvertimes(): array
+    {
+        $sessionAdded = [];
+        $sessionDeleted = [];
+        $sessionUpdated = [];
+        try {
+            if (function_exists('session') && app()->has('session')) {
+                $sessionAdded = session('demo_staff_overtimes_added', []);
+                $sessionDeleted = session('demo_staff_overtimes_deleted', []);
+                $sessionUpdated = session('demo_staff_overtimes_updated', []);
+            }
+        } catch (\Throwable $e) {}
+
+        $list = array_merge($this->staffOvertimes, $sessionAdded);
+        $filtered = array_filter($list, function($ovt) use ($sessionDeleted) {
+            return !in_array($ovt['id'], $sessionDeleted);
+        });
+
+        foreach ($filtered as &$item) {
+            if (isset($sessionUpdated[$item['id']])) {
+                $item = array_merge($item, $sessionUpdated[$item['id']]);
+            }
+        }
+
+        return array_values($filtered);
+    }
+
+    public function findStaffOvertime(string $id): ?array
+    {
+        foreach ($this->getStaffOvertimes() as $ovt) {
+            if ($ovt['id'] === $id || ($ovt['spkl_number'] ?? '') === $id) {
+                return $ovt;
             }
         }
         return null;

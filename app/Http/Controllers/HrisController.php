@@ -544,5 +544,198 @@ class HrisController extends Controller
 
         return redirect()->route('hris.cuti')->with('info', "Pengajuan cuti ID: {$id} berhasil dibatalkan/dihapus dari sesi demo.");
     }
+
+    /**
+     * T10.4 - Overtime Management (Lembur Pegawai & SPKL)
+     */
+    public function lembur(Request $request)
+    {
+        $demo = DemoDataManager::getInstance();
+        $teachers = $demo->getTeachers();
+        $overtimes = $demo->getStaffOvertimes();
+        $units = $demo->getUnits();
+
+        $activeTab = $request->get('tab', 'daftar'); // daftar, rekap, tarif
+        $statusFilter = $request->get('status', 'all');
+        $categoryFilter = $request->get('category', 'all');
+        $unitFilter = $request->get('unit', 'all');
+        $search = $request->get('search');
+
+        // Filter pengajuan lembur
+        $filteredOvertimes = array_filter($overtimes, function ($o) use ($statusFilter, $categoryFilter, $unitFilter, $search) {
+            $matchStatus = ($statusFilter === 'all') || (($o['status'] ?? '') === $statusFilter);
+            $matchCat = ($categoryFilter === 'all') || (($o['activity_category'] ?? '') === $categoryFilter);
+            $matchUnit = ($unitFilter === 'all') || (($o['unit_id'] ?? '') === $unitFilter);
+            $matchSearch = true;
+            if ($search) {
+                $matchSearch = stripos($o['name'], $search) !== false ||
+                               stripos($o['nip'] ?? '', $search) !== false ||
+                               stripos($o['spkl_number'] ?? '', $search) !== false ||
+                               stripos($o['activity_category_label'] ?? '', $search) !== false ||
+                               stripos($o['task_description'] ?? '', $search) !== false;
+            }
+            return $matchStatus && $matchCat && $matchUnit && $matchSearch;
+        });
+
+        // Metrik Ringkasan Lembur
+        $totalSPKL = count($overtimes);
+        $totalDiajukan = count(array_filter($overtimes, fn($o) => ($o['status'] ?? '') === 'diajukan'));
+        $totalDisetujui = count(array_filter($overtimes, fn($o) => in_array($o['status'] ?? '', ['disetujui', 'dibayarkan'])));
+        $totalHours = array_sum(array_column($overtimes, 'duration_hours'));
+        $totalCompensation = array_sum(array_column($overtimes, 'compensation_amount'));
+
+        // Rekapitulasi per Pegawai
+        $staffOvertimeSummary = [];
+        foreach ($teachers as $t) {
+            $tOvertimes = array_filter($overtimes, fn($o) => ($o['teacher_id'] ?? '') === $t['id']);
+            $count = count($tOvertimes);
+            $hours = array_sum(array_column($tOvertimes, 'duration_hours'));
+            $comp = array_sum(array_column($tOvertimes, 'compensation_amount'));
+            if ($count > 0) {
+                $staffOvertimeSummary[] = [
+                    'teacher' => $t,
+                    'count' => $count,
+                    'hours' => $hours,
+                    'compensation' => $comp
+                ];
+            }
+        }
+
+        return view('hris.lembur', compact(
+            'filteredOvertimes',
+            'overtimes',
+            'teachers',
+            'units',
+            'activeTab',
+            'statusFilter',
+            'categoryFilter',
+            'unitFilter',
+            'search',
+            'totalSPKL',
+            'totalDiajukan',
+            'totalDisetujui',
+            'totalHours',
+            'totalCompensation',
+            'staffOvertimeSummary'
+        ));
+    }
+
+    /**
+     * Simpan Surat Perintah Kerja Lembur Baru (SPKL)
+     */
+    public function storeLembur(Request $request)
+    {
+        $validated = $request->validate([
+            'teacher_id' => 'required|string',
+            'date' => 'required|date',
+            'start_time' => 'required|string',
+            'end_time' => 'required|string',
+            'activity_category' => 'required|in:it_lab,ppdb,asrama,ujian,sarpras,acara',
+            'task_description' => 'required|string|max:500',
+            'hourly_rate' => 'nullable|numeric|min:0',
+        ]);
+
+        $demo = DemoDataManager::getInstance();
+        $teacher = $demo->findTeacher($validated['teacher_id']);
+        if (!$teacher) {
+            return redirect()->back()->withErrors(['teacher_id' => 'Pegawai tidak ditemukan.']);
+        }
+
+        // Hitung durasi jam
+        $startParts = explode(':', $validated['start_time']);
+        $endParts = explode(':', $validated['end_time']);
+        $startMinutes = ((int)$startParts[0] * 60) + (int)($startParts[1] ?? 0);
+        $endMinutes = ((int)$endParts[0] * 60) + (int)($endParts[1] ?? 0);
+        
+        if ($endMinutes < $startMinutes) {
+            // Lembur lintas tengah malam (misal 20:00 - 04:00)
+            $diffMinutes = (1440 - $startMinutes) + $endMinutes;
+        } else {
+            $diffMinutes = max(30, $endMinutes - $startMinutes);
+        }
+        $durationHours = round($diffMinutes / 60, 1);
+
+        // Tarif per jam default Rp 35.000 (Rp 40.000 untuk asrama/malam)
+        $rate = $validated['hourly_rate'] ?: ($validated['activity_category'] === 'asrama' ? 40000 : 35000);
+        $compensation = round($durationHours * $rate);
+
+        $categoryLabels = [
+            'it_lab' => 'Instalasi & Maintenance Lab IT',
+            'ppdb' => 'Kepengurusan Panitia PPDB',
+            'asrama' => 'Piket Pengawasan & Pembinaan Asrama',
+            'ujian' => 'Klinik Remedial & Bimbingan OSN/Ujian',
+            'sarpras' => 'Perbaikan & Pemeliharaan Sarpras',
+            'acara' => 'Kepanitiaan Event & Ekstrakurikuler'
+        ];
+
+        $count = count($demo->getStaffOvertimes()) + 1;
+        $spklNumber = 'SPKL/ALIA/2026/XI/' . str_pad($count, 3, '0', STR_PAD_LEFT);
+
+        $newOvertime = [
+            'id' => 'LMBR-' . str_pad($count, 3, '0', STR_PAD_LEFT),
+            'spkl_number' => $spklNumber,
+            'teacher_id' => $teacher['id'],
+            'name' => $teacher['name'],
+            'nip' => $teacher['nip'] ?? '-',
+            'unit_id' => $teacher['unit_id'] ?? 'UNIT-SMA',
+            'date' => $validated['date'],
+            'start_time' => $validated['start_time'],
+            'end_time' => $validated['end_time'],
+            'duration_hours' => $durationHours,
+            'hourly_rate' => $rate,
+            'compensation_amount' => $compensation,
+            'activity_category' => $validated['activity_category'],
+            'activity_category_label' => $categoryLabels[$validated['activity_category']] ?? 'Kegiatan Lembur Sekolah',
+            'task_description' => $validated['task_description'],
+            'status' => 'diajukan',
+            'approver_role' => 'Kepala Sekolah / Mudir',
+            'approved_by' => null,
+            'approved_at' => null,
+            'approver_notes' => 'Menunggu verifikasi bukti pelaksanaan tugas.'
+        ];
+
+        $sessionAdded = session('demo_staff_overtimes_added', []);
+        $sessionAdded[] = $newOvertime;
+        session(['demo_staff_overtimes_added' => $sessionAdded]);
+
+        return redirect()->route('hris.lembur')->with('success', "Surat Perintah Kerja Lembur no. {$spklNumber} untuk {$teacher['name']} berhasil diterbitkan!");
+    }
+
+    /**
+     * Persetujuan / Pembayaran Lembur Pegawai
+     */
+    public function approveLembur(Request $request, string $id)
+    {
+        $validated = $request->validate([
+            'status' => 'required|in:disetujui,ditolak,dibayarkan',
+            'approver_notes' => 'nullable|string|max:255',
+        ]);
+
+        $sessionUpdated = session('demo_staff_overtimes_updated', []);
+        $sessionUpdated[$id] = [
+            'status' => $validated['status'],
+            'approved_by' => 'Dr. H. Zulkifli, Lc., M.A. / Bendahara',
+            'approved_at' => date('Y-m-d H:i:s'),
+            'approver_notes' => $validated['approver_notes'] ?: ($validated['status'] === 'disetujui' ? 'Perintah lembur telah disetujui pimpinan.' : ($validated['status'] === 'dibayarkan' ? 'Honor lembur telah dibayarkan tunai/transfer.' : 'Pengajuan lembur ditolak.'))
+        ];
+        session(['demo_staff_overtimes_updated' => $sessionUpdated]);
+
+        $statusText = $validated['status'] === 'disetujui' ? 'disetujui' : ($validated['status'] === 'dibayarkan' ? 'dibayarkan' : 'ditolak');
+        return redirect()->route('hris.lembur')->with('success', "Surat Perintah Kerja Lembur (ID: {$id}) telah berhasil {$statusText}!");
+    }
+
+    /**
+     * Hapus Data Lembur dari Sesi Demo
+     */
+    public function destroyLembur(string $id)
+    {
+        $sessionDeleted = session('demo_staff_overtimes_deleted', []);
+        if (!in_array($id, $sessionDeleted)) {
+            $sessionDeleted[] = $id;
+            session(['demo_staff_overtimes_deleted' => $sessionDeleted]);
+        }
+
+        return redirect()->route('hris.lembur')->with('info', "Catatan SPKL ID: {$id} berhasil dihapus dari sesi demo.");
+    }
 }
 
