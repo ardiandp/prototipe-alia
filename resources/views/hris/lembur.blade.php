@@ -304,146 +304,6 @@
                       </div>
                     </td>
                   </tr>
-
-                  <!-- Modal Fisik Surat Perintah Kerja Lembur (SPKL) Resmi -->
-                  <div class="modal fade" id="modal-view-spkl-{{ $ovt['id'] }}" tabindex="-1" role="dialog">
-                    <div class="modal-dialog modal-md" role="document">
-                      <div class="modal-content">
-                        <div class="modal-header" style="background-color: #1a365d; color: #fff;">
-                          <button type="button" class="close" data-dismiss="modal" style="color: #fff; opacity: 0.9;">&times;</button>
-                          <h4 class="modal-title"><i class="fa fa-briefcase"></i> Surat Perintah Kerja Lembur (SPKL)</h4>
-                        </div>
-                        <div class="modal-body" style="background: #fff; padding: 25px;">
-                          
-                          <!-- KOP SURAT ALIA -->
-                          <div class="text-center" style="border-bottom: 2px solid #1a365d; padding-bottom: 10px; margin-bottom: 15px;">
-                            <h3 style="margin: 0; color: #1a365d; font-weight: bold; font-size: 18px;">YAYASAN PENDIDIKAN ISLAM ALIA</h3>
-                            <h4 style="margin: 3px 0; color: #2b6cb0; font-weight: bold; font-size: 15px;">ALIA ISLAMIC SCHOOL JAKARTA</h4>
-                            <p style="margin: 0; font-size: 11px; color: #718096;">
-                              Kampus Asrama Terpadu: Jl. Pondok Kopi Raya Kav. 8, Duren Sawit, Jakarta Timur | Telp: (021) 8690-1234
-                            </p>
-                          </div>
-
-                          <div class="text-center" style="margin-bottom: 15px;">
-                            <h4 style="font-weight: bold; text-decoration: underline; margin-bottom: 3px; color: #1a365d;">
-                              SURAT PERINTAH KERJA LEMBUR (SPKL)
-                            </h4>
-                            <small class="text-muted">Nomor Surat: <b>{{ $ovt['spkl_number'] }}</b></small>
-                          </div>
-
-                          <table class="table table-bordered table-striped" style="font-size: 12px;">
-                            <tr>
-                              <th style="width: 38%; background: #f9f9f9;">Nama Pegawai Yang Ditugaskan</th>
-                              <td><b>{{ $ovt['name'] }}</b></td>
-                            </tr>
-                            <tr>
-                              <th style="background: #f9f9f9;">NIP / Unit Tugas</th>
-                              <td>{{ $ovt['nip'] ?? '-' }} / {{ $uName }}</td>
-                            </tr>
-                            <tr>
-                              <th style="background: #f9f9f9;">Hari, Tanggal Pelaksanaan</th>
-                              <td><b>{{ date('l, d F Y', strtotime($ovt['date'])) }}</b></td>
-                            </tr>
-                            <tr>
-                              <th style="background: #f9f9f9;">Alokasi Jam Kerja Lembur</th>
-                              <td>{{ $ovt['start_time'] }} s/d {{ $ovt['end_time'] }} WIB (<b>{{ $ovt['duration_hours'] }} Jam Kerja</b>)</td>
-                            </tr>
-                            <tr>
-                              <th style="background: #f9f9f9;">Kategori Kegiatan Lembur</th>
-                              <td><b>{{ $ovt['activity_category_label'] }}</b></td>
-                            </tr>
-                            <tr>
-                              <th style="background: #f9f9f9;">Rincian Tugas & Output</th>
-                              <td>{{ $ovt['task_description'] }}</td>
-                            </tr>
-                            <tr>
-                              <th style="background: #f9f9f9;">Kompensasi Honor Lembur</th>
-                              <td>
-                                <b style="font-size: 14px; color: #276749;">Rp {{ number_format($ovt['compensation_amount'], 0, ',', '.') }}</b>
-                                <span class="text-muted">(@ Rp {{ number_format($ovt['hourly_rate'], 0, ',', '.') }} per jam)</span>
-                              </td>
-                            </tr>
-                            <tr>
-                              <th style="background: #f9f9f9;">Status Pengesahan</th>
-                              <td>
-                                @if(($ovt['status'] ?? '') === 'dibayarkan')
-                                  <span class="label label-success"><i class="fa fa-check-circle"></i> Selesai & Telah Dibayarkan</span>
-                                @elseif(($ovt['status'] ?? '') === 'disetujui')
-                                  <span class="label label-primary"><i class="fa fa-check"></i> Disetujui Pimpinan</span>
-                                @elseif(($ovt['status'] ?? '') === 'diajukan')
-                                  <span class="label label-warning"><i class="fa fa-clock-o"></i> Menunggu Verifikasi</span>
-                                @else
-                                  <span class="label label-danger"><i class="fa fa-times"></i> Ditolak</span>
-                                @endif
-                                <div style="font-size: 11px; color: #718096; margin-top: 3px;">
-                                  Oleh: <b>{{ $ovt['approved_by'] ?: 'Drs. H. Mulyadi, M.Pd.' }}</b>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr>
-                              <th style="background: #f9f9f9;">Catatan Pimpinan</th>
-                              <td><i>"{{ $ovt['approver_notes'] ?? '-' }}"</i></td>
-                            </tr>
-                          </table>
-
-                          <div class="row" style="margin-top: 25px;">
-                            <div class="col-xs-6 text-center">
-                              <small>Penerima Tugas Lembur,</small><br><br><br>
-                              <b><u>{{ $ovt['name'] }}</u></b><br>
-                              <small class="text-muted">NIP: {{ $ovt['nip'] ?? '-' }}</small>
-                            </div>
-                            <div class="col-xs-6 text-center">
-                              <small>Pemberi Perintah Kerja,</small><br><br><br>
-                              <b><u>{{ $ovt['approved_by'] ?: 'Drs. H. Mulyadi, M.Pd.' }}</u></b><br>
-                              <small class="text-muted">{{ $ovt['approver_role'] ?? 'Kepala Sekolah' }}</small>
-                            </div>
-                          </div>
-
-                        </div>
-                        <div class="modal-footer">
-                          <button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
-                          <button type="button" class="btn btn-primary" onclick="window.print()"><i class="fa fa-print"></i> Cetak Dokumen SPKL</button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Modal Approval & Bayar SPKL -->
-                  <div class="modal fade" id="modal-approve-spkl-{{ $ovt['id'] }}" tabindex="-1" role="dialog">
-                    <div class="modal-dialog modal-sm" role="document">
-                      <div class="modal-content">
-                        <form action="{{ route('hris.lembur.approve', $ovt['id']) }}" method="POST">
-                          @csrf
-                          <div class="modal-header" style="background-color: #2b6cb0; color: #fff;">
-                            <button type="button" class="close" data-dismiss="modal" style="color: #fff; opacity: 0.9;">&times;</button>
-                            <h4 class="modal-title"><i class="fa fa-check-square"></i> Verifikasi & Approval SPKL</h4>
-                          </div>
-                          <div class="modal-body">
-                            <p>Tindakan untuk SPKL <b>{{ $ovt['spkl_number'] }}</b> atas nama <b>{{ $ovt['name'] }}</b>:</p>
-                            
-                            <div class="form-group">
-                              <label>Keputusan Approval <span class="text-danger">*</span></label>
-                              <select name="status" class="form-control" required>
-                                <option value="disetujui">Setujui Pelaksanaan Lembur</option>
-                                <option value="dibayarkan">Setujui & Tandai Telah Dibayarkan</option>
-                                <option value="ditolak">Tolak Perintah Lembur</option>
-                              </select>
-                            </div>
-
-                            <div class="form-group">
-                              <label>Catatan / Instruksi Tambahan</label>
-                              <textarea name="approver_notes" class="form-control" rows="2" placeholder="Contoh: Tugas lembur telah diverifikasi dan disetujui."></textarea>
-                            </div>
-                          </div>
-                          <div class="modal-footer">
-                            <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Batal</button>
-                            <button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-save"></i> Simpan Status</button>
-                          </div>
-                        </form>
-                      </div>
-                    </div>
-                  </div>
-
                 @empty
                   <tr>
                     <td colspan="9" class="text-center" style="padding: 30px;">
@@ -655,5 +515,157 @@
     </div>
   </div>
 </div>
+
+<!-- Modal-modal SPKL (Ditempatkan Diluar Tabel) -->
+@foreach($filteredOvertimes as $ovt)
+  @php
+    $uNameModal = 'Yayasan';
+    foreach($units as $u) {
+      if ($u['id'] === ($ovt['unit_id'] ?? '')) {
+        $uNameModal = $u['name'];
+        break;
+      }
+    }
+  @endphp
+  <!-- Modal Fisik Surat Perintah Kerja Lembur (SPKL) Resmi -->
+  <div class="modal fade" id="modal-view-spkl-{{ $ovt['id'] }}" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-md" role="document">
+      <div class="modal-content">
+        <div class="modal-header" style="background-color: #1a365d; color: #fff;">
+          <button type="button" class="close" data-dismiss="modal" style="color: #fff; opacity: 0.9;">&times;</button>
+          <h4 class="modal-title"><i class="fa fa-briefcase"></i> Surat Perintah Kerja Lembur (SPKL)</h4>
+        </div>
+        <div class="modal-body" style="background: #fff; padding: 25px;">
+          
+          <!-- KOP SURAT ALIA -->
+          <div class="text-center" style="border-bottom: 2px solid #1a365d; padding-bottom: 10px; margin-bottom: 15px;">
+            <h3 style="margin: 0; color: #1a365d; font-weight: bold; font-size: 18px;">YAYASAN PENDIDIKAN ISLAM ALIA</h3>
+            <h4 style="margin: 3px 0; color: #2b6cb0; font-weight: bold; font-size: 15px;">ALIA ISLAMIC SCHOOL JAKARTA</h4>
+            <p style="margin: 0; font-size: 11px; color: #718096;">
+              Kampus Asrama Terpadu: Jl. Pondok Kopi Raya Kav. 8, Duren Sawit, Jakarta Timur | Telp: (021) 8690-1234
+            </p>
+          </div>
+
+          <div class="text-center" style="margin-bottom: 15px;">
+            <h4 style="font-weight: bold; text-decoration: underline; margin-bottom: 3px; color: #1a365d;">
+              SURAT PERINTAH KERJA LEMBUR (SPKL)
+            </h4>
+            <small class="text-muted">Nomor Surat: <b>{{ $ovt['spkl_number'] }}</b></small>
+          </div>
+
+          <table class="table table-bordered table-striped" style="font-size: 12px;">
+            <tr>
+              <th style="width: 38%; background: #f9f9f9;">Nama Pegawai Yang Ditugaskan</th>
+              <td><b>{{ $ovt['name'] }}</b></td>
+            </tr>
+            <tr>
+              <th style="background: #f9f9f9;">NIP / Unit Tugas</th>
+              <td>{{ $ovt['nip'] ?? '-' }} / {{ $uNameModal }}</td>
+            </tr>
+            <tr>
+              <th style="background: #f9f9f9;">Hari, Tanggal Pelaksanaan</th>
+              <td><b>{{ date('l, d F Y', strtotime($ovt['date'])) }}</b></td>
+            </tr>
+            <tr>
+              <th style="background: #f9f9f9;">Alokasi Jam Kerja Lembur</th>
+              <td>{{ $ovt['start_time'] }} s/d {{ $ovt['end_time'] }} WIB (<b>{{ $ovt['duration_hours'] }} Jam Kerja</b>)</td>
+            </tr>
+            <tr>
+              <th style="background: #f9f9f9;">Kategori Kegiatan Lembur</th>
+              <td><b>{{ $ovt['activity_category_label'] }}</b></td>
+            </tr>
+            <tr>
+              <th style="background: #f9f9f9;">Rincian Tugas & Output</th>
+              <td>{{ $ovt['task_description'] }}</td>
+            </tr>
+            <tr>
+              <th style="background: #f9f9f9;">Kompensasi Honor Lembur</th>
+              <td>
+                <b style="font-size: 14px; color: #276749;">Rp {{ number_format($ovt['compensation_amount'], 0, ',', '.') }}</b>
+                <span class="text-muted">(@ Rp {{ number_format($ovt['hourly_rate'], 0, ',', '.') }} per jam)</span>
+              </td>
+            </tr>
+            <tr>
+              <th style="background: #f9f9f9;">Status Pengesahan</th>
+              <td>
+                @if(($ovt['status'] ?? '') === 'dibayarkan')
+                  <span class="label label-success"><i class="fa fa-check-circle"></i> Selesai & Telah Dibayarkan</span>
+                @elseif(($ovt['status'] ?? '') === 'disetujui')
+                  <span class="label label-primary"><i class="fa fa-check"></i> Disetujui Pimpinan</span>
+                @elseif(($ovt['status'] ?? '') === 'diajukan')
+                  <span class="label label-warning"><i class="fa fa-clock-o"></i> Menunggu Verifikasi</span>
+                @else
+                  <span class="label label-danger"><i class="fa fa-times"></i> Ditolak</span>
+                @endif
+                <div style="font-size: 11px; color: #718096; margin-top: 3px;">
+                  Oleh: <b>{{ $ovt['approved_by'] ?: 'Drs. H. Mulyadi, M.Pd.' }}</b>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <th style="background: #f9f9f9;">Catatan Pimpinan</th>
+              <td><i>"{{ $ovt['approver_notes'] ?? '-' }}"</i></td>
+            </tr>
+          </table>
+
+          <div class="row" style="margin-top: 25px;">
+            <div class="col-xs-6 text-center">
+              <small>Penerima Tugas Lembur,</small><br><br><br>
+              <b><u>{{ $ovt['name'] }}</u></b><br>
+              <small class="text-muted">NIP: {{ $ovt['nip'] ?? '-' }}</small>
+            </div>
+            <div class="col-xs-6 text-center">
+              <small>Pemberi Perintah Kerja,</small><br><br><br>
+              <b><u>{{ $ovt['approved_by'] ?: 'Drs. H. Mulyadi, M.Pd.' }}</u></b><br>
+              <small class="text-muted">{{ $ovt['approver_role'] ?? 'Kepala Sekolah' }}</small>
+            </div>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
+          <button type="button" class="btn btn-primary" onclick="window.print()"><i class="fa fa-print"></i> Cetak Dokumen SPKL</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Approval & Bayar SPKL -->
+  <div class="modal fade" id="modal-approve-spkl-{{ $ovt['id'] }}" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content">
+        <form action="{{ route('hris.lembur.approve', $ovt['id']) }}" method="POST">
+          @csrf
+          <div class="modal-header" style="background-color: #2b6cb0; color: #fff;">
+            <button type="button" class="close" data-dismiss="modal" style="color: #fff; opacity: 0.9;">&times;</button>
+            <h4 class="modal-title"><i class="fa fa-check-square"></i> Verifikasi & Approval SPKL</h4>
+          </div>
+          <div class="modal-body">
+            <p>Tindakan untuk SPKL <b>{{ $ovt['spkl_number'] }}</b> atas nama <b>{{ $ovt['name'] }}</b>:</p>
+            
+            <div class="form-group">
+              <label>Keputusan Approval <span class="text-danger">*</span></label>
+              <select name="status" class="form-control" required>
+                <option value="disetujui">Setujui Pelaksanaan Lembur</option>
+                <option value="dibayarkan">Setujui & Tandai Telah Dibayarkan</option>
+                <option value="ditolak">Tolak Perintah Lembur</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Catatan / Instruksi Tambahan</label>
+              <textarea name="approver_notes" class="form-control" rows="2" placeholder="Contoh: Tugas lembur telah diverifikasi dan disetujui."></textarea>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Batal</button>
+            <button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-save"></i> Simpan Status</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+@endforeach
+
 @endsection
 
