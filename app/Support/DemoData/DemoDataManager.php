@@ -3713,10 +3713,12 @@ class DemoDataManager
     {
         $sessionAdded = [];
         $sessionDeleted = [];
+        $sessionUpdated = [];
         try {
             if (function_exists('session') && app()->has('session')) {
                 $sessionAdded = session('demo_teachers_added', []);
                 $sessionDeleted = session('demo_teachers_deleted', []);
+                $sessionUpdated = session('demo_teachers_updated', []);
             }
         } catch (\Throwable $e) {}
 
@@ -3724,6 +3726,12 @@ class DemoDataManager
         $filtered = array_filter($list, function($t) use ($sessionDeleted) {
             return !in_array($t['id'], $sessionDeleted);
         });
+
+        foreach ($filtered as &$item) {
+            if (isset($sessionUpdated[$item['id']])) {
+                $item = array_merge($item, $sessionUpdated[$item['id']]);
+            }
+        }
 
         return array_values($filtered);
     }

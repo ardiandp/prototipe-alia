@@ -164,6 +164,7 @@
           <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
         </a>
         <ul class="treeview-menu">
+          <li class="{{ request()->is('hris/pegawai*') ? 'active' : '' }}"><a href="{{ route('hris.pegawai') }}"><i class="fa fa-circle-o"></i> Data Pegawai & Struktur</a></li>
           <li class="{{ request()->is('hris/presensi*') ? 'active' : '' }}"><a href="{{ route('hris.presensi') }}"><i class="fa fa-circle-o"></i> Presensi Pegawai</a></li>
           <li class="{{ request()->is('hris/cuti*') ? 'active' : '' }}"><a href="{{ route('hris.cuti') }}"><i class="fa fa-circle-o"></i> Pengajuan Cuti / Izin</a></li>
           <li class="{{ request()->is('hris/penggajian*') ? 'active' : '' }}"><a href="{{ route('hris.penggajian') }}"><i class="fa fa-circle-o"></i> Penggajian (Payroll)</a></li>

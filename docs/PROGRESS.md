@@ -9,8 +9,8 @@ Catatan pemantauan progres implementasi prototipe Alia Islamic School.
 - **Batch Aktif**: Batch D (Learning, Islamic Programs, Student Affairs)
 - **Batch Aktif**: Batch E (Boarding, Finance, HRIS)
 - **Task Terakhir Selesai**:
-  - `T09.8`: Finance reports (Keuangan: Laporan Keuangan Komprehensif, Rekap Penerimaan SPP & Pos Biaya, Laporan Piutang & Aging Tunggakan, Arus Kas Masuk/Keluar, Ringkasan Kinerja Keuangan per Unit Pendidikan, Metrik KPI Finansial, dan Format Cetak Laporan).
-- **Task Selanjutnya**: `T10.1`: Employee profiles/organization (SDM/HRIS: Profil Pegawai, Struktur Organisasi, Departemen/Unit, Jabatan, Status Kepegawaian, dan Form Tambah/Edit Pegawai).
+  - `T10.1`: Employee profiles/organization (SDM/HRIS: Profil Pegawai, Struktur Hierarki Organisasi 4 Tingkat, Penempatan Unit Pendidikan TK/SD/SMP/SMA, Komposisi Status GTY/Kontrak/Tendik, Modal Kartu Profil & Edit Pegawai, Form Registrasi Pegawai Baru Berbasis Sesi, dan Ekspor/Cetak Dokumen).
+- **Task Selanjutnya**: `T10.2`: Staff attendance (SDM/HRIS: Presensi Harian Pegawai/Guru, Jam Masuk/Pulang, Keterlambatan, Sakit, Izin, dan Rekapitulasi Presensi Bulanan).
 
 ---
 
@@ -196,6 +196,12 @@ Catatan pemantauan progres implementasi prototipe Alia Islamic School.
   - Controller: [`KeuanganController.php`](file:///c:/laragon/www/prototipe-alia/app/Http/Controllers/KeuanganController.php) (`laporan`).
   - View: [`resources/views/keuangan/laporan.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/keuangan/laporan.blade.php) (4 Tab: Rekap Penerimaan SPP & Pos Biaya, Laporan Piutang & Aging Tunggakan, Arus Kas / Cash Flow In/Out, Ringkasan Kinerja per Unit Pendidikan, 4 KPI info box Finansial, filter unit pendidikan & periode bulan, tombol ekspor cetak/PDF/Excel simulasi).
   - Rute aktif `/keuangan/laporan` dan sub-menu di sidebar AdminLTE.
+- `[x] T10.1`: Employee Profiles & Organization (Profil Pegawai & Struktur Organisasi):
+  - Controller baru: [`HrisController.php`](file:///c:/laragon/www/prototipe-alia/app/Http/Controllers/HrisController.php) (`pegawai`, `storePegawai`, `updatePegawai`, `destroyPegawai`).
+  - View: [`resources/views/hris/pegawai.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/hris/pegawai.blade.php) (3 Tab: Daftar Profil Pegawai, Bagan Struktur Organisasi 4 Tingkat, Analitik & Distribusi SDM, 4 KPI info box total pegawai/GTY/kontrak/tendik, modal kartu profil pegawai, modal edit pegawai berbasis sesi, form tambah pegawai baru, filter unit/status/gender/search, cetak).
+  - Integrasi session update pegawai di [`DemoDataManager.php`](file:///c:/laragon/www/prototipe-alia/app/Support/DemoData/DemoDataManager.php).
+  - Rute aktif `/hris/pegawai`, `/hris/pegawai` (POST), `/hris/pegawai/{id}/update` (POST), `/hris/pegawai/{id}/destroy`, serta link menu di [`resources/views/layouts/sidebar.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/layouts/sidebar.blade.php).
+
 
 
 

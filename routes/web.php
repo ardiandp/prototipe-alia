@@ -11,6 +11,7 @@ use App\Http\Controllers\TahfidzController;
 use App\Http\Controllers\KesiswaanController;
 use App\Http\Controllers\AsramaController;
 use App\Http\Controllers\KeuanganController;
+use App\Http\Controllers\HrisController;
 
 // Helper untuk route placeholder view
 function makePlaceholder($title, $subtitle, $icon = 'fa-cube') {
@@ -229,6 +230,10 @@ Route::prefix('keuangan')->name('keuangan.')->group(function () {
 
 // SDM / HRIS
 Route::prefix('hris')->name('hris.')->group(function () {
+    Route::get('/pegawai', [HrisController::class, 'pegawai'])->name('pegawai');
+    Route::post('/pegawai', [HrisController::class, 'storePegawai'])->name('pegawai.store');
+    Route::post('/pegawai/{id}/update', [HrisController::class, 'updatePegawai'])->name('pegawai.update');
+    Route::get('/pegawai/{id}/destroy', [HrisController::class, 'destroyPegawai'])->name('pegawai.destroy');
     Route::get('/presensi', makePlaceholder('Presensi Pegawai', 'Kehadiran Harian Tenaga Pendidik', 'fa-clock-o'))->name('presensi');
     Route::get('/cuti', makePlaceholder('Pengajuan Cuti / Izin', 'Persetujuan & Riwayat Izin Cuti', 'fa-envelope-open-o'))->name('cuti');
     Route::get('/penggajian', makePlaceholder('Penggajian (Payroll)', 'Slip Gaji & Tunjangan Bulanan', 'fa-money'))->name('penggajian');
