@@ -129,10 +129,13 @@
           <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
         </a>
         <ul class="treeview-menu">
-          <li class="{{ request()->is('asrama/kamar*') ? 'active' : '' }}"><a href="{{ route('asrama.kamar') }}"><i class="fa fa-circle-o"></i> Kamar & Santri</a></li>
+          <li class="{{ request()->is('asrama/kamar*') ? 'active' : '' }}"><a href="{{ route('asrama.kamar') }}"><i class="fa fa-circle-o"></i> Gedung & Kamar</a></li>
+          <li class="{{ request()->is('asrama/penempatan*') ? 'active' : '' }}"><a href="{{ route('asrama.penempatan') }}"><i class="fa fa-circle-o"></i> Penempatan Kamar</a></li>
           <li class="{{ request()->is('asrama/aktivitas*') ? 'active' : '' }}"><a href="{{ route('asrama.aktivitas') }}"><i class="fa fa-circle-o"></i> Jadwal Aktivitas Asrama</a></li>
+          <li class="{{ request()->is('asrama/presensi*') ? 'active' : '' }}"><a href="{{ route('asrama.presensi') }}"><i class="fa fa-circle-o"></i> Presensi & Ibadah</a></li>
           <li class="{{ request()->is('asrama/perizinan*') ? 'active' : '' }}"><a href="{{ route('asrama.perizinan') }}"><i class="fa fa-circle-o"></i> Perizinan Keluar/Pulang</a></li>
           <li class="{{ request()->is('asrama/katering*') ? 'active' : '' }}"><a href="{{ route('asrama.katering') }}"><i class="fa fa-circle-o"></i> Konsumsi / Dapur</a></li>
+          <li class="{{ request()->is('asrama/laporan*') ? 'active' : '' }}"><a href="{{ route('asrama.laporan') }}"><i class="fa fa-circle-o"></i> Laporan Asrama</a></li>
         </ul>
       </li>
 
@@ -147,6 +150,7 @@
           <li class="{{ request()->is('keuangan/pos-biaya*') ? 'active' : '' }}"><a href="{{ route('keuangan.pos-biaya') }}"><i class="fa fa-circle-o"></i> Pos Biaya & Tarif</a></li>
           <li class="{{ request()->is('keuangan/tagihan*') ? 'active' : '' }}"><a href="{{ route('keuangan.tagihan') }}"><i class="fa fa-circle-o"></i> Tagihan Santri</a></li>
           <li class="{{ request()->is('keuangan/transaksi*') ? 'active' : '' }}"><a href="{{ route('keuangan.transaksi') }}"><i class="fa fa-circle-o"></i> Penerimaan Pembayaran</a></li>
+          <li class="{{ request()->is('keuangan/beasiswa*') ? 'active' : '' }}"><a href="{{ route('keuangan.beasiswa') }}"><i class="fa fa-circle-o"></i> Beasiswa & Potongan</a></li>
           <li class="{{ request()->is('keuangan/laporan*') ? 'active' : '' }}"><a href="{{ route('keuangan.laporan') }}"><i class="fa fa-circle-o"></i> Laporan Keuangan</a></li>
         </ul>
       </li>

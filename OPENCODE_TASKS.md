@@ -70,18 +70,18 @@ update `docs/PROGRESS.md`, report changed files and blockers, then stop.
 
 ## Batch E --- Boarding, finance, HRIS
 
--   [ ] T08.1 Boarding buildings/rooms.
--   [ ] T08.2 Resident assignment.
--   [ ] T08.3 Daily activity schedule.
--   [ ] T08.4 Leave permission workflow.
--   [ ] T08.5 Attendance/monitoring.
--   [ ] T08.6 Meals/consumption.
--   [ ] T08.7 Boarding reports.
--   [ ] T09.1 Finance dashboard.
--   [ ] T09.2 Fee master.
--   [ ] T09.3 Student invoices.
--   [ ] T09.4 Payment simulation.
--   [ ] T09.5 Scholarship/discount.
+-   [x] T08.1 Boarding buildings/rooms.
+-   [x] T08.2 Resident assignment.
+-   [x] T08.3 Daily activity schedule.
+-   [x] T08.4 Leave permission workflow.
+-   [x] T08.5 Attendance/monitoring.
+-   [x] T08.6 Meals/consumption.
+-   [x] T08.7 Boarding reports.
+-   [x] T09.1 Finance dashboard.
+-   [x] T09.2 Fee master.
+-   [x] T09.3 Student invoices.
+-   [x] T09.4 Payment simulation.
+-   [x] T09.5 Scholarship/discount.
 -   [ ] T09.6 Arrears.
 -   [ ] T09.7 Cash in/out.
 -   [ ] T09.8 Finance reports.

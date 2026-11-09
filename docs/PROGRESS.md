@@ -9,8 +9,8 @@ Catatan pemantauan progres implementasi prototipe Alia Islamic School.
 - **Batch Aktif**: Batch D (Learning, Islamic Programs, Student Affairs)
 - **Batch Aktif**: Batch E (Boarding, Finance, HRIS)
 - **Task Terakhir Selesai**:
-  - `T07.6`: Student Mutation (Kesiswaan: Sistem Mutasi Santri Masuk/Pindahan & Keluar/Lulus/DO, Nomor SK Mutasi Resmi, Sekolah Asal/Tujuan, Modal SK Berkop Pondok, Form Pengajuan Mutasi Berbasis Sesi, dan Cetak Surat Keterangan Pindah).
-- **Task Selanjutnya**: `T08.1`: Boarding Buildings/Rooms (Asrama: Manajemen Gedung Asrama, Blok Lantai, Kapasitas & Kamar Santri).
+  - `T09.5`: Scholarship and discount (Keuangan: Manajemen Beasiswa Santri & Diskon Pembiayaan, Kategori Tahfidz/Prestasi/Yatim/Sibling, Persetujuan Pimpinan Yayasan, Pemotongan Otomatis Tagihan Invoice Santri, Modal SK Beasiswa Resmi Berkop Alia, Form Pendaftaran Beasiswa, dan Format Cetak).
+- **Task Selanjutnya**: `T09.6`: Arrears (Keuangan: Manajemen Piutang & Surat Peringatan Tunggakan Santri, Penuaan Piutang / Aging Report, Notifikasi Surat Tagihan Wali Santri, dan Rekapitulasi).
 
 ---
 
@@ -126,6 +126,69 @@ Catatan pemantauan progres implementasi prototipe Alia Islamic School.
   - Controller: [`KesiswaanController.php`](file:///c:/laragon/www/prototipe-alia/app/Http/Controllers/KesiswaanController.php) (`mutasi`, `storeMutasi`, `destroyMutasi`).
   - View: [`resources/views/kesiswaan/mutasi.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/kesiswaan/mutasi.blade.php) (Tabel buku register mutasi santri, badge tipe mutasi masuk/keluar/lulus/dikeluarkan, modal surat keputusan resmi berkop Alia Islamic School, form pengajuan & penerbitan SK mutasi berbasis sesi, cetak surat keterangan pindah).
   - Rute aktif `/kesiswaan/mutasi`, `/kesiswaan/mutasi` (POST), `/kesiswaan/mutasi/{id}/destroy`, serta link navigasi UKS & Mutasi di [`resources/views/layouts/sidebar.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/layouts/sidebar.blade.php).
+- `[x] T08.1`: Boarding Buildings/Rooms (Gedung & Kamar Asrama):
+  - Dataset baseline gedung & kamar asrama terstruktur di [`DemoDataManager.php`](file:///c:/laragon/www/prototipe-alia/app/Support/DemoData/DemoDataManager.php) (`getBoardingBuildings`, `findBoardingBuilding`, `getBoardingRooms`, `findBoardingRoom`).
+  - Controller baru: [`AsramaController.php`](file:///c:/laragon/www/prototipe-alia/app/Http/Controllers/AsramaController.php) (`kamar`, `storeKamar`, `storeGedung`, `destroyKamar`).
+  - View: [`resources/views/asrama/kamar.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/asrama/kamar.blade.php) (Dwi-tab Kamar Santri & Profil Gedung, grid kartu kamar interaktif dengan progress bar okupansi tempat tidur, modal roster penghuni kamar aktif, modal tambah kamar baru, modal tambah gedung baru berbasis sesi, filter gedung & gender, cetak denah & okupansi).
+  - Rute aktif `/asrama/kamar`, `/asrama/kamar` (POST), `/asrama/gedung` (POST), `/asrama/kamar/{id}/destroy`.
+- `[x] T08.2`: Resident Assignment (Penempatan Kamar Santri):
+  - Dataset baseline alokasi kamar santri di [`DemoDataManager.php`](file:///c:/laragon/www/prototipe-alia/app/Support/DemoData/DemoDataManager.php) (`getResidentAssignments`, `findResidentAssignment`).
+  - Controller: [`AsramaController.php`](file:///c:/laragon/www/prototipe-alia/app/Http/Controllers/AsramaController.php) (`penempatan`, `storePenempatan`, `transferKamar`, `checkoutSantri`).
+  - View: [`resources/views/asrama/penempatan.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/asrama/penempatan.blade.php) (Tabel buku alokasi kamar santri, metrik kapasitas total, santri mukim aktif, sisa bed, modal check-in santri baru, modal relokasi/pindah kamar tujuan otomatis, aksi check-out santri, filter gedung/kamar/status, cetak).
+  - Rute aktif `/asrama/penempatan`, `/asrama/penempatan` (POST), `/asrama/penempatan/{id}/transfer` (POST), `/asrama/penempatan/{id}/checkout`, dan update menu di [`resources/views/layouts/sidebar.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/layouts/sidebar.blade.php).
+- `[x] T08.3`: Daily Activity Schedule (Jadwal Aktivitas Harian Asrama):
+  - Dataset baseline rutinitas 24 jam santri di [`DemoDataManager.php`](file:///c:/laragon/www/prototipe-alia/app/Support/DemoData/DemoDataManager.php) (`getBoardingActivities`, `findBoardingActivity`).
+  - Controller: [`AsramaController.php`](file:///c:/laragon/www/prototipe-alia/app/Http/Controllers/AsramaController.php) (`aktivitas`, `storeAktivitas`, `destroyAktivitas`).
+  - View: [`resources/views/asrama/aktivitas.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/asrama/aktivitas.blade.php) (Tabel daftar agenda rutinitas santri 24 jam, metrik ringkasan sesi harian/ibadah/tahfidz/wajib, alur timeline visual 5 waktu asrama, badge sifat wajib/pilihan, modal tambah agenda aktivitas baru berbasis sesi, filter kategori, cetak).
+  - Rute aktif `/asrama/aktivitas`, `/asrama/aktivitas` (POST), `/asrama/aktivitas/{id}/destroy`.
+- `[x] T08.4`: Leave Permission Workflow (Perizinan Santri Asrama):
+  - Dataset baseline perizinan keluar, pulang bermalam & darurat di [`DemoDataManager.php`](file:///c:/laragon/www/prototipe-alia/app/Support/DemoData/DemoDataManager.php) (`getLeavePermissions`, `findLeavePermission`).
+  - Controller: [`AsramaController.php`](file:///c:/laragon/www/prototipe-alia/app/Http/Controllers/AsramaController.php) (`perizinan`, `storePerizinan`, `checkInPerizinan`, `destroyPerizinan`).
+  - View: [`resources/views/asrama/perizinan.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/asrama/perizinan.blade.php) (Tabel perizinan santri, tiket Gate Pass dengan barcode & kode validasi, metrik izin diajukan/disetujui/kembali, modal rincian izin & cetak Gate Pass pos satpam, aksi check-in konfirmasi kembali di asrama, modal buat izin baru, filter tipe/status, cetak).
+  - Rute aktif `/asrama/perizinan`, `/asrama/perizinan` (POST), `/asrama/perizinan/{id}/checkin`, `/asrama/perizinan/{id}/destroy`.
+- `[x] T08.5`: Attendance / Monitoring (Presensi Ibadah & Asrama):
+  - Dataset baseline presensi sesi ibadah asrama di [`DemoDataManager.php`](file:///c:/laragon/www/prototipe-alia/app/Support/DemoData/DemoDataManager.php) (`getBoardingAttendance`, `findBoardingAttendance`).
+  - Controller: [`AsramaController.php`](file:///c:/laragon/www/prototipe-alia/app/Http/Controllers/AsramaController.php) (`presensi`, `storePresensi`, `markAllPresent`).
+  - View: [`resources/views/asrama/presensi.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/asrama/presensi.blade.php) (Tabel presensi sesi ibadah harian santri mukim aktif, selector tanggal & 7 sesi shalat/qiyamul lail/naum, tombol cepat Quick Present Hadirkan Semua, radio button status Hadir/Masbuq/Sakit/Izin/Alpa, input catatan musyrif, cetak lembar presensi).
+  - Rute aktif `/asrama/presensi`, `/asrama/presensi` (POST), `/asrama/presensi/quick-present` (POST), serta penambahan sub-menu di [`resources/views/layouts/sidebar.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/layouts/sidebar.blade.php).
+- `[x] T08.6`: Meals / Consumption (Manajemen Katering & Dapur Asrama):
+  - Dataset baseline 21 variasi menu makan mingguan lengkap (Senin s/d Ahad: Pagi/Siang/Malam) di [`DemoDataManager.php`](file:///c:/laragon/www/prototipe-alia/app/Support/DemoData/DemoDataManager.php) (`getBoardingMeals`, `findBoardingMeal`).
+  - Controller: [`AsramaController.php`](file:///c:/laragon/www/prototipe-alia/app/Http/Controllers/AsramaController.php) (`katering`, `storeKatering`, `destroyKatering`).
+  - View: [`resources/views/asrama/katering.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/asrama/katering.blade.php) (Dwi-tab Matriks Jadwal Mingguan & Semua Daftar Menu, metrik 4 info box variasi menu/sarapan/siang/kalori kkal, rincian lauk utama/pendamping/sayur/buah/susu, sorotan standar gizi 4 Sehat 5 Sempurna, catatan alergen & porsi khusus, modal detail hidangan, modal tambah menu makanan baru berbasis sesi, filter hari/waktu makan, tombol cetak jadwal dapur asrama).
+  - Rute aktif `/asrama/katering`, `/asrama/katering` (POST), `/asrama/katering/{id}/destroy`.
+- `[x] T08.7`: Boarding Reports (Laporan & Rekapitulasi Terpadu Asrama):
+  - Controller: [`AsramaController.php`](file:///c:/laragon/www/prototipe-alia/app/Http/Controllers/AsramaController.php) (`laporan`).
+  - View: [`resources/views/asrama/laporan.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/asrama/laporan.blade.php) (4 Tab Laporan Asrama: Okupansi Gedung & Kamar Santri, Log Rekap Perizinan Keluar/Pulang Santri, Rekapitulasi Presensi Shalat Berjamaah 5 Waktu & Ibadah Asrama, Evaluasi Menu & Logistik Dapur Santri, tombol cetak laporan untuk setiap tab).
+  - Rute aktif `/asrama/laporan` dan penambahan sub-menu Laporan Asrama di [`resources/views/layouts/sidebar.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/layouts/sidebar.blade.php).
+  - Penanda penutupan **Phase 08 (Boarding Management)** selesai 100% (T08.1 s/d T08.7).
+- `[x] T09.1`: Finance Dashboard (Dashboard Eksekutif Keuangan & SPP):
+  - Inisialisasi dataset Keuangan di [`DemoDataManager.php`](file:///c:/laragon/www/prototipe-alia/app/Support/DemoData/DemoDataManager.php) (`getFeeCategories`, `getStudentInvoices`, `getPaymentTransactions`, `getFinanceExpenses`).
+  - Controller baru: [`KeuanganController.php`](file:///c:/laragon/www/prototipe-alia/app/Http/Controllers/KeuanganController.php) (`dashboard`).
+  - View: [`resources/views/keuangan/dashboard.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/keuangan/dashboard.blade.php) (4 Info box metrik KPI: Penerimaan Kas, Beban Pengeluaran, Saldo Kas Bersih, Piutang SPP; Breakdown Status Invoice Lunas/Sebagian/Belum Lunas/Jatuh Tempo; Tabel Beban Pengeluaran Operasional; Tabel Penerimaan Pembayaran Kasir Terkini; Tabel Tagihan Santri Aktif; Filter Unit Pendidikan & Periode Bulan; Tombol Cetak Laporan Keuangan).
+  - Rute aktif `/keuangan/dashboard` di [`routes/web.php`](file:///c:/laragon/www/prototipe-alia/routes/web.php).
+- `[x] T09.2`: Fee Master (Master Data Pos Biaya & Tarif Sekolah):
+  - Dataset pos biaya & tarif pendidikan di [`DemoDataManager.php`](file:///c:/laragon/www/prototipe-alia/app/Support/DemoData/DemoDataManager.php) (`getFeeCategories`, `findFeeCategory`).
+  - Controller: [`KeuanganController.php`](file:///c:/laragon/www/prototipe-alia/app/Http/Controllers/KeuanganController.php) (`posBiaya`, `storePosBiaya`, `destroyPosBiaya`).
+  - View: [`resources/views/keuangan/pos-biaya.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/keuangan/pos-biaya.blade.php) (Tabel master tarif, filter unit/kategori/siklus/search, modal detail tarif, modal form tambah pos biaya baru berbasis sesi, format cetak tarif).
+  - Rute aktif `/keuangan/pos-biaya`, `/keuangan/pos-biaya` (POST), dan `/keuangan/pos-biaya/{id}/destroy`.
+- `[x] T09.3`: Student Invoices (Manajemen Tagihan & Invoice Santri):
+  - Controller: [`KeuanganController.php`](file:///c:/laragon/www/prototipe-alia/app/Http/Controllers/KeuanganController.php) (`tagihan`, `storeTagihan`, `destroyTagihan`).
+  - View: [`resources/views/keuangan/tagihan.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/keuangan/tagihan.blade.php) (Tabel buku tagihan santri, 4 kartu info box total tagihan/lunas/menunggu/piutang, modal pratinjau invoice resmi berkop Alia Islamic School dengan instruksi VA BSI, modal form penerbitan invoice baru berbasis sesi, filter unit/status/bulan/search, format cetak).
+  - Rute aktif `/keuangan/tagihan`, `/keuangan/tagihan` (POST), dan `/keuangan/tagihan/{id}/destroy`.
+- `[x] T09.4`: Payment Simulation (Simulasi Penerimaan Kasir & Pembayaran):
+  - Controller: [`KeuanganController.php`](file:///c:/laragon/www/prototipe-alia/app/Http/Controllers/KeuanganController.php) (`transaksi`, `storeTransaksi`, `destroyTransaksi`).
+  - View: [`resources/views/keuangan/transaksi.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/keuangan/transaksi.blade.php) (Log kuitansi kasir terverifikasi, 4 info box metrik transaksi kas/VA BSI/Tunai/QRIS, callout label prototipe simulasi, modal bukti kuitansi resmi printable, modal form input pembayaran baru yang secara otomatis memperbarui status invoice terkait dan saldo kas masuk, filter metode/tanggal/search).
+  - Rute aktif `/keuangan/transaksi`, `/keuangan/transaksi` (POST), dan `/keuangan/transaksi/{id}/destroy`.
+- `[x] T09.5`: Scholarship & Discount (Manajemen Beasiswa & Keringanan Biaya):
+  - Inisialisasi dataset beasiswa di [`DemoDataManager.php`](file:///c:/laragon/www/prototipe-alia/app/Support/DemoData/DemoDataManager.php) (`getScholarships`, `findScholarship`).
+  - Controller: [`KeuanganController.php`](file:///c:/laragon/www/prototipe-alia/app/Http/Controllers/KeuanganController.php) (`beasiswa`, `storeBeasiswa`, `approveBeasiswa`, `destroyBeasiswa`).
+  - View: [`resources/views/keuangan/beasiswa.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/keuangan/beasiswa.blade.php) (Tabel penerima beasiswa, 4 info box total santri/disetujui/menunggu/subsidi ZISWAF, aksi persetujuan cepat pimpinan, modal SK Beasiswa Resmi Berkop Alia, modal form pendaftaran baru, filter kategori beasiswa, format cetak).
+  - Rute aktif `/keuangan/beasiswa`, `/keuangan/beasiswa` (POST), `/keuangan/beasiswa/{id}/approve`, `/keuangan/beasiswa/{id}/destroy`, serta penambahan navigasi menu di [`resources/views/layouts/sidebar.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/layouts/sidebar.blade.php).
+
+
+
+
+
 
 
 

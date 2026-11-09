@@ -22,6 +22,7 @@ class DemoDataManager
     private array $subjects = [];
     private array $guardians = [];
     private array $students = [];
+    private array $boardingBuildings = [];
     private array $boardingRooms = [];
     private array $facilityRooms = [];
     private array $ppdbApplicants = [];
@@ -49,6 +50,16 @@ class DemoDataManager
     private array $uksMedicines = [];
     private array $uksVisits = [];
     private array $studentMutations = [];
+    private array $residentAssignments = [];
+    private array $boardingActivities = [];
+    private array $leavePermissions = [];
+    private array $boardingAttendance = [];
+    private array $boardingMeals = [];
+    private array $feeCategories = [];
+    private array $studentInvoices = [];
+    private array $paymentTransactions = [];
+    private array $financeExpenses = [];
+    private array $scholarships = [];
 
     public function __construct()
     {
@@ -267,21 +278,131 @@ class DemoDataManager
             ];
         }
 
-        // 5. Kamar Asrama
+        // 5. Gedung & Kamar Asrama (T08.1)
+        $this->boardingBuildings = [
+            [
+                'id' => 'BLD-001',
+                'name' => 'Gedung Asrama Al-Fatih (Putra)',
+                'code' => 'BLD-AF',
+                'gender' => 'L', // L (Putra / Ikhwan), P (Putri / Akhwat)
+                'total_floors' => 3,
+                'supervisor_name' => 'Ust. Salman Al-Farisi, S.Sos.',
+                'supervisor_phone' => '081234567891',
+                'description' => 'Asrama santri putra jenjang SMP & SMA dengan lingkungan religius dan disiplin tinggi.',
+                'status' => 'aktif'
+            ],
+            [
+                'id' => 'BLD-002',
+                'name' => 'Gedung Asrama Maryam binti Imran (Putri)',
+                'code' => 'BLD-MR',
+                'gender' => 'P',
+                'total_floors' => 3,
+                'supervisor_name' => 'Aisyah Salsabila, S.Pd.I.',
+                'supervisor_phone' => '081234567892',
+                'description' => 'Asrama santri putri jenjang SMP & SMA dengan pengawasan intensif ustadzah pembina.',
+                'status' => 'aktif'
+            ],
+            [
+                'id' => 'BLD-003',
+                'name' => 'Gedung Asrama Umar bin Khattab (Takhassus Tahfidz)',
+                'code' => 'BLD-UBK',
+                'gender' => 'L',
+                'total_floors' => 2,
+                'supervisor_name' => 'Budi Santoso, S.Kom. (Pamong Asrama)',
+                'supervisor_phone' => '081234567893',
+                'description' => 'Asrama khusus santri program akselerasi tahfidz 30 juz putra.',
+                'status' => 'aktif'
+            ]
+        ];
+
         $rooms = [
-            ['KMR-A01', 'Gedung Al-Fatih Lt 1 / Kamar 101', 'Putra', 6],
-            ['KMR-A02', 'Gedung Al-Fatih Lt 1 / Kamar 102', 'Putra', 6],
-            ['KMR-B01', 'Gedung Maryam Lt 1 / Kamar 201', 'Putri', 6],
-            ['KMR-B02', 'Gedung Maryam Lt 1 / Kamar 202', 'Putri', 6],
+            [
+                'id' => 'KMR-A01',
+                'building_id' => 'BLD-001',
+                'building_name' => 'Gedung Asrama Al-Fatih (Putra)',
+                'floor' => 1,
+                'number' => '101',
+                'name' => 'Kamar 101 Thariq bin Ziyad',
+                'gender' => 'L',
+                'category' => 'Putra',
+                'capacity' => 6,
+                'resident_student_ids' => ['SIS-0001', 'SIS-0003'], // Ahmad Fauzan, Bilal Ramadhan
+                'facilities' => ['Ranjang Tingkat 3 Set', 'Lemari Pribadi 6 Pintu', 'AC Split 1.5 PK', 'Meja Belajar', 'Kamar Mandi Dalam'],
+                'status' => 'aktif'
+            ],
+            [
+                'id' => 'KMR-A02',
+                'building_id' => 'BLD-001',
+                'building_name' => 'Gedung Asrama Al-Fatih (Putra)',
+                'floor' => 1,
+                'number' => '102',
+                'name' => 'Kamar 102 Khalid bin Walid',
+                'gender' => 'L',
+                'category' => 'Putra',
+                'capacity' => 6,
+                'resident_student_ids' => ['SIS-0007'], // Rayhan Pratama
+                'facilities' => ['Ranjang Tingkat 3 Set', 'Lemari Pribadi 6 Pintu', 'AC Split 1.5 PK', 'Meja Belajar', 'Kamar Mandi Dalam'],
+                'status' => 'aktif'
+            ],
+            [
+                'id' => 'KMR-A03',
+                'building_id' => 'BLD-001',
+                'building_name' => 'Gedung Asrama Al-Fatih (Putra)',
+                'floor' => 2,
+                'number' => '201',
+                'name' => 'Kamar 201 Salahuddin Al-Ayyubi',
+                'gender' => 'L',
+                'category' => 'Putra',
+                'capacity' => 8,
+                'resident_student_ids' => ['SIS-0009'], // Ibrahim Khalilullah
+                'facilities' => ['Ranjang Tingkat 4 Set', 'Lemari Pribadi 8 Pintu', 'Kipas Angin Dinding', 'Meja Belajar', 'Kamar Mandi Luar'],
+                'status' => 'aktif'
+            ],
+            [
+                'id' => 'KMR-B01',
+                'building_id' => 'BLD-002',
+                'building_name' => 'Gedung Asrama Maryam binti Imran (Putri)',
+                'floor' => 1,
+                'number' => '101',
+                'name' => 'Kamar 101 Khadijah Al-Kubra',
+                'gender' => 'P',
+                'category' => 'Putri',
+                'capacity' => 6,
+                'resident_student_ids' => ['SIS-0002'], // Siti Fatimah
+                'facilities' => ['Ranjang Tingkat 3 Set', 'Lemari Pribadi 6 Pintu', 'AC Split 1.5 PK', 'Meja Belajar', 'Kamar Mandi Dalam'],
+                'status' => 'aktif'
+            ],
+            [
+                'id' => 'KMR-B02',
+                'building_id' => 'BLD-002',
+                'building_name' => 'Gedung Asrama Maryam binti Imran (Putri)',
+                'floor' => 1,
+                'number' => '102',
+                'name' => 'Kamar 102 Aisyah Ash-Shiddiqah',
+                'gender' => 'P',
+                'category' => 'Putri',
+                'capacity' => 6,
+                'resident_student_ids' => ['SIS-0004'], // Zaskia Nur
+                'facilities' => ['Ranjang Tingkat 3 Set', 'Lemari Pribadi 6 Pintu', 'AC Split 1.5 PK', 'Meja Belajar', 'Kamar Mandi Dalam'],
+                'status' => 'aktif'
+            ],
+            [
+                'id' => 'KMR-C01',
+                'building_id' => 'BLD-003',
+                'building_name' => 'Gedung Asrama Umar bin Khattab (Takhassus Tahfidz)',
+                'floor' => 1,
+                'number' => '101',
+                'name' => 'Kamar 101 Zaid bin Tsabit (Takhassus)',
+                'gender' => 'L',
+                'category' => 'Putra',
+                'capacity' => 4,
+                'resident_student_ids' => [],
+                'facilities' => ['Ranjang Single 4 Set', 'Lemari Pribadi 4 Pintu', 'AC Split 1 PK', 'Meja Halaqah Lesehan', 'Kamar Mandi Dalam'],
+                'status' => 'aktif'
+            ]
         ];
         foreach ($rooms as $r) {
-            $this->boardingRooms[] = [
-                'id' => $r[0],
-                'name' => $r[1],
-                'category' => $r[2],
-                'capacity' => $r[3],
-                'status' => 'aktif'
-            ];
+            $this->boardingRooms[] = $r;
         }
 
         // 5.b Ruangan & Fasilitas Sekolah (Kelas, Lab, Aula, Perpustakaan)
@@ -2238,6 +2359,1214 @@ class DemoDataManager
                 'notes' => 'Konversi nilai matrikulasi kurikulum diniyah telah diselesaikan selama 2 pekan orientasi.'
             ]
         ];
+
+        // 32. Data Alokasi Penempatan Kamar Santri (Resident Assignments) - T08.2
+        $this->residentAssignments = [
+            [
+                'id' => 'ASN-001',
+                'student_id' => 'SIS-0001', // Ahmad Fauzan
+                'room_id' => 'KMR-A01',
+                'bed_number' => 'Bed 01 (Bawah)',
+                'wardrobe_number' => 'LMR-101-A',
+                'checkin_date' => '2026-07-15',
+                'checkout_date' => null,
+                'status' => 'aktif', // aktif, pindah, checkout
+                'assigned_by' => 'Ust. Salman Al-Farisi, S.Sos.',
+                'notes' => 'Ketua kamar 101 Thariq bin Ziyad.'
+            ],
+            [
+                'id' => 'ASN-002',
+                'student_id' => 'SIS-0003', // Bilal Ramadhan
+                'room_id' => 'KMR-A01',
+                'bed_number' => 'Bed 02 (Atas)',
+                'wardrobe_number' => 'LMR-101-B',
+                'checkin_date' => '2026-07-15',
+                'checkout_date' => null,
+                'status' => 'aktif',
+                'assigned_by' => 'Ust. Salman Al-Farisi, S.Sos.',
+                'notes' => 'Penempatan awal tahun ajaran baru.'
+            ],
+            [
+                'id' => 'ASN-003',
+                'student_id' => 'SIS-0007', // Rayhan Pratama
+                'room_id' => 'KMR-A02',
+                'bed_number' => 'Bed 01 (Bawah)',
+                'wardrobe_number' => 'LMR-102-A',
+                'checkin_date' => '2026-09-01',
+                'checkout_date' => null,
+                'status' => 'aktif',
+                'assigned_by' => 'Ust. Salman Al-Farisi, S.Sos.',
+                'notes' => 'Santri pindahan masuk SMA, masa orientasi adaptasi kamar.'
+            ],
+            [
+                'id' => 'ASN-004',
+                'student_id' => 'SIS-0009', // Ibrahim Khalilullah
+                'room_id' => 'KMR-A03',
+                'bed_number' => 'Bed 03 (Bawah)',
+                'wardrobe_number' => 'LMR-201-C',
+                'checkin_date' => '2026-07-15',
+                'checkout_date' => null,
+                'status' => 'aktif',
+                'assigned_by' => 'Ust. Salman Al-Farisi, S.Sos.',
+                'notes' => 'Penempatan kamar Salahuddin Al-Ayyubi Lt 2.'
+            ],
+            [
+                'id' => 'ASN-005',
+                'student_id' => 'SIS-0002', // Siti Fatimah
+                'room_id' => 'KMR-B01',
+                'bed_number' => 'Bed 01 (Bawah)',
+                'wardrobe_number' => 'LMR-MR-01',
+                'checkin_date' => '2026-07-15',
+                'checkout_date' => null,
+                'status' => 'aktif',
+                'assigned_by' => 'Aisyah Salsabila, S.Pd.I.',
+                'notes' => 'Ketua kamar Khadijah Al-Kubra.'
+            ],
+            [
+                'id' => 'ASN-006',
+                'student_id' => 'SIS-0004', // Zaskia Nur
+                'room_id' => 'KMR-B02',
+                'bed_number' => 'Bed 01 (Bawah)',
+                'wardrobe_number' => 'LMR-MR-02',
+                'checkin_date' => '2026-07-15',
+                'checkout_date' => null,
+                'status' => 'aktif',
+                'assigned_by' => 'Aisyah Salsabila, S.Pd.I.',
+                'notes' => 'Penempatan kamar Aisyah Ash-Shiddiqah.'
+            ]
+        ];
+
+        // 33. Data Jadwal Aktivitas Harian Santri Asrama (Boarding Daily Activities) - T08.3
+        $this->boardingActivities = [
+            [
+                'id' => 'ACT-001',
+                'time_start' => '03:45',
+                'time_end' => '04:30',
+                'name' => 'Qiyamul Lail, Sahur Puasa Sunnah & Persiapan Shalat Subuh',
+                'category' => 'Ibadah & Spiritual',
+                'days' => 'Setiap Hari',
+                'location' => 'Masjid Kampus Alia & Kamar Asrama',
+                'supervisor' => 'Musyrif Piket Malam & Tim Kesantrian',
+                'mandatory' => true,
+                'description' => 'Bangun tidur, tahajud mandiri, witir, pembacaan istighfar sahar, dan wudhu shalat Subuh berjamaah.'
+            ],
+            [
+                'id' => 'ACT-002',
+                'time_start' => '04:30',
+                'time_end' => '05:30',
+                'name' => 'Shalat Subuh Berjamaah & Dzikir Pagi Al-Ma\'tsurat',
+                'category' => 'Ibadah & Spiritual',
+                'days' => 'Setiap Hari',
+                'location' => 'Masjid Jami\' Kampus Alia',
+                'supervisor' => 'Dr. H. Zulkifli, Lc. & Asatidz Pembina',
+                'mandatory' => true,
+                'description' => 'Shalat fardhu Subuh berjamaah, wirid doa, pembacaan dzikir pagi kubro, dan kultum tazkiyatun nufus.'
+            ],
+            [
+                'id' => 'ACT-003',
+                'time_start' => '05:30',
+                'time_end' => '06:30',
+                'name' => 'Halaqah Tahfidz Pagi (Ziyadah Hafalan Baru)',
+                'category' => 'Tahfidz & Al-Qur\'an',
+                'days' => 'Senin - Sabtu',
+                'location' => 'Masjid Kampus & Gazebo Asrama',
+                'supervisor' => 'Musyrif Halaqah Masing-masing',
+                'mandatory' => true,
+                'description' => 'Setoran hafalan baru Al-Qur\'an kepada musyrif halaqah dan tasmi\' antar teman sebaya.'
+            ],
+            [
+                'id' => 'ACT-004',
+                'time_start' => '06:30',
+                'time_end' => '07:15',
+                'name' => 'Piket Kebersihan Kamar (Tandhif), Mandi & Sarapan Pagi',
+                'category' => 'Kerapihan & Kedisiplinan',
+                'days' => 'Setiap Hari',
+                'location' => 'Gedung Asrama & Ruang Makan / Dapur',
+                'supervisor' => 'Pamong Asrama & Pengurus Kamar',
+                'mandatory' => true,
+                'description' => 'Operasi semut kebersihan kamar, merapikan ranjang dan lemari, mandi pagi, dan sarapan bergizi bersama.'
+            ],
+            [
+                'id' => 'ACT-005',
+                'time_start' => '07:15',
+                'time_end' => '15:15',
+                'name' => 'KBM Sekolah Formal & Shalat Dzuhur Berjamaah',
+                'category' => 'Akademik & Sekolah',
+                'days' => 'Senin - Jumat',
+                'location' => 'Gedung Sekolah & Ruang Kelas Teori',
+                'supervisor' => 'Wali Kelas & Guru Pengampu Mapel',
+                'mandatory' => true,
+                'description' => 'Pembelajaran kurikulum nasional & diniyah di ruang kelas, istirahat siang, dan shalat Dzuhur di masjid.'
+            ],
+            [
+                'id' => 'ACT-006',
+                'time_start' => '15:15',
+                'time_end' => '16:00',
+                'name' => 'Shalat Ashar Berjamaah & Dzikir Petang',
+                'category' => 'Ibadah & Spiritual',
+                'days' => 'Setiap Hari',
+                'location' => 'Masjid Jami\' Kampus Alia',
+                'supervisor' => 'Ust. Salman Al-Farisi, S.Sos.',
+                'mandatory' => true,
+                'description' => 'Shalat fardhu Ashar berjamaah dan lantunan dzikir petang bersama seluruh santri.'
+            ],
+            [
+                'id' => 'ACT-007',
+                'time_start' => '16:00',
+                'time_end' => '17:15',
+                'name' => 'Olahraga Sore, Ekstrakurikuler Sunnah & Mandi Sore',
+                'category' => 'Olahraga & Bakat',
+                'days' => 'Senin - Sabtu',
+                'location' => 'Lapangan Olahraga, Lapangan Panahan & GOR',
+                'supervisor' => 'Pelatih Ekskul & Tim Olahraga Santri',
+                'mandatory' => false,
+                'description' => 'Aktivitas fisik kebugaran (panahan, silat, futsal, jogging kampus), persiapan mandi sore menjelang Maghrib.'
+            ],
+            [
+                'id' => 'ACT-008',
+                'time_start' => '17:45',
+                'time_end' => '19:45',
+                'name' => 'Shalat Maghrib, Ta\'lim Diniyah Kitab Kuning & Shalat Isya',
+                'category' => 'Diniyah & Turats',
+                'days' => 'Setiap Hari',
+                'location' => 'Masjid Kampus Alia Lantai 1 & 2',
+                'supervisor' => 'Dewan Asatidz Diniyah Pondok',
+                'mandatory' => true,
+                'description' => 'Shalat Maghrib berjamaah, kajian kitab fiqih/akhlak/tajwid ba\'da Maghrib, dilanjutkan shalat Isya berjamaah.'
+            ],
+            [
+                'id' => 'ACT-009',
+                'time_start' => '19:45',
+                'time_end' => '20:30',
+                'name' => 'Makan Malam Bersama & Muhadatsah Bahasa Arab/Inggris',
+                'category' => 'Bahasa & Sosial',
+                'days' => 'Setiap Hari',
+                'location' => 'Ruang Makan Asrama Putra & Putri',
+                'supervisor' => 'Pamong Asrama & Bagian Bahasa Santri',
+                'mandatory' => true,
+                'description' => 'Santap malam bersama dan pembiasaan percakapan bahasa resmi pondok (Bi\'ah Lughawiyyah).'
+            ],
+            [
+                'id' => 'ACT-010',
+                'time_start' => '20:30',
+                'time_end' => '22:00',
+                'name' => 'Belajar Mandiri Malam (Mudzakarah) & Murojaah Mandiri',
+                'category' => 'Belajar Mandiri',
+                'days' => 'Senin - Jumat',
+                'location' => 'Kamar Asrama & Perpustakaan Digital',
+                'supervisor' => 'Musyrif Asrama & Tim Pembina Kamar',
+                'mandatory' => true,
+                'description' => 'Mengerjakan tugas sekolah LMS, pengulangan hafalan mutqin, dan literasi membaca buku.'
+            ],
+            [
+                'id' => 'ACT-011',
+                'time_start' => '22:00',
+                'time_end' => '03:45',
+                'name' => 'Jam Wajib Istirahat Malam (Naum / Lampu Padam)',
+                'category' => 'Kerapihan & Kedisiplinan',
+                'days' => 'Setiap Hari',
+                'location' => 'Kamar Asrama Masing-masing',
+                'supervisor' => 'Musyrif Piket & Tim Patroli Asrama',
+                'mandatory' => true,
+                'description' => 'Absensi malam, lampu utama dipadamkan, doa sebelum tidur, dan wajib istirahat tenang.'
+            ]
+        ];
+
+        // 34. Data Alur Perizinan Keluar & Pulang Santri (Leave Permissions) - T08.4
+        $this->leavePermissions = [
+            [
+                'id' => 'IZN-001',
+                'permit_number' => 'IZN/ASR/2026/11/008',
+                'student_id' => 'SIS-0001', // Ahmad Fauzan
+                'type' => 'keluar_sebentar', // keluar_sebentar (izin keluar kampus beberapa jam), pulang (izin bermalam di rumah), darurat (sakit/keluarga duka)
+                'reason' => 'Membeli perlengkapan lomba kaligrafi dan buku rujukan hadits di Karawang Kota.',
+                'date_start' => '2026-11-07 13:30:00',
+                'date_end' => '2026-11-07 17:00:00',
+                'pickup_person' => 'Mandiri (Bersama Regu Santri)',
+                'pickup_phone' => '081234567890',
+                'approval_status' => 'disetujui', // diajukan, disetujui, ditolak, kembali
+                'approver_name' => 'Ust. Salman Al-Farisi, S.Sos. (Musyrif Asrama)',
+                'security_check_out' => '2026-11-07 13:35:10',
+                'security_check_in' => '2026-11-07 16:45:20',
+                'late_minutes' => 0,
+                'gate_pass_code' => 'GP-7721-AF',
+                'notes' => 'Kembali tepat waktu sebelum adzan Maghrib berkumandang.'
+            ],
+            [
+                'id' => 'IZN-002',
+                'permit_number' => 'IZN/ASR/2026/11/012',
+                'student_id' => 'SIS-0003', // Bilal Ramadhan
+                'type' => 'pulang',
+                'reason' => 'Menghadiri walimatul ursy (pernikahan) kakak kandung di Cirebon.',
+                'date_start' => '2026-11-07 15:00:00',
+                'date_end' => '2026-11-09 17:00:00',
+                'pickup_person' => 'Bapak Ramadhan (Ayah Kandung)',
+                'pickup_phone' => '081298765432',
+                'approval_status' => 'kembali',
+                'approver_name' => 'Dr. H. Zulkifli, Lc. (Mudir Pondok)',
+                'security_check_out' => '2026-11-07 15:15:00',
+                'security_check_in' => '2026-11-09 16:30:00',
+                'late_minutes' => 0,
+                'gate_pass_code' => 'GP-9832-BR',
+                'notes' => 'Diantar langsung oleh orang tua kembali ke asrama, surat izin ditandatangani wali.'
+            ],
+            [
+                'id' => 'IZN-003',
+                'permit_number' => 'IZN/ASR/2026/11/019',
+                'student_id' => 'SIS-0009', // Ibrahim Khalilullah
+                'type' => 'darurat',
+                'reason' => 'Rujukan medis intensif rawat inap demam berdarah di RS Islam Karawang.',
+                'date_start' => '2026-11-09 07:00:00',
+                'date_end' => '2026-11-12 17:00:00',
+                'pickup_person' => 'Ambulans Sekolah & Ibu Halimah (Ibu Kandung)',
+                'pickup_phone' => '081344556677',
+                'approval_status' => 'disetujui',
+                'approver_name' => 'Ns. Rahmatia Hidayah (UKS) & Ust. Salman Al-Farisi',
+                'security_check_out' => '2026-11-09 07:10:00',
+                'security_check_in' => null,
+                'late_minutes' => 0,
+                'gate_pass_code' => 'GP-3490-IK',
+                'notes' => 'Izin darurat kesehatan, didampingi pihak medis sekolah.'
+            ],
+            [
+                'id' => 'IZN-004',
+                'permit_number' => 'IZN/ASR/2026/11/025',
+                'student_id' => 'SIS-0002', // Siti Fatimah
+                'type' => 'pulang',
+                'reason' => 'Izin menjenguk nenek yang sedang menjalani operasi di Bandung.',
+                'date_start' => '2026-11-14 10:00:00',
+                'date_end' => '2026-11-16 17:00:00',
+                'pickup_person' => 'Drs. H. Mulyadi (Wali / Keluarga)',
+                'pickup_phone' => '081223344556',
+                'approval_status' => 'diajukan',
+                'approver_name' => 'Menunggu Verifikasi Musyirfah',
+                'security_check_out' => null,
+                'security_check_in' => null,
+                'late_minutes' => 0,
+                'gate_pass_code' => 'GP-PENDING',
+                'notes' => 'Permohonan masuk via portal orang tua / wali santri.'
+            ]
+        ];
+
+        // 35. Data Presensi & Monitoring Ibadah / Keberadaan Asrama (Boarding Attendance) - T08.5
+        $this->boardingAttendance = [
+            [
+                'id' => 'BAT-001',
+                'date' => '2026-11-09',
+                'session' => 'Subuh', // Qiyamul Lail, Subuh, Dzuhur, Ashar, Maghrib, Isya, Malam (Naum)
+                'student_id' => 'SIS-0001', // Ahmad Fauzan
+                'room_id' => 'KMR-A01',
+                'status' => 'hadir', // hadir, terlambat, sakit, izin, alpa
+                'location' => 'Masjid Kampus Alia (Shaf 1)',
+                'supervisor_name' => 'Ust. Salman Al-Farisi, S.Sos.',
+                'notes' => 'Tepat waktu dan menyimak wirid doa.'
+            ],
+            [
+                'id' => 'BAT-002',
+                'date' => '2026-11-09',
+                'session' => 'Subuh',
+                'student_id' => 'SIS-0003', // Bilal Ramadhan
+                'room_id' => 'KMR-A01',
+                'status' => 'hadir',
+                'location' => 'Masjid Kampus Alia (Shaf 2)',
+                'supervisor_name' => 'Ust. Salman Al-Farisi, S.Sos.',
+                'notes' => 'Tepat waktu mengikuti takbiratul ihram.'
+            ],
+            [
+                'id' => 'BAT-003',
+                'date' => '2026-11-09',
+                'session' => 'Subuh',
+                'student_id' => 'SIS-0007', // Rayhan Pratama
+                'room_id' => 'KMR-A02',
+                'status' => 'hadir',
+                'location' => 'Masjid Kampus Alia (Shaf 2)',
+                'supervisor_name' => 'Ust. Salman Al-Farisi, S.Sos.',
+                'notes' => 'Hadir berjamaah.'
+            ],
+            [
+                'id' => 'BAT-004',
+                'date' => '2026-11-09',
+                'session' => 'Subuh',
+                'student_id' => 'SIS-0009', // Ibrahim Khalilullah
+                'room_id' => 'KMR-A03',
+                'status' => 'sakit',
+                'location' => 'RS Islam Karawang (Rawat Inap)',
+                'supervisor_name' => 'Ust. Salman Al-Farisi, S.Sos.',
+                'notes' => 'Sakit demam berdarah dan dirujuk ke RS.'
+            ],
+            [
+                'id' => 'BAT-005',
+                'date' => '2026-11-09',
+                'session' => 'Subuh',
+                'student_id' => 'SIS-0002', // Siti Fatimah
+                'room_id' => 'KMR-B01',
+                'status' => 'hadir',
+                'location' => 'Musholla Asrama Putri Gedung Maryam',
+                'supervisor_name' => 'Aisyah Salsabila, S.Pd.I.',
+                'notes' => 'Memimpin tilawah bersama santri putri.'
+            ],
+            [
+                'id' => 'BAT-006',
+                'date' => '2026-11-09',
+                'session' => 'Subuh',
+                'student_id' => 'SIS-0004', // Zaskia Nur
+                'room_id' => 'KMR-B02',
+                'status' => 'hadir',
+                'location' => 'Musholla Asrama Putri Gedung Maryam',
+                'supervisor_name' => 'Aisyah Salsabila, S.Pd.I.',
+                'notes' => 'Hadir tepat waktu.'
+            ],
+            [
+                'id' => 'BAT-007',
+                'date' => '2026-11-08',
+                'session' => 'Malam (Naum)',
+                'student_id' => 'SIS-0001',
+                'room_id' => 'KMR-A01',
+                'status' => 'hadir',
+                'location' => 'Kamar 101 Thariq bin Ziyad',
+                'supervisor_name' => 'Budi Santoso, S.Kom.',
+                'notes' => 'Pukul 22.00 sudah berada di ranjang tidur.'
+            ],
+            [
+                'id' => 'BAT-008',
+                'date' => '2026-11-08',
+                'session' => 'Malam (Naum)',
+                'student_id' => 'SIS-0003',
+                'room_id' => 'KMR-A01',
+                'status' => 'hadir',
+                'location' => 'Kamar 101 Thariq bin Ziyad',
+                'supervisor_name' => 'Budi Santoso, S.Kom.',
+                'notes' => 'Hadir lengkap.'
+            ]
+        ];
+
+        // 36. Data Menu Makanan & Katering Asrama (Boarding Meals) - T08.6
+        $this->boardingMeals = [
+            [
+                'id' => 'MEL-001',
+                'day' => 'Senin',
+                'meal_time' => 'Pagi',
+                'time_range' => '06:30 - 07:15 WIB',
+                'menu_title' => 'Nasi Kuning Komplit & Telur Balado',
+                'main_dish' => 'Telur Ayam Balado Bumbu Manis Gurih',
+                'side_dish' => 'Orek Tempe Manis & Kerupuk Kampung',
+                'vegetable' => 'Timun Segar & Selada Daun',
+                'fruit_drink' => 'Susu Kedelai Hangat & Teh Manis',
+                'calories' => 480,
+                'nutrition_highlight' => 'Karbohidrat kompleks, protein nabati & hewani seimbang',
+                'allergy_notes' => 'Bebas gluten. Mengandung telur ayam & kedelai.',
+                'chef_in_charge' => 'Chef Marzuki',
+                'portion_count' => 450,
+                'halal_status' => 'Tersertifikasi Halal LPPOM MUI'
+            ],
+            [
+                'id' => 'MEL-002',
+                'day' => 'Senin',
+                'meal_time' => 'Siang',
+                'time_range' => '12:15 - 13:15 WIB',
+                'menu_title' => 'Ayam Lengkuas & Sayur Asem Jakarta',
+                'main_dish' => 'Ayam Goreng Bumbu Serundeng Lengkuas',
+                'side_dish' => 'Tahu & Tempe Goreng Sambal Terasi',
+                'vegetable' => 'Sayur Asem Labu Siam & Jagung Manis',
+                'fruit_drink' => 'Semangka Merah Segar & Air Mineral',
+                'calories' => 650,
+                'nutrition_highlight' => 'Kaya vitamin C dari buah semangka dan serat alami sayur asam',
+                'allergy_notes' => 'Aman tanpa alergen kacang tanah berbahaya.',
+                'chef_in_charge' => 'Chef Marzuki',
+                'portion_count' => 450,
+                'halal_status' => 'Tersertifikasi Halal LPPOM MUI'
+            ],
+            [
+                'id' => 'MEL-003',
+                'day' => 'Senin',
+                'meal_time' => 'Malam',
+                'time_range' => '19:45 - 20:30 WIB',
+                'menu_title' => 'Soto Ayam Madura & Telur Rebus',
+                'main_dish' => 'Suwiran Ayam Kampung & Telur Rebus',
+                'side_dish' => 'Perkedel Kentang & Kerupuk Udang',
+                'vegetable' => 'Kol Iris, Tauge Pendek & Seledri Daun',
+                'fruit_drink' => 'Wedang Jahe Hangat Rempah Alami',
+                'calories' => 550,
+                'nutrition_highlight' => 'Kuah rempah alami menghangatkan tubuh santri malam hari',
+                'allergy_notes' => 'Opsi non-seafood tanpa kerupuk udang tersedia untuk santri alergi.',
+                'chef_in_charge' => 'Chef Marzuki',
+                'portion_count' => 450,
+                'halal_status' => 'Tersertifikasi Halal LPPOM MUI'
+            ],
+            [
+                'id' => 'MEL-004',
+                'day' => 'Selasa',
+                'meal_time' => 'Pagi',
+                'time_range' => '06:30 - 07:15 WIB',
+                'menu_title' => 'Nasi Goreng Spesial & Telur Mata Sapi',
+                'main_dish' => 'Telur Ayam Ceplok Setengah Matang / Matang',
+                'side_dish' => 'Sosis Sapi Panggang & Acar Mentimun',
+                'vegetable' => 'Irisan Tomat Buah & Selada',
+                'fruit_drink' => 'Teh Manis Hangat Melati & Air Putih',
+                'calories' => 500,
+                'nutrition_highlight' => 'Energi cepat untuk mengawali halaqah tahfidz dan sekolah',
+                'allergy_notes' => 'Tingkat kepedasan rendah ramah lambung santri.',
+                'chef_in_charge' => 'Ibu Rohani',
+                'portion_count' => 450,
+                'halal_status' => 'Tersertifikasi Halal LPPOM MUI'
+            ],
+            [
+                'id' => 'MEL-005',
+                'day' => 'Selasa',
+                'meal_time' => 'Siang',
+                'time_range' => '12:15 - 13:15 WIB',
+                'menu_title' => 'Ikan Kembung Bakar Kecap & Sayur Lodeh',
+                'main_dish' => 'Ikan Kembung Segar Bakar Kecap Limau',
+                'side_dish' => 'Bakwan Jagung Manis Renyah',
+                'vegetable' => 'Sayur Lodeh Labu Siam & Terong Ungu',
+                'fruit_drink' => 'Pisang Cavendish & Air Mineral',
+                'calories' => 620,
+                'nutrition_highlight' => 'Asam lemak Omega-3 tinggi dari ikan laut untuk daya ingat tahfidz',
+                'allergy_notes' => 'Mengandung ikan laut. Opsi alternatif telur dadar disediakan.',
+                'chef_in_charge' => 'Ibu Rohani',
+                'portion_count' => 450,
+                'halal_status' => 'Tersertifikasi Halal LPPOM MUI'
+            ],
+            [
+                'id' => 'MEL-006',
+                'day' => 'Selasa',
+                'meal_time' => 'Malam',
+                'time_range' => '19:45 - 20:30 WIB',
+                'menu_title' => 'Rolade Sapi Saus Tiram & Capcay Bakso',
+                'main_dish' => 'Rolade Daging Sapi Olahan Saus Gurih',
+                'side_dish' => 'Tahu Crispy Bumbu Bawang',
+                'vegetable' => 'Capcay Kuah Wortel, Kembang Kol & Bakso',
+                'fruit_drink' => 'Air Mineral & Jeruk Manis Pontianak',
+                'calories' => 580,
+                'nutrition_highlight' => 'Zat besi dan multivitamin serat sayuran hijau berlimpah',
+                'allergy_notes' => 'Bebas alergen udang dan kacang.',
+                'chef_in_charge' => 'Ibu Rohani',
+                'portion_count' => 450,
+                'halal_status' => 'Tersertifikasi Halal LPPOM MUI'
+            ],
+            [
+                'id' => 'MEL-007',
+                'day' => 'Rabu',
+                'meal_time' => 'Pagi',
+                'time_range' => '06:30 - 07:15 WIB',
+                'menu_title' => 'Bubur Ayam Komplit Khas Sukabumi',
+                'main_dish' => 'Ayam Suwir Bumbu Kuning & Cakwe Gurih',
+                'side_dish' => 'Sate Telur Puyuh & Kerupuk Pangsit',
+                'vegetable' => 'Daun Bawang, Seledri & Kedelai Goreng',
+                'fruit_drink' => 'Susu Segar Pasteurisasi & Teh Hangat',
+                'calories' => 460,
+                'nutrition_highlight' => 'Tekstur lembut kaya kalsium dan karbohidrat hangat',
+                'allergy_notes' => 'Bagi santri alergi kedelai goreng disajikan terpisah.',
+                'chef_in_charge' => 'Chef Marzuki',
+                'portion_count' => 450,
+                'halal_status' => 'Tersertifikasi Halal LPPOM MUI'
+            ],
+            [
+                'id' => 'MEL-008',
+                'day' => 'Rabu',
+                'meal_time' => 'Siang',
+                'time_range' => '12:15 - 13:15 WIB',
+                'menu_title' => 'Rendang Daging Sapi & Gulai Daun Singkong',
+                'main_dish' => 'Rendang Daging Sapi Bumbu Minang Asli',
+                'side_dish' => 'Perkedel Kentang & Sambal Ijo Padang',
+                'vegetable' => 'Gulai Daun Singkong Santan Encer Gurih',
+                'fruit_drink' => 'Buah Pepaya California & Air Mineral',
+                'calories' => 700,
+                'nutrition_highlight' => 'Protein hewani tinggi, zat besi, dan serat pepaya untuk pencernaan',
+                'allergy_notes' => 'Santan kelapa alami segar, bebas pengawet.',
+                'chef_in_charge' => 'Chef Marzuki',
+                'portion_count' => 450,
+                'halal_status' => 'Tersertifikasi Halal LPPOM MUI'
+            ],
+            [
+                'id' => 'MEL-009',
+                'day' => 'Rabu',
+                'meal_time' => 'Malam',
+                'time_range' => '19:45 - 20:30 WIB',
+                'menu_title' => 'Sup Daging Sapi Bening & Tempe Bacem',
+                'main_dish' => 'Daging Sapi Empuk Kuah Bening Rempah',
+                'side_dish' => 'Tempe Bacem Legit & Sambal Kecap Rawit',
+                'vegetable' => 'Wortel, Buncis & Kentang Rebus',
+                'fruit_drink' => 'Air Mineral & Pisang Emas',
+                'calories' => 560,
+                'nutrition_highlight' => 'Kuah kaldu alami mengembalikan cairan dan elektrolit tubuh',
+                'allergy_notes' => 'Bebas alergen umum.',
+                'chef_in_charge' => 'Ibu Rohani',
+                'portion_count' => 450,
+                'halal_status' => 'Tersertifikasi Halal LPPOM MUI'
+            ],
+            [
+                'id' => 'MEL-010',
+                'day' => 'Kamis',
+                'meal_time' => 'Pagi',
+                'time_range' => '06:30 - 07:15 WIB',
+                'menu_title' => 'Nasi Uduk Betawi & Semur Tahu Telur',
+                'main_dish' => 'Telur Ayam Semur Kecap Manis Rempah',
+                'side_dish' => 'Tahu Semur Gurih & Bihun Goreng',
+                'vegetable' => 'Timun Iris Segar & Bawang Goreng Brebes',
+                'fruit_drink' => 'Teh Melati Manis Hangat',
+                'calories' => 490,
+                'nutrition_highlight' => 'Karbohidrat aromatik gurih pembakar semangat pagi hari',
+                'allergy_notes' => 'Aman tanpa alergen gluten berat.',
+                'chef_in_charge' => 'Ibu Rohani',
+                'portion_count' => 450,
+                'halal_status' => 'Tersertifikasi Halal LPPOM MUI'
+            ],
+            [
+                'id' => 'MEL-011',
+                'day' => 'Kamis',
+                'meal_time' => 'Siang',
+                'time_range' => '12:15 - 13:15 WIB',
+                'menu_title' => 'Ayam Suwir Pedas Manis & Sayur Bening Bayam',
+                'main_dish' => 'Fillet Ayam Suwir Pedas Manis Bumbu Bali',
+                'side_dish' => 'Tempe Kemul Renyah & Kerupuk Ikan',
+                'vegetable' => 'Sayur Bening Bayam Hijau & Jagung Pipil',
+                'fruit_drink' => 'Buah Melon Segar & Air Mineral',
+                'calories' => 610,
+                'nutrition_highlight' => 'Zat besi tinggi dari bayam segar dan vitamin A jagung',
+                'allergy_notes' => 'Bebas alergen udang.',
+                'chef_in_charge' => 'Chef Marzuki',
+                'portion_count' => 450,
+                'halal_status' => 'Tersertifikasi Halal LPPOM MUI'
+            ],
+            [
+                'id' => 'MEL-012',
+                'day' => 'Kamis',
+                'meal_time' => 'Malam',
+                'time_range' => '19:45 - 20:30 WIB',
+                'menu_title' => 'Paket Buka Puasa Sunnah: Kurma & Soto Betawi',
+                'main_dish' => 'Soto Daging Betawi Kuah Susu Gurih Sehat',
+                'side_dish' => 'Emping Melinjo & Sambal Cuka Pedas',
+                'vegetable' => 'Tomat Merah Iris & Daun Bawang',
+                'fruit_drink' => 'Kurma Ajwa 3 Butir & Jus Jambu Merah',
+                'calories' => 670,
+                'nutrition_highlight' => 'Glukosa alami kurma mengembalikan stamina puasa sunnah',
+                'allergy_notes' => 'Menggunakan susu sapi segar pengganti santan berat.',
+                'chef_in_charge' => 'Chef Marzuki',
+                'portion_count' => 450,
+                'halal_status' => 'Tersertifikasi Halal LPPOM MUI'
+            ],
+            [
+                'id' => 'MEL-013',
+                'day' => 'Jumat',
+                'meal_time' => 'Pagi',
+                'time_range' => '06:30 - 07:15 WIB',
+                'menu_title' => 'Lontong Sayur Labu Siam & Telur Rebus',
+                'main_dish' => 'Telur Ayam Rebus Bumbu Kuning Gurih',
+                'side_dish' => 'Tahu Goreng Segitiga & Kerupuk Merah',
+                'vegetable' => 'Sayur Labu Siam Serut Kuah Kuning Encer',
+                'fruit_drink' => 'Susu Sapi Segar Cokelat Hangat',
+                'calories' => 510,
+                'nutrition_highlight' => 'Kalsium tinggi dari susu dan karbohidrat lembut lontong beras',
+                'allergy_notes' => 'Laktosa susu sapi segar.',
+                'chef_in_charge' => 'Ibu Rohani',
+                'portion_count' => 450,
+                'halal_status' => 'Tersertifikasi Halal LPPOM MUI'
+            ],
+            [
+                'id' => 'MEL-014',
+                'day' => 'Jumat',
+                'meal_time' => 'Siang',
+                'time_range' => '12:30 - 13:30 WIB',
+                'menu_title' => 'Nasi Kebuli Daging Kambing Khas Arabika',
+                'main_dish' => 'Daging Kambing Empuk Bumbu Rempah Arab',
+                'side_dish' => 'Emping Renyah & Sambal Goreng Kismis',
+                'vegetable' => 'Acar Nanas Timun Segar Manis Asam',
+                'fruit_drink' => 'Jus Kurma Susu Segar & Air Mineral',
+                'calories' => 740,
+                'nutrition_highlight' => 'Menu sunnah Jumat berkah, kaya kalori, zat besi dan stamina',
+                'allergy_notes' => 'Tersedia pilihan ayam kebuli untuk santri yang menghindari daging kambing.',
+                'chef_in_charge' => 'Chef Marzuki',
+                'portion_count' => 450,
+                'halal_status' => 'Tersertifikasi Halal LPPOM MUI'
+            ],
+            [
+                'id' => 'MEL-015',
+                'day' => 'Jumat',
+                'meal_time' => 'Malam',
+                'time_range' => '19:45 - 20:30 WIB',
+                'menu_title' => 'Ikan Nila Goreng Kering & Tumis Kangkung',
+                'main_dish' => 'Ikan Nila Segar Goreng Bumbu Bawang Gurih',
+                'side_dish' => 'Tahu Goreng & Sambal Terasi Bakar',
+                'vegetable' => 'Tumis Kangkung Saus Tiram Gurih Hangat',
+                'fruit_drink' => 'Air Mineral & Semangka Kuning Manis',
+                'calories' => 590,
+                'nutrition_highlight' => 'Protein ikan air tawar kaya mineral dan vitamin serat kangkung',
+                'allergy_notes' => 'Ikan air tawar, aman untuk santri yang alergi ikan laut.',
+                'chef_in_charge' => 'Chef Marzuki',
+                'portion_count' => 450,
+                'halal_status' => 'Tersertifikasi Halal LPPOM MUI'
+            ],
+            [
+                'id' => 'MEL-016',
+                'day' => 'Sabtu',
+                'meal_time' => 'Pagi',
+                'time_range' => '06:30 - 07:15 WIB',
+                'menu_title' => 'Sandwich Roti Gandum Telur Keju & Salad',
+                'main_dish' => 'Scrambled Egg Telur Ayam & Keju Cheddar',
+                'side_dish' => 'Sosis Ayam Panggang Saus Tomat',
+                'vegetable' => 'Selada Romaine & Irisan Tomat Segar',
+                'fruit_drink' => 'Susu UHT Full Cream & Jus Apel Manis',
+                'calories' => 470,
+                'nutrition_highlight' => 'Serat gandum utuh dan kalsium susu menunjang latihan ekstrakurikuler',
+                'allergy_notes' => 'Mengandung gandum (gluten) & susu sapi.',
+                'chef_in_charge' => 'Ibu Rohani',
+                'portion_count' => 450,
+                'halal_status' => 'Tersertifikasi Halal LPPOM MUI'
+            ],
+            [
+                'id' => 'MEL-017',
+                'day' => 'Sabtu',
+                'meal_time' => 'Siang',
+                'time_range' => '12:15 - 13:15 WIB',
+                'menu_title' => 'Rawon Daging Sapi Surabaya & Telur Asin',
+                'main_dish' => 'Daging Sapi Rawon Kuah Kluwek Gurih',
+                'side_dish' => 'Telur Bebek Asin Rebus & Tempe Goreng',
+                'vegetable' => 'Tauge Pendek Segar & Sambal Terasi',
+                'fruit_drink' => 'Air Mineral & Buah Jeruk Manis',
+                'calories' => 660,
+                'nutrition_highlight' => 'Antioksidan rempah kluwek alami & protein telur asin',
+                'allergy_notes' => 'Telur bebek asin.',
+                'chef_in_charge' => 'Chef Marzuki',
+                'portion_count' => 450,
+                'halal_status' => 'Tersertifikasi Halal LPPOM MUI'
+            ],
+            [
+                'id' => 'MEL-018',
+                'day' => 'Sabtu',
+                'meal_time' => 'Malam',
+                'time_range' => '19:45 - 20:30 WIB',
+                'menu_title' => 'Mie Goreng Seafood Halal & Bakwan Udang',
+                'main_dish' => 'Fillet Ikan Kakap & Cumi Segar Suwir',
+                'side_dish' => 'Bakwan Sayur Udang & Kerupuk',
+                'vegetable' => 'Sawi Hijau, Wortel & Kol Segar',
+                'fruit_drink' => 'Es Teh Manis Hangat Sereh',
+                'calories' => 590,
+                'nutrition_highlight' => 'Karbohidrat mie kuning dan zink seafood',
+                'allergy_notes' => 'Menu alternatif ayam cincang disediakan untuk santri alergi seafood.',
+                'chef_in_charge' => 'Chef Marzuki',
+                'portion_count' => 450,
+                'halal_status' => 'Tersertifikasi Halal LPPOM MUI'
+            ],
+            [
+                'id' => 'MEL-019',
+                'day' => 'Ahad',
+                'meal_time' => 'Pagi',
+                'time_range' => '06:30 - 07:15 WIB',
+                'menu_title' => 'Nasi Liwet Solo Gurih & Opor Ayam Suwir',
+                'main_dish' => 'Ayam Suwir Opor Bumbu Santan Gurih',
+                'side_dish' => 'Tahu Bacem Manis & Telur Pindang Cokelat',
+                'vegetable' => 'Sayur Labu Siam Bumbu Pedas Manis',
+                'fruit_drink' => 'Wedang Ronde Hangat & Air Putih',
+                'calories' => 520,
+                'nutrition_highlight' => 'Sajian khas tradisi Solo ramah keluarga saat hari sambangan wali',
+                'allergy_notes' => 'Aman tanpa kacang tanah.',
+                'chef_in_charge' => 'Ibu Rohani',
+                'portion_count' => 450,
+                'halal_status' => 'Tersertifikasi Halal LPPOM MUI'
+            ],
+            [
+                'id' => 'MEL-020',
+                'day' => 'Ahad',
+                'meal_time' => 'Siang',
+                'time_range' => '12:15 - 13:15 WIB',
+                'menu_title' => 'Bebek Goreng Kremes & Sambal Korek Gurih',
+                'main_dish' => 'Potongan Bebek Empuk Goreng Kremes Renyah',
+                'side_dish' => 'Tahu Tempe Goreng & Lalapan Segar',
+                'vegetable' => 'Daun Kemangi, Kol Goreng & Timun',
+                'fruit_drink' => 'Es Sirup Melon Selasih Segar',
+                'calories' => 690,
+                'nutrition_highlight' => 'Energi tinggi memulihkan stamina santri pasca pekan olahraga',
+                'allergy_notes' => 'Bebas gluten pada menu utama.',
+                'chef_in_charge' => 'Chef Marzuki',
+                'portion_count' => 450,
+                'halal_status' => 'Tersertifikasi Halal LPPOM MUI'
+            ],
+            [
+                'id' => 'MEL-021',
+                'day' => 'Ahad',
+                'meal_time' => 'Malam',
+                'time_range' => '19:45 - 20:30 WIB',
+                'menu_title' => 'Sup Jamur Tiram Bakso Sapi & Tempe Orek',
+                'main_dish' => 'Bakso Sapi Halus & Jamur Tiram Kuah Kaldu',
+                'side_dish' => 'Tempe Orek Kering Renyah & Kerupuk',
+                'vegetable' => 'Wortel, Seledri & Kembang Kol',
+                'fruit_drink' => 'Air Mineral & Buah Pisang Barangan',
+                'calories' => 540,
+                'nutrition_highlight' => 'Asupan ringan ramah pencernaan menjelang tidur malam santri',
+                'allergy_notes' => 'Bebas alergen umum.',
+                'chef_in_charge' => 'Ibu Rohani',
+                'portion_count' => 450,
+                'halal_status' => 'Tersertifikasi Halal LPPOM MUI'
+            ],
+        ];
+
+        // 37. Data Master Pos Biaya & Tarif Keuangan (Fee Categories) - T09.2
+        $this->feeCategories = [
+            [
+                'id' => 'FEE-001',
+                'code' => 'SPP-SMA',
+                'name' => 'SPP Bulanan SMA Boarding',
+                'category' => 'SPP',
+                'unit_id' => 'UNIT-SMA',
+                'unit_name' => 'SMA Islam Alia',
+                'amount' => 1850000,
+                'period_type' => 'bulanan', // bulanan, tahunan, sekali
+                'description' => 'Biaya pendidikan bulanan, bimbingan akademik, & ekstrakurikuler SMA.',
+                'status' => 'aktif'
+            ],
+            [
+                'id' => 'FEE-002',
+                'code' => 'SPP-SMP',
+                'name' => 'SPP Bulanan SMP Boarding',
+                'category' => 'SPP',
+                'unit_id' => 'UNIT-SMP',
+                'unit_name' => 'SMP Islam Alia',
+                'amount' => 1650000,
+                'period_type' => 'bulanan',
+                'description' => 'Biaya pendidikan bulanan, pembinaan karakter & tahfidz SMP.',
+                'status' => 'aktif'
+            ],
+            [
+                'id' => 'FEE-003',
+                'code' => 'SPP-SD',
+                'name' => 'SPP Bulanan SD Full Day',
+                'category' => 'SPP',
+                'unit_id' => 'UNIT-SD',
+                'unit_name' => 'SD Islam Alia',
+                'amount' => 1250000,
+                'period_type' => 'bulanan',
+                'description' => 'Biaya sekolah dasar full-day school terpadu.',
+                'status' => 'aktif'
+            ],
+            [
+                'id' => 'FEE-004',
+                'code' => 'ASR-MAKAN',
+                'name' => 'Uang Asrama & Makan (Boarding)',
+                'category' => 'Asrama',
+                'unit_id' => 'UNIT-SMA',
+                'unit_name' => 'Semua Unit Boarding',
+                'amount' => 1500000,
+                'period_type' => 'bulanan',
+                'description' => 'Akomodasi kamar ber-AC, laundry pakaian, & makan 3 kali sehari.',
+                'status' => 'aktif'
+            ],
+            [
+                'id' => 'FEE-005',
+                'code' => 'REG-DU',
+                'name' => 'Daftar Ulang Tahunan',
+                'category' => 'Daftar Ulang',
+                'unit_id' => 'UNIT-SMA',
+                'unit_name' => 'SMA Islam Alia',
+                'amount' => 3500000,
+                'period_type' => 'tahunan',
+                'description' => 'Perpanjangan sarana belajar, modul buku, & kegiatan tahunan santri.',
+                'status' => 'aktif'
+            ],
+            [
+                'id' => 'FEE-006',
+                'code' => 'SERAGAM-01',
+                'name' => 'Paket Seragam & Atribut Sekolah',
+                'category' => 'Perlengkapan',
+                'unit_id' => 'UNIT-SMA',
+                'unit_name' => 'Semua Unit',
+                'amount' => 1200000,
+                'period_type' => 'sekali',
+                'description' => '5 stel seragam resmi, gamis batik, baju olahraga & atribut bordir.',
+                'status' => 'aktif'
+            ],
+            [
+                'id' => 'FEE-007',
+                'code' => 'EKS-OUTING',
+                'name' => 'Rihlah Ilmiah & Outing Class',
+                'category' => 'Kegiatan',
+                'unit_id' => 'UNIT-SMP',
+                'unit_name' => 'SMP Islam Alia',
+                'amount' => 450000,
+                'period_type' => 'tahunan',
+                'description' => 'Kunjungan observasi sains terpadu dan tadabbur alam.',
+                'status' => 'aktif'
+            ]
+        ];
+
+        // 38. Data Invoice / Tagihan Santri (Student Invoices) - T09.3
+        $this->studentInvoices = [
+            [
+                'id' => 'INV-202611-001',
+                'invoice_number' => 'INV/ALIA/2026/11/001',
+                'student_id' => 'SIS-0001', // Ahmad Fauzan (10-A)
+                'fee_category_id' => 'FEE-001',
+                'fee_title' => 'SPP Bulanan SMA Boarding - November 2026',
+                'unit_id' => 'UNIT-SMA',
+                'period_month' => '2026-11',
+                'amount' => 1850000,
+                'paid_amount' => 1850000,
+                'status' => 'lunas', // lunas, sebagian, belum_lunas, jatuh_tempo
+                'due_date' => '2026-11-10',
+                'paid_date' => '2026-11-03 09:15:00',
+                'created_date' => '2026-11-01',
+                'notes' => 'Pembayaran via Virtual Account Bank Syariah Indonesia (BSI).'
+            ],
+            [
+                'id' => 'INV-202611-002',
+                'invoice_number' => 'INV/ALIA/2026/11/002',
+                'student_id' => 'SIS-0001', // Ahmad Fauzan
+                'fee_category_id' => 'FEE-004',
+                'fee_title' => 'Uang Asrama & Konsumsi Dapur - November 2026',
+                'unit_id' => 'UNIT-SMA',
+                'period_month' => '2026-11',
+                'amount' => 1500000,
+                'paid_amount' => 1500000,
+                'status' => 'lunas',
+                'due_date' => '2026-11-10',
+                'paid_date' => '2026-11-03 09:15:00',
+                'created_date' => '2026-11-01',
+                'notes' => 'Pembayaran lunas bersamaan dengan SPP.'
+            ],
+            [
+                'id' => 'INV-202611-003',
+                'invoice_number' => 'INV/ALIA/2026/11/003',
+                'student_id' => 'SIS-0002', // Siti Fatimah (10-B)
+                'fee_category_id' => 'FEE-001',
+                'fee_title' => 'SPP Bulanan SMA Boarding - November 2026',
+                'unit_id' => 'UNIT-SMA',
+                'period_month' => '2026-11',
+                'amount' => 1850000,
+                'paid_amount' => 1850000,
+                'status' => 'lunas',
+                'due_date' => '2026-11-10',
+                'paid_date' => '2026-11-05 14:20:00',
+                'created_date' => '2026-11-01',
+                'notes' => 'Transfer manual Bank Muamalat konfirmasi via kasir.'
+            ],
+            [
+                'id' => 'INV-202611-004',
+                'invoice_number' => 'INV/ALIA/2026/11/004',
+                'student_id' => 'SIS-0003', // Bilal Ramadhan (10-A)
+                'fee_category_id' => 'FEE-001',
+                'fee_title' => 'SPP Bulanan SMA Boarding - November 2026',
+                'unit_id' => 'UNIT-SMA',
+                'period_month' => '2026-11',
+                'amount' => 1850000,
+                'paid_amount' => 1000000,
+                'status' => 'sebagian',
+                'due_date' => '2026-11-10',
+                'paid_date' => '2026-11-06 10:10:00',
+                'created_date' => '2026-11-01',
+                'notes' => 'Cicilan pertama disetujui Bendahara, pelunasan pekan depan.'
+            ],
+            [
+                'id' => 'INV-202611-005',
+                'invoice_number' => 'INV/ALIA/2026/11/005',
+                'student_id' => 'SIS-0004', // Zaskia Nur (10-B)
+                'fee_category_id' => 'FEE-001',
+                'fee_title' => 'SPP Bulanan SMA Boarding - November 2026',
+                'unit_id' => 'UNIT-SMA',
+                'period_month' => '2026-11',
+                'amount' => 1850000,
+                'paid_amount' => 0,
+                'status' => 'belum_lunas',
+                'due_date' => '2026-11-10',
+                'paid_date' => null,
+                'created_date' => '2026-11-01',
+                'notes' => 'Menunggu konfirmasi transfer wali santri.'
+            ],
+            [
+                'id' => 'INV-202611-006',
+                'invoice_number' => 'INV/ALIA/2026/11/006',
+                'student_id' => 'SIS-0005', // Muhammad Rayhan (7-A SMP)
+                'fee_category_id' => 'FEE-002',
+                'fee_title' => 'SPP Bulanan SMP Boarding - November 2026',
+                'unit_id' => 'UNIT-SMP',
+                'period_month' => '2026-11',
+                'amount' => 1650000,
+                'paid_amount' => 1650000,
+                'status' => 'lunas',
+                'due_date' => '2026-11-10',
+                'paid_date' => '2026-11-04 11:30:00',
+                'created_date' => '2026-11-01',
+                'notes' => 'Pembayaran lunas tepat waktu.'
+            ],
+            [
+                'id' => 'INV-202611-007',
+                'invoice_number' => 'INV/ALIA/2026/11/007',
+                'student_id' => 'SIS-0006', // Aisyah Humaira (7-B SMP)
+                'fee_category_id' => 'FEE-002',
+                'fee_title' => 'SPP Bulanan SMP Boarding - November 2026',
+                'unit_id' => 'UNIT-SMP',
+                'period_month' => '2026-11',
+                'amount' => 1650000,
+                'paid_amount' => 0,
+                'status' => 'belum_lunas',
+                'due_date' => '2026-11-10',
+                'paid_date' => null,
+                'created_date' => '2026-11-01',
+                'notes' => 'Invoice terkirim ke WhatsApp wali santri.'
+            ],
+            [
+                'id' => 'INV-202610-008',
+                'invoice_number' => 'INV/ALIA/2026/10/018',
+                'student_id' => 'SIS-0004', // Zaskia Nur
+                'fee_category_id' => 'FEE-004',
+                'fee_title' => 'Uang Asrama & Dapur - Oktober 2026',
+                'unit_id' => 'UNIT-SMA',
+                'period_month' => '2026-10',
+                'amount' => 1500000,
+                'paid_amount' => 0,
+                'status' => 'jatuh_tempo',
+                'due_date' => '2026-10-10',
+                'paid_date' => null,
+                'created_date' => '2026-10-01',
+                'notes' => 'Surat pemberitahuan tunggakan telah diterbitkan oleh Tata Usaha.'
+            ],
+            [
+                'id' => 'INV-202611-009',
+                'invoice_number' => 'INV/ALIA/2026/11/009',
+                'student_id' => 'SIS-0007', // Rayhan Pratama (10-A)
+                'fee_category_id' => 'FEE-001',
+                'fee_title' => 'SPP Bulanan SMA Boarding - November 2026',
+                'unit_id' => 'UNIT-SMA',
+                'period_month' => '2026-11',
+                'amount' => 1850000,
+                'paid_amount' => 1850000,
+                'status' => 'lunas',
+                'due_date' => '2026-11-10',
+                'paid_date' => '2026-11-02 08:45:00',
+                'created_date' => '2026-11-01',
+                'notes' => 'Lunas awal bulan.'
+            ],
+            [
+                'id' => 'INV-202611-010',
+                'invoice_number' => 'INV/ALIA/2026/11/010',
+                'student_id' => 'SIS-0008', // Maryam Khairunnisa (10-B)
+                'fee_category_id' => 'FEE-001',
+                'fee_title' => 'SPP Bulanan SMA Boarding - November 2026',
+                'unit_id' => 'UNIT-SMA',
+                'period_month' => '2026-11',
+                'amount' => 1850000,
+                'paid_amount' => 1850000,
+                'status' => 'lunas',
+                'due_date' => '2026-11-10',
+                'paid_date' => '2026-11-04 16:00:00',
+                'created_date' => '2026-11-01',
+                'notes' => 'Pembayaran via BSI Mobile.'
+            ]
+        ];
+
+        // 39. Data Transaksi Penerimaan Kasir (Payment Transactions) - T09.4
+        $this->paymentTransactions = [
+            [
+                'id' => 'TRX-202611-001',
+                'receipt_number' => 'KWT/ALIA/2026/11/001',
+                'invoice_id' => 'INV-202611-001',
+                'student_id' => 'SIS-0001',
+                'amount' => 1850000,
+                'payment_method' => 'VA Bank Syariah Indonesia',
+                'payment_date' => '2026-11-03 09:15:00',
+                'cashier_name' => 'Hj. Nurul Hidayati, S.E.',
+                'status' => 'berhasil',
+                'notes' => 'Otomatis terverifikasi sistem Payment Gateway BSI.'
+            ],
+            [
+                'id' => 'TRX-202611-002',
+                'receipt_number' => 'KWT/ALIA/2026/11/002',
+                'invoice_id' => 'INV-202611-002',
+                'student_id' => 'SIS-0001',
+                'amount' => 1500000,
+                'payment_method' => 'VA Bank Syariah Indonesia',
+                'payment_date' => '2026-11-03 09:15:00',
+                'cashier_name' => 'Hj. Nurul Hidayati, S.E.',
+                'status' => 'berhasil',
+                'notes' => 'Pembayaran biaya asrama & katering.'
+            ],
+            [
+                'id' => 'TRX-202611-003',
+                'receipt_number' => 'KWT/ALIA/2026/11/003',
+                'invoice_id' => 'INV-202611-003',
+                'student_id' => 'SIS-0002',
+                'amount' => 1850000,
+                'payment_method' => 'Transfer Bank Muamalat',
+                'payment_date' => '2026-11-05 14:20:00',
+                'cashier_name' => 'Staf Keuangan Alia',
+                'status' => 'berhasil',
+                'notes' => 'Bukti mutasi rekening koran terlampir.'
+            ],
+            [
+                'id' => 'TRX-202611-004',
+                'receipt_number' => 'KWT/ALIA/2026/11/004',
+                'invoice_id' => 'INV-202611-004',
+                'student_id' => 'SIS-0003',
+                'amount' => 1000000,
+                'payment_method' => 'Tunai / Kasir Sekolah',
+                'payment_date' => '2026-11-06 10:10:00',
+                'cashier_name' => 'Hj. Nurul Hidayati, S.E.',
+                'status' => 'berhasil',
+                'notes' => 'Pembayaran angsuran pertama SPP November.'
+            ],
+            [
+                'id' => 'TRX-202611-005',
+                'receipt_number' => 'KWT/ALIA/2026/11/005',
+                'invoice_id' => 'INV-202611-006',
+                'student_id' => 'SIS-0005',
+                'amount' => 1650000,
+                'payment_method' => 'VA Bank BCA',
+                'payment_date' => '2026-11-04 11:30:00',
+                'cashier_name' => 'Sistem Auto-Posting',
+                'status' => 'berhasil',
+                'notes' => 'Pelunasan SPP SMP Unit.'
+            ],
+            [
+                'id' => 'TRX-202611-006',
+                'receipt_number' => 'KWT/ALIA/2026/11/006',
+                'invoice_id' => 'INV-202611-009',
+                'student_id' => 'SIS-0007',
+                'amount' => 1850000,
+                'payment_method' => 'VA Bank Syariah Indonesia',
+                'payment_date' => '2026-11-02 08:45:00',
+                'cashier_name' => 'Hj. Nurul Hidayati, S.E.',
+                'status' => 'berhasil',
+                'notes' => 'Setoran awal bulan.'
+            ],
+            [
+                'id' => 'TRX-202611-007',
+                'receipt_number' => 'KWT/ALIA/2026/11/007',
+                'invoice_id' => 'INV-202611-010',
+                'student_id' => 'SIS-0008',
+                'amount' => 1850000,
+                'payment_method' => 'QRIS Kasir Sekolah',
+                'payment_date' => '2026-11-04 16:00:00',
+                'cashier_name' => 'Staf Keuangan Alia',
+                'status' => 'berhasil',
+                'notes' => 'Scan QRIS Dinamis Loket Keuangan.'
+            ]
+        ];
+
+        // 40. Data Pengeluaran & Beban Operasional Sekolah (Expenses) - T09.1
+        $this->financeExpenses = [
+            [
+                'id' => 'EXP-202611-001',
+                'title' => 'Pengadaan Bahan Mentah Dapur & Katering Santri Pekan I',
+                'category' => 'Konsumsi & Asrama',
+                'amount' => 12500000,
+                'date' => '2026-11-02',
+                'unit_id' => 'UNIT-SMA',
+                'recipient' => 'Mitra Pasar Induk Sayur & Daging',
+                'status' => 'disetujui',
+                'notes' => 'Beras premium, telur 50 tray, daging ayam & bumbu rempah.'
+            ],
+            [
+                'id' => 'EXP-202611-002',
+                'title' => 'Tagihan Listrik PLN & Air PDAM Kompleks Asrama',
+                'category' => 'Utilitas & Sarpras',
+                'amount' => 8450000,
+                'date' => '2026-11-04',
+                'unit_id' => 'UNIT-SMA',
+                'recipient' => 'PT PLN & PDAM Tirta Tarum',
+                'status' => 'disetujui',
+                'notes' => 'Gardu listrik gedung Al-Fatih, Maryam & Masjid.'
+            ],
+            [
+                'id' => 'EXP-202611-003',
+                'title' => 'Honorium Khotib Jumat & Guru Tamu Halaqah Takhassus',
+                'category' => 'Kegiatan Dakwah',
+                'amount' => 1800000,
+                'date' => '2026-11-06',
+                'unit_id' => 'UNIT-SMA',
+                'recipient' => 'Asatidz Tamu',
+                'status' => 'disetujui',
+                'notes' => 'Kajian akidah pekanan & tasmi santri.'
+            ],
+            [
+                'id' => 'EXP-202611-004',
+                'title' => 'Perawatan Berkala AC Split Kamar Santri & Lab Komputer',
+                'category' => 'Pemeliharaan',
+                'amount' => 3200000,
+                'date' => '2026-11-05',
+                'unit_id' => 'UNIT-SMA',
+                'recipient' => 'CV Sejuk Mandiri Teknik',
+                'status' => 'disetujui',
+                'notes' => 'Cuci AC 16 unit dan penambahan freon.'
+            ]
+        ];
+
+        // 41. Data Beasiswa & Potongan Biaya (Scholarships & Discounts) - T09.5
+        $this->scholarships = [
+            [
+                'id' => 'SCH-001',
+                'code' => 'SCH-THF-30',
+                'student_id' => 'SIS-0001', // Ahmad Fauzan
+                'type' => 'tahfidz', // tahfidz, prestasi, yatim_dhuafa, bersaudara, pegawai
+                'name' => 'Beasiswa Khusus Hafidz 30 Juz (Yayasan Alia)',
+                'discount_percentage' => 100,
+                'discount_amount' => 1850000,
+                'fee_category_id' => 'FEE-001',
+                'fee_name' => 'SPP Bulanan SMA Boarding',
+                'period' => '2026/2027 (1 Tahun Penuh)',
+                'approved_by' => 'KH. Abdullah Gymnastiar / Pimpinan Yayasan',
+                'approval_status' => 'disetujui', // disetujui, diajukan, ditolak
+                'notes' => 'Apresiasi santri mutqin 30 juz berprestasi MHQ Nasional.'
+            ],
+            [
+                'id' => 'SCH-002',
+                'code' => 'SCH-PRS-50',
+                'student_id' => 'SIS-0002', // Siti Fatimah
+                'type' => 'prestasi',
+                'name' => 'Keringanan Prestasi Juara OSN Kimia',
+                'discount_percentage' => 50,
+                'discount_amount' => 925000,
+                'fee_category_id' => 'FEE-001',
+                'fee_name' => 'SPP Bulanan SMA Boarding',
+                'period' => 'Semester Ganjil 2026/2027',
+                'approved_by' => 'Kepala Sekolah SMA Islam Alia',
+                'approval_status' => 'disetujui',
+                'notes' => 'Peraih Medali Perak Olimpiade Sains Nasional tingkat Provinsi.'
+            ],
+            [
+                'id' => 'SCH-003',
+                'code' => 'SCH-YTM-75',
+                'student_id' => 'SIS-0003', // Bilal Ramadhan
+                'type' => 'yatim_dhuafa',
+                'name' => 'Santunan Beasiswa Yatim Berprestasi',
+                'discount_percentage' => 75,
+                'discount_amount' => 1387500,
+                'fee_category_id' => 'FEE-001',
+                'fee_name' => 'SPP Bulanan SMA Boarding',
+                'period' => '2026/2027 (1 Tahun Penuh)',
+                'approved_by' => 'Divisi ZISWAF Yayasan Alia',
+                'approval_status' => 'disetujui',
+                'notes' => 'Didanai dari alokasi infaq dan zakat maal donatur Alia Care.'
+            ],
+            [
+                'id' => 'SCH-004',
+                'code' => 'SCH-SDR-20',
+                'student_id' => 'SIS-0007', // Rayhan Pratama
+                'type' => 'bersaudara',
+                'name' => 'Diskon Saudara Kandung (Sibling Discount)',
+                'discount_percentage' => 20,
+                'discount_amount' => 370000,
+                'fee_category_id' => 'FEE-001',
+                'fee_name' => 'SPP Bulanan SMA Boarding',
+                'period' => '2026/2027',
+                'approved_by' => 'Bendahara Utama Sekolah',
+                'approval_status' => 'disetujui',
+                'notes' => 'Adik kandung bersekolah di SMP Islam Alia (Muhammad Rayhan).'
+            ],
+            [
+                'id' => 'SCH-005',
+                'code' => 'SCH-THF-10',
+                'student_id' => 'SIS-0005', // Muhammad Rayhan
+                'type' => 'tahfidz',
+                'name' => 'Beasiswa Akselerasi Tahfidz 10 Juz',
+                'discount_percentage' => 30,
+                'discount_amount' => 495000,
+                'fee_category_id' => 'FEE-002',
+                'fee_name' => 'SPP Bulanan SMP Boarding',
+                'period' => 'Semester Ganjil 2026/2027',
+                'approved_by' => 'Mudir Pesantren Alia',
+                'approval_status' => 'diajukan',
+                'notes' => 'Pengajuan berkas tasmi sekali duduk 5 juz sedang diverifikasi.'
+            ]
+        ];
     }
 
     // Getters
@@ -2465,7 +3794,6 @@ class DemoDataManager
         return null;
     }
 
-    public function getBoardingRooms(): array { return $this->boardingRooms; }
     public function getGuardians(): array
     {
         $sessionAdded = [];
@@ -3395,6 +4723,504 @@ class DemoDataManager
         foreach ($this->getStudentMutations() as $m) {
             if ($m['id'] === $id) {
                 return $m;
+            }
+        }
+        return null;
+    }
+
+    public function getBoardingBuildings(): array
+    {
+        $sessionAdded = [];
+        $sessionDeleted = [];
+        $sessionUpdated = [];
+        try {
+            if (function_exists('session') && app()->has('session')) {
+                $sessionAdded = session('demo_boarding_buildings_added', []);
+                $sessionDeleted = session('demo_boarding_buildings_deleted', []);
+                $sessionUpdated = session('demo_boarding_buildings_updated', []);
+            }
+        } catch (\Throwable $e) {}
+
+        $list = array_merge($this->boardingBuildings, $sessionAdded);
+        $filtered = array_filter($list, function($bld) use ($sessionDeleted) {
+            return !in_array($bld['id'], $sessionDeleted);
+        });
+
+        foreach ($filtered as &$item) {
+            if (isset($sessionUpdated[$item['id']])) {
+                $item = array_merge($item, $sessionUpdated[$item['id']]);
+            }
+        }
+
+        return array_values($filtered);
+    }
+
+    public function findBoardingBuilding(string $id): ?array
+    {
+        foreach ($this->getBoardingBuildings() as $bld) {
+            if ($bld['id'] === $id) {
+                return $bld;
+            }
+        }
+        return null;
+    }
+
+    public function getBoardingRooms(): array
+    {
+        $sessionAdded = [];
+        $sessionDeleted = [];
+        $sessionUpdated = [];
+        try {
+            if (function_exists('session') && app()->has('session')) {
+                $sessionAdded = session('demo_boarding_rooms_added', []);
+                $sessionDeleted = session('demo_boarding_rooms_deleted', []);
+                $sessionUpdated = session('demo_boarding_rooms_updated', []);
+            }
+        } catch (\Throwable $e) {}
+
+        $list = array_merge($this->boardingRooms, $sessionAdded);
+        $filtered = array_filter($list, function($kmr) use ($sessionDeleted) {
+            return !in_array($kmr['id'], $sessionDeleted);
+        });
+
+        foreach ($filtered as &$item) {
+            if (isset($sessionUpdated[$item['id']])) {
+                $item = array_merge($item, $sessionUpdated[$item['id']]);
+            }
+        }
+
+        return array_values($filtered);
+    }
+
+    public function findBoardingRoom(string $id): ?array
+    {
+        foreach ($this->getBoardingRooms() as $kmr) {
+            if ($kmr['id'] === $id) {
+                return $kmr;
+            }
+        }
+        return null;
+    }
+
+    public function getResidentAssignments(): array
+    {
+        $sessionAdded = [];
+        $sessionDeleted = [];
+        $sessionUpdated = [];
+        try {
+            if (function_exists('session') && app()->has('session')) {
+                $sessionAdded = session('demo_resident_assignments_added', []);
+                $sessionDeleted = session('demo_resident_assignments_deleted', []);
+                $sessionUpdated = session('demo_resident_assignments_updated', []);
+            }
+        } catch (\Throwable $e) {}
+
+        $list = array_merge($this->residentAssignments, $sessionAdded);
+        $filtered = array_filter($list, function($asn) use ($sessionDeleted) {
+            return !in_array($asn['id'], $sessionDeleted);
+        });
+
+        foreach ($filtered as &$item) {
+            if (isset($sessionUpdated[$item['id']])) {
+                $item = array_merge($item, $sessionUpdated[$item['id']]);
+            }
+        }
+
+        return array_values($filtered);
+    }
+
+    public function findResidentAssignment(string $id): ?array
+    {
+        foreach ($this->getResidentAssignments() as $asn) {
+            if ($asn['id'] === $id) {
+                return $asn;
+            }
+        }
+        return null;
+    }
+
+    public function getBoardingActivities(): array
+    {
+        $sessionAdded = [];
+        $sessionDeleted = [];
+        $sessionUpdated = [];
+        try {
+            if (function_exists('session') && app()->has('session')) {
+                $sessionAdded = session('demo_boarding_activities_added', []);
+                $sessionDeleted = session('demo_boarding_activities_deleted', []);
+                $sessionUpdated = session('demo_boarding_activities_updated', []);
+            }
+        } catch (\Throwable $e) {}
+
+        $list = array_merge($this->boardingActivities, $sessionAdded);
+        $filtered = array_filter($list, function($act) use ($sessionDeleted) {
+            return !in_array($act['id'], $sessionDeleted);
+        });
+
+        foreach ($filtered as &$item) {
+            if (isset($sessionUpdated[$item['id']])) {
+                $item = array_merge($item, $sessionUpdated[$item['id']]);
+            }
+        }
+
+        // Urutkan berdasarkan jam mulai
+        usort($filtered, function($a, $b) {
+            return strcmp($a['time_start'], $b['time_start']);
+        });
+
+        return array_values($filtered);
+    }
+
+    public function findBoardingActivity(string $id): ?array
+    {
+        foreach ($this->getBoardingActivities() as $act) {
+            if ($act['id'] === $id) {
+                return $act;
+            }
+        }
+        return null;
+    }
+
+    public function getLeavePermissions(): array
+    {
+        $sessionAdded = [];
+        $sessionDeleted = [];
+        $sessionUpdated = [];
+        try {
+            if (function_exists('session') && app()->has('session')) {
+                $sessionAdded = session('demo_leave_permissions_added', []);
+                $sessionDeleted = session('demo_leave_permissions_deleted', []);
+                $sessionUpdated = session('demo_leave_permissions_updated', []);
+            }
+        } catch (\Throwable $e) {}
+
+        $list = array_merge($this->leavePermissions, $sessionAdded);
+        $filtered = array_filter($list, function($izn) use ($sessionDeleted) {
+            return !in_array($izn['id'], $sessionDeleted);
+        });
+
+        foreach ($filtered as &$item) {
+            if (isset($sessionUpdated[$item['id']])) {
+                $item = array_merge($item, $sessionUpdated[$item['id']]);
+            }
+        }
+
+        // Urutkan berdasarkan tanggal mulai terbaru
+        usort($filtered, function($a, $b) {
+            return strcmp($b['date_start'], $a['date_start']);
+        });
+
+        return array_values($filtered);
+    }
+
+    public function findLeavePermission(string $id): ?array
+    {
+        foreach ($this->getLeavePermissions() as $izn) {
+            if ($izn['id'] === $id) {
+                return $izn;
+            }
+        }
+        return null;
+    }
+
+    public function getBoardingAttendance(): array
+    {
+        $sessionAdded = [];
+        $sessionDeleted = [];
+        $sessionUpdated = [];
+        try {
+            if (function_exists('session') && app()->has('session')) {
+                $sessionAdded = session('demo_boarding_attendance_added', []);
+                $sessionDeleted = session('demo_boarding_attendance_deleted', []);
+                $sessionUpdated = session('demo_boarding_attendance_updated', []);
+            }
+        } catch (\Throwable $e) {}
+
+        $list = array_merge($this->boardingAttendance, $sessionAdded);
+        $filtered = array_filter($list, function($att) use ($sessionDeleted) {
+            return !in_array($att['id'], $sessionDeleted);
+        });
+
+        foreach ($filtered as &$item) {
+            if (isset($sessionUpdated[$item['id']])) {
+                $item = array_merge($item, $sessionUpdated[$item['id']]);
+            }
+        }
+
+        // Urutkan berdasarkan tanggal & id terbaru
+        usort($filtered, function($a, $b) {
+            return strcmp($b['date'] . $b['id'], $a['date'] . $a['id']);
+        });
+
+        return array_values($filtered);
+    }
+
+    public function findBoardingAttendance(string $id): ?array
+    {
+        foreach ($this->getBoardingAttendance() as $att) {
+            if ($att['id'] === $id) {
+                return $att;
+            }
+        }
+        return null;
+    }
+
+    public function getBoardingMeals(): array
+    {
+        $sessionAdded = [];
+        $sessionDeleted = [];
+        $sessionUpdated = [];
+        try {
+            if (function_exists('session') && app()->has('session')) {
+                $sessionAdded = session('demo_boarding_meals_added', []);
+                $sessionDeleted = session('demo_boarding_meals_deleted', []);
+                $sessionUpdated = session('demo_boarding_meals_updated', []);
+            }
+        } catch (\Throwable $e) {}
+
+        $list = array_merge($this->boardingMeals, $sessionAdded);
+        $filtered = array_filter($list, function($meal) use ($sessionDeleted) {
+            return !in_array($meal['id'], $sessionDeleted);
+        });
+
+        foreach ($filtered as &$item) {
+            if (isset($sessionUpdated[$item['id']])) {
+                $item = array_merge($item, $sessionUpdated[$item['id']]);
+            }
+        }
+
+        // Urutkan berdasarkan hari (Senin s/d Ahad) dan jam makan
+        $dayOrder = [
+            'Senin' => 1,
+            'Selasa' => 2,
+            'Rabu' => 3,
+            'Kamis' => 4,
+            'Jumat' => 5,
+            'Sabtu' => 6,
+            'Ahad' => 7
+        ];
+        $timeOrder = [
+            'Pagi' => 1,
+            'Siang' => 2,
+            'Malam' => 3
+        ];
+
+        usort($filtered, function($a, $b) use ($dayOrder, $timeOrder) {
+            $d1 = $dayOrder[$a['day']] ?? 9;
+            $d2 = $dayOrder[$b['day']] ?? 9;
+            if ($d1 !== $d2) {
+                return $d1 - $d2;
+            }
+            $t1 = $timeOrder[$a['meal_time']] ?? 9;
+            $t2 = $timeOrder[$b['meal_time']] ?? 9;
+            return $t1 - $t2;
+        });
+
+        return array_values($filtered);
+    }
+
+    public function findBoardingMeal(string $id): ?array
+    {
+        foreach ($this->getBoardingMeals() as $meal) {
+            if ($meal['id'] === $id) {
+                return $meal;
+            }
+        }
+        return null;
+    }
+
+    public function getFeeCategories(): array
+    {
+        $sessionAdded = [];
+        $sessionDeleted = [];
+        $sessionUpdated = [];
+        try {
+            if (function_exists('session') && app()->has('session')) {
+                $sessionAdded = session('demo_fee_categories_added', []);
+                $sessionDeleted = session('demo_fee_categories_deleted', []);
+                $sessionUpdated = session('demo_fee_categories_updated', []);
+            }
+        } catch (\Throwable $e) {}
+
+        $list = array_merge($this->feeCategories, $sessionAdded);
+        $filtered = array_filter($list, function($fee) use ($sessionDeleted) {
+            return !in_array($fee['id'], $sessionDeleted);
+        });
+
+        foreach ($filtered as &$item) {
+            if (isset($sessionUpdated[$item['id']])) {
+                $item = array_merge($item, $sessionUpdated[$item['id']]);
+            }
+        }
+
+        return array_values($filtered);
+    }
+
+    public function findFeeCategory(string $id): ?array
+    {
+        foreach ($this->getFeeCategories() as $fee) {
+            if ($fee['id'] === $id) {
+                return $fee;
+            }
+        }
+        return null;
+    }
+
+    public function getStudentInvoices(): array
+    {
+        $sessionAdded = [];
+        $sessionDeleted = [];
+        $sessionUpdated = [];
+        try {
+            if (function_exists('session') && app()->has('session')) {
+                $sessionAdded = session('demo_student_invoices_added', []);
+                $sessionDeleted = session('demo_student_invoices_deleted', []);
+                $sessionUpdated = session('demo_student_invoices_updated', []);
+            }
+        } catch (\Throwable $e) {}
+
+        $list = array_merge($this->studentInvoices, $sessionAdded);
+        $filtered = array_filter($list, function($inv) use ($sessionDeleted) {
+            return !in_array($inv['id'], $sessionDeleted);
+        });
+
+        foreach ($filtered as &$item) {
+            if (isset($sessionUpdated[$item['id']])) {
+                $item = array_merge($item, $sessionUpdated[$item['id']]);
+            }
+        }
+
+        usort($filtered, function($a, $b) {
+            return strcmp($b['invoice_number'], $a['invoice_number']);
+        });
+
+        return array_values($filtered);
+    }
+
+    public function findStudentInvoice(string $id): ?array
+    {
+        foreach ($this->getStudentInvoices() as $inv) {
+            if ($inv['id'] === $id) {
+                return $inv;
+            }
+        }
+        return null;
+    }
+
+    public function getPaymentTransactions(): array
+    {
+        $sessionAdded = [];
+        $sessionDeleted = [];
+        $sessionUpdated = [];
+        try {
+            if (function_exists('session') && app()->has('session')) {
+                $sessionAdded = session('demo_payment_transactions_added', []);
+                $sessionDeleted = session('demo_payment_transactions_deleted', []);
+                $sessionUpdated = session('demo_payment_transactions_updated', []);
+            }
+        } catch (\Throwable $e) {}
+
+        $list = array_merge($this->paymentTransactions, $sessionAdded);
+        $filtered = array_filter($list, function($trx) use ($sessionDeleted) {
+            return !in_array($trx['id'], $sessionDeleted);
+        });
+
+        foreach ($filtered as &$item) {
+            if (isset($sessionUpdated[$item['id']])) {
+                $item = array_merge($item, $sessionUpdated[$item['id']]);
+            }
+        }
+
+        usort($filtered, function($a, $b) {
+            return strcmp($b['payment_date'], $a['payment_date']);
+        });
+
+        return array_values($filtered);
+    }
+
+    public function findPaymentTransaction(string $id): ?array
+    {
+        foreach ($this->getPaymentTransactions() as $trx) {
+            if ($trx['id'] === $id) {
+                return $trx;
+            }
+        }
+        return null;
+    }
+
+    public function getFinanceExpenses(): array
+    {
+        $sessionAdded = [];
+        $sessionDeleted = [];
+        $sessionUpdated = [];
+        try {
+            if (function_exists('session') && app()->has('session')) {
+                $sessionAdded = session('demo_finance_expenses_added', []);
+                $sessionDeleted = session('demo_finance_expenses_deleted', []);
+                $sessionUpdated = session('demo_finance_expenses_updated', []);
+            }
+        } catch (\Throwable $e) {}
+
+        $list = array_merge($this->financeExpenses, $sessionAdded);
+        $filtered = array_filter($list, function($exp) use ($sessionDeleted) {
+            return !in_array($exp['id'], $sessionDeleted);
+        });
+
+        foreach ($filtered as &$item) {
+            if (isset($sessionUpdated[$item['id']])) {
+                $item = array_merge($item, $sessionUpdated[$item['id']]);
+            }
+        }
+
+        usort($filtered, function($a, $b) {
+            return strcmp($b['date'], $a['date']);
+        });
+
+        return array_values($filtered);
+    }
+
+    public function findFinanceExpense(string $id): ?array
+    {
+        foreach ($this->getFinanceExpenses() as $exp) {
+            if ($exp['id'] === $id) {
+                return $exp;
+            }
+        }
+        return null;
+    }
+
+    public function getScholarships(): array
+    {
+        $sessionAdded = [];
+        $sessionDeleted = [];
+        $sessionUpdated = [];
+        try {
+            if (function_exists('session') && app()->has('session')) {
+                $sessionAdded = session('demo_scholarships_added', []);
+                $sessionDeleted = session('demo_scholarships_deleted', []);
+                $sessionUpdated = session('demo_scholarships_updated', []);
+            }
+        } catch (\Throwable $e) {}
+
+        $list = array_merge($this->scholarships, $sessionAdded);
+        $filtered = array_filter($list, function($sch) use ($sessionDeleted) {
+            return !in_array($sch['id'], $sessionDeleted);
+        });
+
+        foreach ($filtered as &$item) {
+            if (isset($sessionUpdated[$item['id']])) {
+                $item = array_merge($item, $sessionUpdated[$item['id']]);
+            }
+        }
+
+        return array_values($filtered);
+    }
+
+    public function findScholarship(string $id): ?array
+    {
+        foreach ($this->getScholarships() as $sch) {
+            if ($sch['id'] === $id) {
+                return $sch;
             }
         }
         return null;

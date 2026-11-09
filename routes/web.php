@@ -9,6 +9,8 @@ use App\Http\Controllers\AcademicController;
 use App\Http\Controllers\LmsController;
 use App\Http\Controllers\TahfidzController;
 use App\Http\Controllers\KesiswaanController;
+use App\Http\Controllers\AsramaController;
+use App\Http\Controllers\KeuanganController;
 
 // Helper untuk route placeholder view
 function makePlaceholder($title, $subtitle, $icon = 'fa-cube') {
@@ -177,18 +179,46 @@ Route::prefix('kesiswaan')->name('kesiswaan.')->group(function () {
 
 // Asrama / Boarding
 Route::prefix('asrama')->name('asrama.')->group(function () {
-    Route::get('/kamar', makePlaceholder('Kamar & Santri Asrama', 'Alokasi Gedung & Penempatan Kamar', 'fa-bed'))->name('kamar');
-    Route::get('/aktivitas', makePlaceholder('Jadwal Aktivitas Asrama', 'Qiyamul Lail, Shalat Berjamaah, Disiplin', 'fa-clock-o'))->name('aktivitas');
-    Route::get('/perizinan', makePlaceholder('Perizinan Keluar/Pulang', 'Workflow Izin Pulang Santri', 'fa-ticket'))->name('perizinan');
-    Route::get('/katering', makePlaceholder('Konsumsi & Dapur', 'Menu Makanan & Jadwal Makan Santri', 'fa-cutlery'))->name('katering');
+    Route::get('/kamar', [AsramaController::class, 'kamar'])->name('kamar');
+    Route::post('/kamar', [AsramaController::class, 'storeKamar'])->name('kamar.store');
+    Route::post('/gedung', [AsramaController::class, 'storeGedung'])->name('gedung.store');
+    Route::get('/kamar/{id}/destroy', [AsramaController::class, 'destroyKamar'])->name('kamar.destroy');
+    Route::get('/penempatan', [AsramaController::class, 'penempatan'])->name('penempatan');
+    Route::post('/penempatan', [AsramaController::class, 'storePenempatan'])->name('penempatan.store');
+    Route::post('/penempatan/{id}/transfer', [AsramaController::class, 'transferKamar'])->name('penempatan.transfer');
+    Route::get('/penempatan/{id}/checkout', [AsramaController::class, 'checkoutSantri'])->name('penempatan.checkout');
+    Route::get('/aktivitas', [AsramaController::class, 'aktivitas'])->name('aktivitas');
+    Route::post('/aktivitas', [AsramaController::class, 'storeAktivitas'])->name('aktivitas.store');
+    Route::get('/aktivitas/{id}/destroy', [AsramaController::class, 'destroyAktivitas'])->name('aktivitas.destroy');
+    Route::get('/perizinan', [AsramaController::class, 'perizinan'])->name('perizinan');
+    Route::post('/perizinan', [AsramaController::class, 'storePerizinan'])->name('perizinan.store');
+    Route::get('/perizinan/{id}/checkin', [AsramaController::class, 'checkInPerizinan'])->name('perizinan.checkin');
+    Route::get('/perizinan/{id}/destroy', [AsramaController::class, 'destroyPerizinan'])->name('perizinan.destroy');
+    Route::get('/presensi', [AsramaController::class, 'presensi'])->name('presensi');
+    Route::post('/presensi', [AsramaController::class, 'storePresensi'])->name('presensi.store');
+    Route::post('/presensi/quick-present', [AsramaController::class, 'markAllPresent'])->name('presensi.quick');
+    Route::get('/katering', [AsramaController::class, 'katering'])->name('katering');
+    Route::post('/katering', [AsramaController::class, 'storeKatering'])->name('katering.store');
+    Route::get('/katering/{id}/destroy', [AsramaController::class, 'destroyKatering'])->name('katering.destroy');
+    Route::get('/laporan', [AsramaController::class, 'laporan'])->name('laporan');
 });
 
 // Keuangan & SPP
 Route::prefix('keuangan')->name('keuangan.')->group(function () {
-    Route::get('/dashboard', makePlaceholder('Dashboard Keuangan', 'Rekap Arus Kas, SPP, & Tagihan', 'fa-line-chart'))->name('dashboard');
-    Route::get('/pos-biaya', makePlaceholder('Pos Biaya & Tarif', 'Struktur SPP, Uang Makan, Daftar Ulang', 'fa-tags'))->name('pos-biaya');
-    Route::get('/tagihan', makePlaceholder('Tagihan Santri', 'Daftar Invoice & Surat Tagihan', 'fa-file-invoice-dollar'))->name('tagihan');
-    Route::get('/transaksi', makePlaceholder('Penerimaan Pembayaran', 'Pencatatan Kasir & Validasi Bayar', 'fa-credit-card'))->name('transaksi');
+    Route::get('/dashboard', [KeuanganController::class, 'dashboard'])->name('dashboard');
+    Route::get('/pos-biaya', [KeuanganController::class, 'posBiaya'])->name('pos-biaya');
+    Route::post('/pos-biaya', [KeuanganController::class, 'storePosBiaya'])->name('pos-biaya.store');
+    Route::get('/pos-biaya/{id}/destroy', [KeuanganController::class, 'destroyPosBiaya'])->name('pos-biaya.destroy');
+    Route::get('/tagihan', [KeuanganController::class, 'tagihan'])->name('tagihan');
+    Route::post('/tagihan', [KeuanganController::class, 'storeTagihan'])->name('tagihan.store');
+    Route::get('/tagihan/{id}/destroy', [KeuanganController::class, 'destroyTagihan'])->name('tagihan.destroy');
+    Route::get('/transaksi', [KeuanganController::class, 'transaksi'])->name('transaksi');
+    Route::post('/transaksi', [KeuanganController::class, 'storeTransaksi'])->name('transaksi.store');
+    Route::get('/transaksi/{id}/destroy', [KeuanganController::class, 'destroyTransaksi'])->name('transaksi.destroy');
+    Route::get('/beasiswa', [KeuanganController::class, 'beasiswa'])->name('beasiswa');
+    Route::post('/beasiswa', [KeuanganController::class, 'storeBeasiswa'])->name('beasiswa.store');
+    Route::get('/beasiswa/{id}/approve', [KeuanganController::class, 'approveBeasiswa'])->name('beasiswa.approve');
+    Route::get('/beasiswa/{id}/destroy', [KeuanganController::class, 'destroyBeasiswa'])->name('beasiswa.destroy');
     Route::get('/laporan', makePlaceholder('Laporan Keuangan', 'Laporan Penerimaan & Tunggakan', 'fa-balance-scale'))->name('laporan');
 });
 
