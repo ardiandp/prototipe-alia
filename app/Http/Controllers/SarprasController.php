@@ -638,4 +638,218 @@ class SarprasController extends Controller
 
         return redirect()->route('sarpras.pemeliharaan')->with('info', "Tiket laporan perbaikan ID: {$id} berhasil dihapus dari sesi demo.");
     }
+
+    /**
+     * T11.4 - Procurement Requests / Pengajuan Pengadaan Sarpras Baru
+     */
+    public function pengadaan(Request $request)
+    {
+        $demo = DemoDataManager::getInstance();
+        $procurements = $demo->getFacilityProcurements();
+        $units = $demo->getUnits();
+        $rooms = $demo->getFacilityRooms();
+        $assets = $demo->getFacilityAssets();
+
+        // Kumpulkan opsi target lokasi
+        $targetLocations = [];
+        foreach ($assets as $a) {
+            $targetLocations[] = $a['name'] . ' (' . ($a['location'] ?? 'Kampus') . ')';
+        }
+        foreach ($rooms as $r) {
+            $targetLocations[] = $r['name'] . ' (' . ($r['location'] ?? 'Kampus') . ')';
+        }
+
+        $activeTab = $request->get('tab', 'daftar'); // daftar, rincian, persetujuan
+        $statusFilter = $request->get('status', 'all');
+        $categoryFilter = $request->get('category', 'all');
+        $urgencyFilter = $request->get('urgency', 'all');
+        $search = $request->get('search');
+
+        $filteredProcurements = array_filter($procurements, function ($prc) use ($statusFilter, $categoryFilter, $urgencyFilter, $search) {
+            $matchStatus = ($statusFilter === 'all') || (($prc['status'] ?? '') === $statusFilter);
+            $matchCategory = ($categoryFilter === 'all') || (($prc['category'] ?? '') === $categoryFilter);
+            $matchUrgency = ($urgencyFilter === 'all') || (($prc['urgency'] ?? '') === $urgencyFilter);
+            $matchSearch = true;
+            if ($search) {
+                $matchSearch = stripos($prc['title'] ?? '', $search) !== false ||
+                               stripos($prc['request_code'] ?? '', $search) !== false ||
+                               stripos($prc['requester_name'] ?? '', $search) !== false ||
+                               stripos($prc['target_location'] ?? '', $search) !== false;
+            }
+            return $matchStatus && $matchCategory && $matchUrgency && $matchSearch;
+        });
+
+        // Metrik Ringkasan Pengadaan
+        $totalRequests = count($procurements);
+        $totalApproved = count(array_filter($procurements, fn($p) => in_array($p['status'] ?? '', ['disetujui', 'dalam_pemesanan', 'selesai'])));
+        $totalPending = count(array_filter($procurements, fn($p) => in_array($p['status'] ?? '', ['diajukan', 'verifikasi_sarpras'])));
+        $totalBudget = array_sum(array_column($procurements, 'estimated_total'));
+
+        return view('sarpras.pengadaan', compact(
+            'filteredProcurements',
+            'procurements',
+            'targetLocations',
+            'units',
+            'activeTab',
+            'statusFilter',
+            'categoryFilter',
+            'urgencyFilter',
+            'search',
+            'totalRequests',
+            'totalApproved',
+            'totalPending',
+            'totalBudget'
+        ));
+    }
+
+    /**
+     * Ajukan Usulan Pengadaan Sarpras Baru
+     */
+    public function storePengadaan(Request $request)
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:150',
+            'category' => 'required|in:elektronik_it,mebelair,sarana_olahraga,utilitas_daya,laboratorium',
+            'urgency' => 'required|in:mendesak,tinggi,sedang,rutin',
+            'requester_name' => 'required|string|max:100',
+            'requester_role' => 'required|string|max:100',
+            'unit_id' => 'required|string',
+            'target_location' => 'required|string|max:150',
+            'request_date' => 'required|date',
+            'source_funding' => 'required|string|max:100',
+            'justification' => 'required|string|max:500',
+            'item_names' => 'required|array|min:1',
+            'item_names.*' => 'required|string|max:150',
+            'item_quantities' => 'required|array|min:1',
+            'item_quantities.*' => 'required|numeric|min:1',
+            'item_units' => 'required|array|min:1',
+            'item_units.*' => 'required|string|max:50',
+            'item_prices' => 'required|array|min:1',
+            'item_prices.*' => 'required|numeric|min:0',
+            'notes' => 'nullable|string|max:500',
+        ]);
+
+        $categoryLabels = [
+            'elektronik_it' => 'Elektronik & Perangkat Komputer',
+            'mebelair' => 'Mebelair & Furnitur Santri',
+            'sarana_olahraga' => 'Sarana & Alat Olahraga',
+            'utilitas_daya' => 'Utilitas & Kelistrikan',
+            'laboratorium' => 'Alat & Bahan Praktikum Lab'
+        ];
+
+        // Susun item rincian belanja
+        $items = [];
+        $estimatedTotal = 0;
+        $totalItemsCount = 0;
+
+        foreach ($validated['item_names'] as $i => $name) {
+            $qty = (int)($validated['item_quantities'][$i] ?? 1);
+            $unit = $validated['item_units'][$i] ?? 'Unit';
+            $price = (float)($validated['item_prices'][$i] ?? 0);
+            $subtotal = $qty * $price;
+
+            $items[] = [
+                'item_name' => $name,
+                'quantity' => $qty,
+                'unit' => $unit,
+                'unit_price' => $price,
+                'subtotal' => $subtotal
+            ];
+
+            $estimatedTotal += $subtotal;
+            $totalItemsCount += $qty;
+        }
+
+        $demo = DemoDataManager::getInstance();
+        $allProcurements = $demo->getFacilityProcurements();
+        $count = count($allProcurements) + 1;
+        $requestCode = "PENGADAAN/SARPRAS/" . date('Y') . "/" . str_pad($count, 3, '0', STR_PAD_LEFT);
+
+        $newProcurement = [
+            'id' => 'PRC-' . str_pad($count, 3, '0', STR_PAD_LEFT),
+            'request_code' => $requestCode,
+            'title' => $validated['title'],
+            'category' => $validated['category'],
+            'category_label' => $categoryLabels[$validated['category']] ?? 'Pengadaan Sarpras',
+            'requester_name' => $validated['requester_name'],
+            'requester_role' => $validated['requester_role'],
+            'unit_id' => $validated['unit_id'],
+            'target_location' => $validated['target_location'],
+            'request_date' => $validated['request_date'],
+            'urgency' => $validated['urgency'],
+            'total_items_count' => $totalItemsCount,
+            'items' => $items,
+            'estimated_total' => $estimatedTotal,
+            'source_funding' => $validated['source_funding'],
+            'justification' => $validated['justification'],
+            'status' => 'diajukan',
+            'approver_name' => null,
+            'approved_at' => null,
+            'rejection_reason' => null,
+            'notes' => $validated['notes'] ?: '-'
+        ];
+
+        $sessionAdded = session('demo_facility_procurements_added', []);
+        $sessionAdded[] = $newProcurement;
+        session(['demo_facility_procurements_added' => $sessionAdded]);
+
+        return redirect()->route('sarpras.pengadaan')->with('success', "Usulan pengadaan sarpras \"{$newProcurement['title']}\" ({$requestCode}) berhasil diajukan ke Bagian Sarpras & Yayasan!");
+    }
+
+    /**
+     * Persetujuan / Update Status Pengadaan Sarpras
+     */
+    public function approvePengadaan(Request $request, string $id)
+    {
+        $validated = $request->validate([
+            'status' => 'required|in:verifikasi_sarpras,disetujui,ditolak,dalam_pemesanan,selesai',
+            'approver_name' => 'required|string|max:100',
+            'rejection_reason' => 'nullable|string|max:500',
+            'notes' => 'nullable|string|max:500',
+        ]);
+
+        $sessionUpdated = session('demo_facility_procurements_updated', []);
+        $existing = $sessionUpdated[$id] ?? [];
+
+        $updateData = [
+            'status' => $validated['status'],
+            'approver_name' => $validated['approver_name'],
+            'rejection_reason' => $validated['status'] === 'ditolak' ? ($validated['rejection_reason'] ?: 'Ditolak pimpinan / anggaran tidak mencukupi.') : null,
+        ];
+
+        if (in_array($validated['status'], ['disetujui', 'dalam_pemesanan', 'selesai'])) {
+            $updateData['approved_at'] = date('Y-m-d H:i:s');
+        }
+        if (!empty($validated['notes'])) {
+            $updateData['notes'] = $validated['notes'];
+        }
+
+        $sessionUpdated[$id] = array_merge($existing, $updateData);
+        session(['demo_facility_procurements_updated' => $sessionUpdated]);
+
+        $statusLabels = [
+            'verifikasi_sarpras' => 'DIVERIFIKASI SARPRAS',
+            'disetujui' => 'DISETUJUI YAYASAN',
+            'ditolak' => 'DITOLAK',
+            'dalam_pemesanan' => 'DALAM PEMESANAN / PO',
+            'selesai' => 'SELESAI DITERIMA'
+        ];
+        $label = $statusLabels[$validated['status']] ?? $validated['status'];
+
+        return redirect()->route('sarpras.pengadaan')->with('success', "Usulan pengadaan sarpras {$id} berhasil diproses ({$label})!");
+    }
+
+    /**
+     * Hapus Usulan Pengadaan Sarpras dari Sesi Demo
+     */
+    public function destroyPengadaan(string $id)
+    {
+        $sessionDeleted = session('demo_facility_procurements_deleted', []);
+        if (!in_array($id, $sessionDeleted)) {
+            $sessionDeleted[] = $id;
+            session(['demo_facility_procurements_deleted' => $sessionDeleted]);
+        }
+
+        return redirect()->route('sarpras.pengadaan')->with('info', "Usulan pengadaan sarpras ID: {$id} berhasil dihapus dari sesi demo.");
+    }
 }

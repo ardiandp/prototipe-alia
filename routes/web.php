@@ -274,6 +274,10 @@ Route::prefix('sarpras')->name('sarpras.')->group(function () {
     Route::post('/pemeliharaan', [SarprasController::class, 'storePemeliharaan'])->name('pemeliharaan.store');
     Route::post('/pemeliharaan/{id}/progress', [SarprasController::class, 'updateProgressPemeliharaan'])->name('pemeliharaan.progress');
     Route::get('/pemeliharaan/{id}/destroy', [SarprasController::class, 'destroyPemeliharaan'])->name('pemeliharaan.destroy');
+    Route::get('/pengadaan', [SarprasController::class, 'pengadaan'])->name('pengadaan');
+    Route::post('/pengadaan', [SarprasController::class, 'storePengadaan'])->name('pengadaan.store');
+    Route::post('/pengadaan/{id}/approve', [SarprasController::class, 'approvePengadaan'])->name('pengadaan.approve');
+    Route::get('/pengadaan/{id}/destroy', [SarprasController::class, 'destroyPengadaan'])->name('pengadaan.destroy');
 });
 
 Route::prefix('inventaris')->name('inventaris.')->group(function () {

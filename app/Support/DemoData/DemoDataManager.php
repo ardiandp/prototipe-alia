@@ -69,6 +69,7 @@ class DemoDataManager
     private array $facilityAssets = [];
     private array $roomBookings = [];
     private array $maintenanceReports = [];
+    private array $facilityProcurements = [];
 
     public function __construct()
     {
@@ -4850,6 +4851,117 @@ class DemoDataManager
                 'resolution_notes' => 'Menunggu verifikasi ketersediaan stok lampu LED pengganti di gudang sarpras.'
             ]
         ];
+
+        // 26. Pengajuan Pengadaan Sarpras Baru (Procurement Requests)
+        $this->facilityProcurements = [
+            [
+                'id' => 'PRC-001',
+                'request_code' => 'PENGADAAN/SARPRAS/2026/001',
+                'title' => 'Pengadaan 25 Unit PC Workstation Lab Bahasa & CBT',
+                'category' => 'elektronik_it', // elektronik_it, mebelair, sarana_olahraga, utilitas_daya, laboratorium
+                'category_label' => 'Elektronik & Perangkat Komputer',
+                'requester_name' => 'Budi Santoso, S.Kom.',
+                'requester_role' => 'Kepala Laboratorium Komputer',
+                'unit_id' => 'UNIT-SMA',
+                'target_location' => 'Laboratorium Komputer & Robotika (Gedung Ali Lt 2)',
+                'request_date' => '2026-11-02',
+                'urgency' => 'tinggi', // mendesak, tinggi, sedang, rutin
+                'total_items_count' => 25,
+                'items' => [
+                    ['item_name' => 'PC All-in-One Core i5 RAM 16GB SSD 512GB', 'quantity' => 20, 'unit' => 'Unit', 'unit_price' => 8500000, 'subtotal' => 170000000],
+                    ['item_name' => 'Headset Multimedia Noise Cancelling', 'quantity' => 25, 'unit' => 'Pcs', 'unit_price' => 250000, 'subtotal' => 6250000],
+                    ['item_name' => 'UPS 1200 VA Prolink Backup Server', 'quantity' => 2, 'unit' => 'Unit', 'unit_price' => 1800000, 'subtotal' => 3600000],
+                ],
+                'estimated_total' => 179850000,
+                'source_funding' => 'BOS Kinerja & Yayasan Alia',
+                'justification' => 'Peningkatan kapasitas santri SMA yang mengikuti program Cambridge Computer Science dan persiapan ANBK mandiri.',
+                'status' => 'disetujui', // diajukan, verifikasi_sarpras, disetujui, ditolak, dalam_pemesanan, selesai
+                'approver_name' => 'Dr. H. Zulkifli, Lc., M.A. (Direktur Yayasan)',
+                'approved_at' => '2026-11-05 10:30:00',
+                'rejection_reason' => null,
+                'notes' => 'Telah disetujui dalam rapat pleno RAPBS semester genap. Tender vendor e-Katalog LKPP sedang berjalan.'
+            ],
+            [
+                'id' => 'PRC-002',
+                'request_code' => 'PENGADAAN/SARPRAS/2026/002',
+                'title' => 'Pengadaan 80 Set Meja & Kursi Santri Ergonomis Asrama Putri',
+                'category' => 'mebelair',
+                'category_label' => 'Mebelair & Furnitur Santri',
+                'requester_name' => 'Aisyah Salsabila, S.Pd.I.',
+                'requester_role' => 'Kepala Asrama Putri',
+                'unit_id' => 'UNIT-SMP',
+                'target_location' => 'Gedung Asrama Putri Khadijah (Kamar A01 - A08)',
+                'request_date' => '2026-11-04',
+                'urgency' => 'sedang',
+                'total_items_count' => 80,
+                'items' => [
+                    ['item_name' => 'Meja Belajar Kayu Jati Belanda + Rak Buku', 'quantity' => 40, 'unit' => 'Set', 'unit_price' => 750000, 'subtotal' => 30000000],
+                    ['item_name' => 'Kursi Ergonomis Busa Rebounded Kaki Besi', 'quantity' => 40, 'unit' => 'Unit', 'unit_price' => 450000, 'subtotal' => 18000000],
+                ],
+                'estimated_total' => 48000000,
+                'source_funding' => 'Anggaran Investasi Sarpras Yayasan',
+                'justification' => 'Peremajaan mebelair kamar santri kelas 7 dan 8 yang sudah lapuk dimakan usia dan penambahan kuota santriwati baru.',
+                'status' => 'verifikasi_sarpras',
+                'approver_name' => null,
+                'approved_at' => null,
+                'rejection_reason' => null,
+                'notes' => 'Sedang dalam review perbandingan spesifikasi sampel dari 2 pengrajin kayu mebel Jepara.'
+            ],
+            [
+                'id' => 'PRC-003',
+                'request_code' => 'PENGADAAN/SARPRAS/2026/003',
+                'title' => 'Pengadaan Sound System Line Array Outdoor Lapangan & Panggung',
+                'category' => 'elektronik_it',
+                'category_label' => 'Sound System & Audio Visual',
+                'requester_name' => 'Ust. Fauzan Azhim, S.T.',
+                'requester_role' => 'Pembina OSIS & Kesiswaan',
+                'unit_id' => 'UNIT-SMA',
+                'target_location' => 'Panggung Utama Lapangan Tengah Kampus',
+                'request_date' => '2026-11-07',
+                'urgency' => 'mendesak',
+                'total_items_count' => 8,
+                'items' => [
+                    ['item_name' => 'Speaker Line Array Aktif 10 Inch (2x)', 'quantity' => 4, 'unit' => 'Unit', 'unit_price' => 12500000, 'subtotal' => 50000000],
+                    ['item_name' => 'Subwoofer Aktif 18 Inch', 'quantity' => 2, 'unit' => 'Unit', 'unit_price' => 15000000, 'subtotal' => 30000000],
+                    ['item_name' => 'Digital Mixer Audio 32 Channel Behringer X32', 'quantity' => 1, 'unit' => 'Unit', 'unit_price' => 28000000, 'subtotal' => 28000000],
+                    ['item_name' => 'Snake Cable 30 Meter + Box Stage', 'quantity' => 1, 'unit' => 'Roll', 'unit_price' => 4500000, 'subtotal' => 4500000],
+                ],
+                'estimated_total' => 112500000,
+                'source_funding' => 'Dana Sumbangan Wakaf & Event Yayasan',
+                'justification' => 'Dibutuhkan untuk Apel Akbar Pembukaan Tahun Baru Islam, Wisuda Tahfidz Al-Qur\'an, dan Kajian Tabligh Akbar Wali Santri.',
+                'status' => 'diajukan',
+                'approver_name' => null,
+                'approved_at' => null,
+                'rejection_reason' => null,
+                'notes' => 'Permohonan baru masuk; menunggu pertimbangan bendahara dan komite yayasan.'
+            ],
+            [
+                'id' => 'PRC-004',
+                'request_code' => 'PENGADAAN/SARPRAS/2026/004',
+                'title' => 'Pengadaan Kit Praktikum Mikroskop Digital Laboratorium IPA',
+                'category' => 'laboratorium',
+                'category_label' => 'Alat & Bahan Praktikum Sains',
+                'requester_name' => 'Siti Nurhaliza, M.Pd.',
+                'requester_role' => 'Koordinator Lab IPA Terpadu',
+                'unit_id' => 'UNIT-SMP',
+                'target_location' => 'Laboratorium Sains & Bahasa (Gedung Ali Lt 2)',
+                'request_date' => '2026-10-25',
+                'urgency' => 'sedang',
+                'total_items_count' => 12,
+                'items' => [
+                    ['item_name' => 'Mikroskop Digital USB 1600x LCD Screen', 'quantity' => 10, 'unit' => 'Unit', 'unit_price' => 1750000, 'subtotal' => 17500000],
+                    ['item_name' => 'Set Preparat Awetan Anatomi Biologi & Kaca Benda', 'quantity' => 2, 'unit' => 'Set', 'unit_price' => 1200000, 'subtotal' => 2400000],
+                ],
+                'estimated_total' => 19900000,
+                'source_funding' => 'BOS Reguler SMP Islam Alia',
+                'justification' => 'Mendukung Kurikulum Merdeka topik bioteknologi dan sel hewan/tumbuhan.',
+                'status' => 'selesai',
+                'approver_name' => 'Drs. H. Ahmad Dahlan (Kepala SMP Alia)',
+                'approved_at' => '2026-10-28 11:00:00',
+                'rejection_reason' => null,
+                'notes' => 'Barang telah diterima lengkap 100%, diuji coba, dan tercatat dalam buku inventaris laboratorium.'
+            ]
+        ];
     }
 
     // Getters
@@ -6845,6 +6957,43 @@ class DemoDataManager
         foreach ($this->getMaintenanceReports() as $mnt) {
             if ($mnt['id'] === $id || ($mnt['ticket_code'] ?? '') === $id) {
                 return $mnt;
+            }
+        }
+        return null;
+    }
+
+    public function getFacilityProcurements(): array
+    {
+        $sessionAdded = [];
+        $sessionDeleted = [];
+        $sessionUpdated = [];
+        try {
+            if (function_exists('session') && app()->has('session')) {
+                $sessionAdded = session('demo_facility_procurements_added', []);
+                $sessionDeleted = session('demo_facility_procurements_deleted', []);
+                $sessionUpdated = session('demo_facility_procurements_updated', []);
+            }
+        } catch (\Throwable $e) {}
+
+        $list = array_merge($this->facilityProcurements, $sessionAdded);
+        $filtered = array_filter($list, function($prc) use ($sessionDeleted) {
+            return !in_array($prc['id'], $sessionDeleted);
+        });
+
+        foreach ($filtered as &$item) {
+            if (isset($sessionUpdated[$item['id']])) {
+                $item = array_merge($item, $sessionUpdated[$item['id']]);
+            }
+        }
+
+        return array_values($filtered);
+    }
+
+    public function findFacilityProcurement(string $id): ?array
+    {
+        foreach ($this->getFacilityProcurements() as $prc) {
+            if ($prc['id'] === $id || ($prc['request_code'] ?? '') === $id) {
+                return $prc;
             }
         }
         return null;

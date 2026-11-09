@@ -10,8 +10,8 @@ Catatan pemantauan progres implementasi prototipe Alia Islamic School.
 - **Batch Aktif**: Batch E (Boarding, Finance, HRIS)
 - **Batch Aktif**: Batch F (Facilities, Inventory, Portals)
 - **Task Terakhir Selesai**:
-  - `T11.3`: Maintenance/damage reports (Sarpras & Fasilitas: Manajemen Tiket Laporan Kerusakan Fasilitas, Klasifikasi 4 Tingkat Prioritas Darurat/Tinggi/Sedang/Rendah, Alokasi Teknisi Internal & Vendor Rekanan, Formulir SPK Servis Berkop Alia, Update Progres Log Servis & Realisasi Biaya).
-- **Task Selanjutnya**: `T11.4`: Procurement requests (Sarpras & Fasilitas: Pengajuan Pengadaan Sarpras Baru, Daftar Kebutuhan Barang/Fasilitas, Estimasi Anggaran, dan Alur Persetujuan Yayasan — Penutup Phase 11 Sarpras).
+  - `T11.4`: Procurement requests (Sarpras & Fasilitas: Pengajuan Pengadaan Sarpras Baru, Multi-Item Rincian Barang & Subtotal Belanja, Estimasi Anggaran RAPBS, Alur Persetujuan Yayasan, Lembar Cetak Formulir Usulan Berkop Alia — Penutup Phase 11 Sarpras SELESAI 100%).
+- **Task Selanjutnya**: `T12.1`: Item master (Inventaris & Logistik: Master Data Barang, Kategori ATK/Elektronik/Alat Kebersihan, Kode Barcode & Satuan).
 
 ---
 
@@ -249,6 +249,12 @@ Catatan pemantauan progres implementasi prototipe Alia Islamic School.
   - Controller: [`SarprasController.php`](file:///c:/laragon/www/prototipe-alia/app/Http/Controllers/SarprasController.php) (`pemeliharaan`, `storePemeliharaan`, `updateProgressPemeliharaan`, `destroyPemeliharaan`).
   - View: [`resources/views/sarpras/pemeliharaan.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/sarpras/pemeliharaan.blade.php) (3 Tab: Buku Tiket Kerusakan & Servis, Tim Teknisi & Vendor Rekanan, Rekapitulasi Biaya & Kategori Servis, 4 info box total tiket/kasus darurat/dalam pengerjaan/selesai, modal lembar kerja SPK servis resmi berkop Alia Islamic School, modal update progres pengerjaan teknisi & realisasi biaya, form laporan kerusakan baru, filter status/prioritas/kategori/search, cetak).
   - Rute aktif `/sarpras/pemeliharaan`, `/sarpras/pemeliharaan` (POST), `/sarpras/pemeliharaan/{id}/progress` (POST), `/sarpras/pemeliharaan/{id}/destroy`, serta submenu aktif di sidebar.
+- `[x] T11.4`: Procurement Requests (Pengajuan Pengadaan Sarpras Baru — Penutup Phase 11 Sarpras):
+  - Dataset baseline pengadaan sarpras di [`DemoDataManager.php`](file:///c:/laragon/www/prototipe-alia/app/Support/DemoData/DemoDataManager.php) (`getFacilityProcurements`, `findFacilityProcurement`) mencakup pengadaan 25 unit workstation PC Lab CBT, 80 set meja kursi santri asrama putri, sound system line array outdoor panggung, kit mikroskop praktikum lab IPA.
+  - Controller: [`SarprasController.php`](file:///c:/laragon/www/prototipe-alia/app/Http/Controllers/SarprasController.php) (`pengadaan`, `storePengadaan`, `approvePengadaan`, `destroyPengadaan`) dengan dukungan multi-item dinamis dan kalkulasi subtotal/total otomatis.
+  - View: [`resources/views/sarpras/pengadaan.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/sarpras/pengadaan.blade.php) (3 Tab: Daftar Usulan Pengadaan, Antrean Persetujuan Yayasan, Rekapitulasi per Sumber Dana, 4 info box total usulan/menunggu approval/disetujui/total anggaran, modal formulir pengadaan & rincian RAB resmi berkop Alia Islamic School, modal persetujuan anggaran pimpinan, form usulan baru dengan penambahan baris barang dinamis, filter kategori/urgensi/status/search, cetak).
+  - Rute aktif `/sarpras/pengadaan`, `/sarpras/pengadaan` (POST), `/sarpras/pengadaan/{id}/approve` (POST), `/sarpras/pengadaan/{id}/destroy`, serta link menu di sidebar AdminLTE.
+
 
 
 
