@@ -101,7 +101,7 @@ update `docs/PROGRESS.md`, report changed files and blockers, then stop.
 -   [x] T11.4 Procurement requests.
 -   [x] T12.1 Item master.
 -   [x] T12.2 Stock receipt.
--   [ ] T12.3 Stock issue.
+-   [x] T12.3 Stock issue.
 -   [ ] T12.4 Procurement simulation.
 -   [ ] T12.5 Maintenance.
 -   [ ] T12.6 Inventory reports.

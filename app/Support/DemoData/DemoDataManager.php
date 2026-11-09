@@ -72,6 +72,7 @@ class DemoDataManager
     private array $facilityProcurements = [];
     private array $inventoryItems = [];
     private array $stockReceipts = [];
+    private array $stockIssues = [];
 
     public function __construct()
     {
@@ -5226,6 +5227,90 @@ class DemoDataManager
                 'notes' => 'Pasokan kebutuhan pembersihan rutin kamar mandi dan asrama santri.'
             ]
         ];
+
+        // 29. Pengeluaran / Distribusi Barang Logistik (Stock Issues / Outbound)
+        $this->stockIssues = [
+            [
+                'id' => 'ISS-001',
+                'issue_code' => 'KELUAR/LOG/2026/001',
+                'request_number' => 'BON/BPPB/2026/008',
+                'issue_date' => '2026-11-06',
+                'item_id' => 'INV-001', // Kertas HVS
+                'item_name' => 'Kertas HVS A4 80 GSM PaperOne',
+                'item_code' => 'BRG/ATK/2026/001',
+                'category' => 'atk',
+                'quantity' => 15,
+                'unit' => 'Rim',
+                'recipient_name' => 'Ahmad Fauzi, S.Pd.',
+                'recipient_role' => 'Wakasek Kurikulum & Panitia PTS',
+                'unit_id' => 'UNIT-SMA',
+                'destination' => 'Ruang Kurikulum SMA (Pencetakan Naskah Soal PTS Ganjil)',
+                'officer_name' => 'H. Mulyadi (Staf Logistik)',
+                'purpose' => 'Penggandaan lembar soal ujian asesmen sumatif tengah semester santri kelas X, XI, XII.',
+                'status' => 'diserahkan',
+                'notes' => 'Telah diambil langsung oleh staf kurikulum dengan bukti tanda tangan bon pengeluaran.'
+            ],
+            [
+                'id' => 'ISS-002',
+                'issue_code' => 'KELUAR/LOG/2026/002',
+                'request_number' => 'BON/BPPB/2026/009',
+                'issue_date' => '2026-11-07',
+                'item_id' => 'INV-002', // Spidol Whiteboard
+                'item_name' => 'Spidol Boardmarker Snowman Hitam (BG-12)',
+                'item_code' => 'BRG/ATK/2026/002',
+                'category' => 'atk',
+                'quantity' => 3,
+                'unit' => 'Box',
+                'recipient_name' => 'Ust. Salman Al-Farisi, M.Pd.',
+                'recipient_role' => 'Koordinator Halaqah Tahfidz',
+                'unit_id' => 'UNIT-SMP',
+                'destination' => 'Masjid Kampus & Halaqah Quran',
+                'officer_name' => 'H. Mulyadi (Staf Logistik)',
+                'purpose' => 'Pembagian alat tulis spidol pengajaran tajwid dan setoran hafalan santri.',
+                'status' => 'diserahkan',
+                'notes' => 'Distribusi rutin awal pekan untuk 12 kelompok halaqah.'
+            ],
+            [
+                'id' => 'ISS-003',
+                'issue_code' => 'KELUAR/LOG/2026/003',
+                'request_number' => 'BON/BPPB/2026/010',
+                'issue_date' => '2026-11-08',
+                'item_id' => 'INV-007', // Cairan Karbol
+                'item_name' => 'Cairan Pembersih Lantai Karbol Sereh Wipol 4 Liter',
+                'item_code' => 'BRG/KBR/2026/001',
+                'category' => 'kebersihan',
+                'quantity' => 6,
+                'unit' => 'Jerigen',
+                'recipient_name' => 'Agus Rohman',
+                'recipient_role' => 'Kepala Janitor & Kebersihan Asrama',
+                'unit_id' => 'YAYASAN',
+                'destination' => 'Asrama Santri Putra Umar & Asrama Putri Khadijah',
+                'officer_name' => 'H. Mulyadi (Staf Logistik)',
+                'purpose' => 'Operasional pembersihan toilet, kamar mandi, dan selasar lorong asrama harian.',
+                'status' => 'diserahkan',
+                'notes' => 'Alokasi 3 jerigen asrama putra dan 3 jerigen asrama putri.'
+            ],
+            [
+                'id' => 'ISS-004',
+                'issue_code' => 'KELUAR/LOG/2026/004',
+                'request_number' => 'BON/BPPB/2026/011',
+                'issue_date' => '2026-11-09',
+                'item_id' => 'INV-004', // Kabel Roll
+                'item_name' => 'Kabel Roll Terminal Kuningan 15 Meter Uticon',
+                'item_code' => 'BRG/ELK/2026/002',
+                'category' => 'elektronik',
+                'quantity' => 2,
+                'unit' => 'Pcs',
+                'recipient_name' => 'Ust. Fauzan Azhim, S.T.',
+                'recipient_role' => 'Pembina OSIS SMA',
+                'unit_id' => 'UNIT-SMA',
+                'destination' => 'Aula Serbaguna / Islamic Center',
+                'officer_name' => 'H. Mulyadi (Staf Logistik)',
+                'purpose' => 'Dukungan instalasi daya listrik sound system dan laptop proyektor kajian santri.',
+                'status' => 'diserahkan',
+                'notes' => 'Peminjaman operasional sementara untuk kegiatan OSIS, wajib dikembalikan lusa.'
+            ]
+        ];
     }
 
     // Getters
@@ -7324,6 +7409,35 @@ class DemoDataManager
         foreach ($this->getStockReceipts() as $rcv) {
             if ($rcv['id'] === $id || ($rcv['receipt_code'] ?? '') === $id) {
                 return $rcv;
+            }
+        }
+        return null;
+    }
+
+    public function getStockIssues(): array
+    {
+        $sessionAdded = [];
+        $sessionDeleted = [];
+        try {
+            if (function_exists('session') && app()->has('session')) {
+                $sessionAdded = session('demo_stock_issues_added', []);
+                $sessionDeleted = session('demo_stock_issues_deleted', []);
+            }
+        } catch (\Throwable $e) {}
+
+        $list = array_merge($this->stockIssues, $sessionAdded);
+        $filtered = array_filter($list, function($iss) use ($sessionDeleted) {
+            return !in_array($iss['id'], $sessionDeleted);
+        });
+
+        return array_values($filtered);
+    }
+
+    public function findStockIssue(string $id): ?array
+    {
+        foreach ($this->getStockIssues() as $iss) {
+            if ($iss['id'] === $id || ($iss['issue_code'] ?? '') === $id) {
+                return $iss;
             }
         }
         return null;

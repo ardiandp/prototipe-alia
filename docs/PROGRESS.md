@@ -10,8 +10,8 @@ Catatan pemantauan progres implementasi prototipe Alia Islamic School.
 - **Batch Aktif**: Batch E (Boarding, Finance, HRIS)
 - **Batch Aktif**: Batch F (Facilities, Inventory, Portals)
 - **Task Terakhir Selesai**:
-  - `T12.2`: Stock receipt (Inventaris & Logistik: Jurnal Penerimaan Barang Masuk Inbound, Rekapitulasi 4 Sumber Pasokan Vendor/BOS/Hibah/Yayasan, Surat Jalan DO, Petugas Penerima, Berita Acara BASTB Berkop Alia, dan Penambahan Stok Fisik Otomatis).
-- **Task Selanjutnya**: `T12.3`: Stock issue (Inventaris & Logistik: Pengeluaran / Distribusi Barang, Unit Pemohon, Pengurangan Stok Fisik Otomatis, dan Bon Permintaan Pengeluaran Barang BPPB).
+  - `T12.3`: Stock issue (Inventaris & Logistik: Jurnal Pengeluaran Barang Outbound, Distribusi Alokasi Unit SMA/SMP/Asrama, Bon Permintaan BPPB Berkop Alia, Validasi Batas Maksimal Stok Fisik, dan Pengurangan Stok Otomatis).
+- **Task Selanjutnya**: `T12.4`: Procurement simulation (Inventaris & Logistik: Alur Simulasi Pengadaan Barang Gudang, Approval, Pratinjau Purchase Order - PO, dan Penerimaan Barang).
 
 ---
 
@@ -266,6 +266,12 @@ Catatan pemantauan progres implementasi prototipe Alia Islamic School.
   - Controller: [`InventarisController.php`](file:///c:/laragon/www/prototipe-alia/app/Http/Controllers/InventarisController.php) (`penerimaan`, `storePenerimaan`, `destroyPenerimaan`) dengan penambahan stok fisik barang secara otomatis ke master inventaris saat dicatat.
   - View: [`resources/views/inventaris/penerimaan.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/inventaris/penerimaan.blade.php) (Dwi-tab Buku Jurnal Penerimaan Inbound & Rekapitulasi per Sumber Pasokan, 4 info box total transaksi/volume masuk/nilai perolehan/vendor aktif, modal fisik BASTB berkop resmi Alia Islamic School, form pencatatan penerimaan baru dengan auto-fill lokasi rak & satuan, filter sumber/tanggal/search, cetak).
   - Rute aktif `/inventaris/penerimaan`, `/inventaris/penerimaan` (POST), `/inventaris/penerimaan/{id}/destroy`, serta link menu di sidebar AdminLTE.
+- `[x] T12.3`: Stock Issue (Pengeluaran & Distribusi Barang Logistik):
+  - Dataset baseline pengeluaran keluar di [`DemoDataManager.php`](file:///c:/laragon/www/prototipe-alia/app/Support/DemoData/DemoDataManager.php) (`getStockIssues`, `findStockIssue`) mencakup distribusi kertas HVS untuk PTS SMA, spidol whiteboard halaqah tahfidz SMP, karbol pembersih asrama santri putra/putri, dan kabel roll aula event OSIS.
+  - Controller: [`InventarisController.php`](file:///c:/laragon/www/prototipe-alia/app/Http/Controllers/InventarisController.php) (`pengeluaran`, `storePengeluaran`, `destroyPengeluaran`) dengan validasi batas ketersediaan stok fisik gudang dan pengurangan stok otomatis secara real-time.
+  - View: [`resources/views/inventaris/pengeluaran.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/inventaris/pengeluaran.blade.php) (Dwi-tab Buku Jurnal Pengeluaran Outbound & Distribusi Berdasarkan Unit Pemohon, 4 info box total transaksi/volume keluar/alokasi SMA/alokasi SMP-asrama, modal fisik Bon Permintaan Pengeluaran Barang BPPB resmi berkop Alia Islamic School, form pencatatan pengeluaran baru dengan deteksi stok maksimal otomatis, filter unit/tanggal/search, cetak).
+  - Rute aktif `/inventaris/pengeluaran`, `/inventaris/pengeluaran` (POST), `/inventaris/pengeluaran/{id}/destroy`, serta link menu di sidebar AdminLTE.
+
 
 
 

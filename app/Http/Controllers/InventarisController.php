@@ -359,5 +359,171 @@ class InventarisController extends Controller
 
         return redirect()->route('inventaris.penerimaan')->with('info', "Catatan penerimaan barang ID: {$id} berhasil dihapus dari sesi demo.");
     }
+
+    /**
+     * T12.3 - Stock Issue / Pengeluaran & Distribusi Barang Logistik
+     */
+    public function pengeluaran(Request $request)
+    {
+        $demo = DemoDataManager::getInstance();
+        $issues = $demo->getStockIssues();
+        $items = $demo->getInventoryItems();
+        $units = $demo->getUnits();
+
+        $activeTab = $request->get('tab', 'daftar'); // daftar, rekap_unit
+        $unitFilter = $request->get('unit', 'all');
+        $dateFilter = $request->get('date');
+        $search = $request->get('search');
+
+        $filteredIssues = array_filter($issues, function ($iss) use ($unitFilter, $dateFilter, $search) {
+            $matchUnit = ($unitFilter === 'all') || (($iss['unit_id'] ?? '') === $unitFilter);
+            $matchDate = empty($dateFilter) || (($iss['issue_date'] ?? '') === $dateFilter);
+            $matchSearch = true;
+            if ($search) {
+                $matchSearch = stripos($iss['item_name'] ?? '', $search) !== false ||
+                               stripos($iss['issue_code'] ?? '', $search) !== false ||
+                               stripos($iss['request_number'] ?? '', $search) !== false ||
+                               stripos($iss['recipient_name'] ?? '', $search) !== false ||
+                               stripos($iss['destination'] ?? '', $search) !== false ||
+                               stripos($iss['purpose'] ?? '', $search) !== false;
+            }
+            return $matchUnit && $matchDate && $matchSearch;
+        });
+
+        // Metrik Ringkasan Pengeluaran
+        $totalTransactions = count($issues);
+        $totalItemsIssued = array_sum(array_column($issues, 'quantity'));
+        $smaCount = count(array_filter($issues, fn($i) => ($i['unit_id'] ?? '') === 'UNIT-SMA'));
+        $smpCount = count(array_filter($issues, fn($i) => ($i['unit_id'] ?? '') === 'UNIT-SMP'));
+
+        // Sebaran Unit Penerima
+        $unitSummary = [];
+        foreach ($issues as $i) {
+            $u = $i['unit_id'] ?? 'UMUM';
+            if (!isset($unitSummary[$u])) {
+                $unitSummary[$u] = [
+                    'label' => $u,
+                    'count' => 0,
+                    'quantity' => 0
+                ];
+            }
+            $unitSummary[$u]['count']++;
+            $unitSummary[$u]['quantity'] += $i['quantity'];
+        }
+
+        return view('inventaris.pengeluaran', compact(
+            'filteredIssues',
+            'issues',
+            'items',
+            'units',
+            'activeTab',
+            'unitFilter',
+            'dateFilter',
+            'search',
+            'totalTransactions',
+            'totalItemsIssued',
+            'smaCount',
+            'smpCount',
+            'unitSummary'
+        ));
+    }
+
+    /**
+     * Catat Pengeluaran / Distribusi Barang Baru (Otomatis Kurangi Stok Fisik)
+     */
+    public function storePengeluaran(Request $request)
+    {
+        $validated = $request->validate([
+            'item_id' => 'required|string',
+            'request_number' => 'required|string|max:100',
+            'issue_date' => 'required|date',
+            'quantity' => 'required|numeric|min:1',
+            'recipient_name' => 'required|string|max:100',
+            'recipient_role' => 'required|string|max:100',
+            'unit_id' => 'required|string',
+            'destination' => 'required|string|max:150',
+            'purpose' => 'required|string|max:255',
+            'officer_name' => 'required|string|max:100',
+            'notes' => 'nullable|string|max:500',
+        ]);
+
+        $demo = DemoDataManager::getInstance();
+        $item = $demo->findInventoryItem($validated['item_id']);
+
+        if (!$item) {
+            return redirect()->back()->withErrors(['item_id' => 'Barang inventaris tidak ditemukan di sistem!']);
+        }
+
+        // Cek ketersediaan stok fisik
+        $currentStock = $item['stock'] ?? 0;
+        $reqQuantity = (int)$validated['quantity'];
+
+        if ($reqQuantity > $currentStock) {
+            return redirect()->back()->withErrors([
+                'quantity' => "Permintaan gagal! Kuantitas diminta ({$reqQuantity} {$item['unit']}) melebihi sisa stok fisik yang tersedia di gudang ({$currentStock} {$item['unit']})."
+            ])->withInput();
+        }
+
+        $itemName = $item['name'];
+        $itemCode = $item['item_code'];
+        $itemCategory = $item['category'];
+        $itemUnit = $item['unit'];
+
+        $allIssues = $demo->getStockIssues();
+        $count = count($allIssues) + 1;
+        $issueCode = "KELUAR/LOG/" . date('Y') . "/" . str_pad($count, 3, '0', STR_PAD_LEFT);
+
+        $newIssue = [
+            'id' => 'ISS-' . str_pad($count, 3, '0', STR_PAD_LEFT),
+            'issue_code' => $issueCode,
+            'request_number' => $validated['request_number'],
+            'issue_date' => $validated['issue_date'],
+            'item_id' => $validated['item_id'],
+            'item_name' => $itemName,
+            'item_code' => $itemCode,
+            'category' => $itemCategory,
+            'quantity' => $reqQuantity,
+            'unit' => $itemUnit,
+            'recipient_name' => $validated['recipient_name'],
+            'recipient_role' => $validated['recipient_role'],
+            'unit_id' => $validated['unit_id'],
+            'destination' => $validated['destination'],
+            'purpose' => $validated['purpose'],
+            'officer_name' => $validated['officer_name'],
+            'status' => 'diserahkan',
+            'notes' => $validated['notes'] ?: '-'
+        ];
+
+        // 1. Simpan ke demo_stock_issues_added
+        $sessionAdded = session('demo_stock_issues_added', []);
+        $sessionAdded[] = $newIssue;
+        session(['demo_stock_issues_added' => $sessionAdded]);
+
+        // 2. Kurangi stok fisik barang di demo_inventory_items_updated
+        $sessionItemUpdated = session('demo_inventory_items_updated', []);
+        $existingItemUpdate = $sessionItemUpdated[$item['id']] ?? [];
+        $newStock = $currentStock - $reqQuantity;
+
+        $sessionItemUpdated[$item['id']] = array_merge($existingItemUpdate, [
+            'stock' => $newStock
+        ]);
+        session(['demo_inventory_items_updated' => $sessionItemUpdated]);
+
+        return redirect()->route('inventaris.pengeluaran')->with('success', "Pengeluaran barang \"{$itemName}\" ({$reqQuantity} {$itemUnit}) berhasil dicatat ({$issueCode}) dan sisa stok fisik otomatis dikurangi (sisa: {$newStock} {$itemUnit})!");
+    }
+
+    /**
+     * Hapus Catatan Pengeluaran Barang dari Sesi Demo
+     */
+    public function destroyPengeluaran(string $id)
+    {
+        $sessionDeleted = session('demo_stock_issues_deleted', []);
+        if (!in_array($id, $sessionDeleted)) {
+            $sessionDeleted[] = $id;
+            session(['demo_stock_issues_deleted' => $sessionDeleted]);
+        }
+
+        return redirect()->route('inventaris.pengeluaran')->with('info', "Catatan pengeluaran barang ID: {$id} berhasil dihapus dari sesi demo.");
+    }
 }
 
