@@ -1056,4 +1056,191 @@ class KeuanganController extends Controller
         return redirect()->route('keuangan.tunggakan')
             ->with('success', "Notifikasi [{$validated['notice_type']}] untuk wali santri {$studentName} ({$inv['invoice_number']}) BERHASIL diterbitkan & dikirim!");
     }
+
+    /**
+     * T09.7 — Cash In/Out (Buku Kas Umum, Arus Kas Masuk & Kas Keluar Operasional)
+     */
+    public function arusKas(Request $request)
+    {
+        $demo = DemoDataManager::getInstance();
+
+        $expenses = $demo->getFinanceExpenses();
+        $transactions = $demo->getPaymentTransactions();
+        $units = $demo->getUnits();
+        $students = $demo->getStudents();
+
+        $studentMap = [];
+        foreach ($students as $s) {
+            $studentMap[$s['id']] = $s;
+        }
+
+        $unitMap = [];
+        foreach ($units as $u) {
+            $unitMap[$u['id']] = $u;
+        }
+
+        // Filters
+        $typeFilter = $request->query('type'); // in, out
+        $categoryFilter = $request->query('category');
+        $monthFilter = $request->query('month');
+        $search = strtolower(trim($request->query('q', '')));
+
+        // Build unified ledger
+        $ledger = [];
+
+        // 1. Kas Masuk (Inflow dari Transaksi Pembayaran)
+        foreach ($transactions as $trx) {
+            $st = $studentMap[$trx['student_id']] ?? null;
+            $ledger[] = [
+                'id' => $trx['id'],
+                'type' => 'in',
+                'ref_number' => $trx['receipt_number'],
+                'title' => 'Penerimaan ' . ($trx['payment_method'] ?? 'Kasir') . ' — ' . ($st['name'] ?? 'Santri'),
+                'category' => 'Penerimaan SPP & Biaya Santri',
+                'date' => substr($trx['payment_date'], 0, 10),
+                'amount' => (int)$trx['amount'],
+                'recipient_pic' => $trx['cashier_name'] ?? 'Kasir Sekolah',
+                'status' => 'berhasil',
+                'proof' => 'KWT-' . substr($trx['id'], -6) . '.pdf',
+                'notes' => $trx['notes'] ?? '-'
+            ];
+        }
+
+        // 2. Kas Keluar (Outflow dari Beban Operasional)
+        foreach ($expenses as $exp) {
+            $ledger[] = [
+                'id' => $exp['id'],
+                'type' => 'out',
+                'ref_number' => $exp['id'],
+                'title' => $exp['title'],
+                'category' => $exp['category'],
+                'date' => $exp['date'],
+                'amount' => (int)$exp['amount'],
+                'recipient_pic' => $exp['recipient'],
+                'status' => $exp['status'] ?? 'disetujui',
+                'proof' => 'BKK-' . substr($exp['id'], -6) . '.pdf',
+                'notes' => $exp['notes'] ?? '-'
+            ];
+        }
+
+        // Apply filters
+        $filteredLedger = array_filter($ledger, function ($item) use ($typeFilter, $categoryFilter, $monthFilter, $search) {
+            if ($typeFilter && $item['type'] !== $typeFilter) {
+                return false;
+            }
+
+            if ($categoryFilter && $item['category'] !== $categoryFilter) {
+                return false;
+            }
+
+            if ($monthFilter && !str_starts_with($item['date'], $monthFilter)) {
+                return false;
+            }
+
+            if ($search) {
+                $haystack = strtolower(
+                    $item['ref_number'] . ' ' .
+                    $item['title'] . ' ' .
+                    $item['category'] . ' ' .
+                    $item['recipient_pic'] . ' ' .
+                    $item['notes']
+                );
+                if (strpos($haystack, $search) === false) {
+                    return false;
+                }
+            }
+
+            return true;
+        });
+
+        // Urutkan berdasarkan tanggal terbaru
+        usort($filteredLedger, function ($a, $b) {
+            return strcmp($b['date'] . $b['id'], $a['date'] . $a['id']);
+        });
+
+        // Metrik Keuangan
+        $totalMasuk = array_sum(array_map(fn($item) => $item['type'] === 'in' ? $item['amount'] : 0, $ledger));
+        $totalKeluar = array_sum(array_map(fn($item) => $item['type'] === 'out' ? $item['amount'] : 0, $ledger));
+        $saldoKas = $totalMasuk - $totalKeluar;
+        $totalTransaksiBuku = count($ledger);
+
+        // Kategori Unik untuk dropdown
+        $categories = array_values(array_unique(array_column($ledger, 'category')));
+
+        return view('keuangan.arus-kas', compact(
+            'filteredLedger',
+            'units',
+            'typeFilter',
+            'categoryFilter',
+            'monthFilter',
+            'search',
+            'totalMasuk',
+            'totalKeluar',
+            'saldoKas',
+            'totalTransaksiBuku',
+            'categories'
+        ));
+    }
+
+    /**
+     * Store new expense (Kas Keluar Operasional - Session-backed)
+     */
+    public function storeArusKas(Request $request)
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:150',
+            'category' => 'required|string|max:50',
+            'amount' => 'required|numeric|min:1000',
+            'date' => 'required|date',
+            'recipient' => 'required|string|max:100',
+            'unit_id' => 'required|string',
+            'notes' => 'nullable|string|max:255'
+        ]);
+
+        $demo = DemoDataManager::getInstance();
+        $existing = $demo->getFinanceExpenses();
+
+        $sessionAdded = session('demo_finance_expenses_added', []);
+        $newId = 'EXP-' . date('Ym') . '-' . str_pad((string)(count($existing) + count($sessionAdded) + 1), 3, '0', STR_PAD_LEFT);
+
+        $newItem = [
+            'id' => $newId,
+            'title' => $validated['title'],
+            'category' => $validated['category'],
+            'amount' => (int)$validated['amount'],
+            'date' => $validated['date'],
+            'unit_id' => $validated['unit_id'],
+            'recipient' => $validated['recipient'],
+            'status' => 'disetujui',
+            'notes' => $validated['notes'] ?: 'Pengeluaran operasional resmi disetujui Bendahara Sekolah.'
+        ];
+
+        $sessionAdded[] = $newItem;
+        session(['demo_finance_expenses_added' => $sessionAdded]);
+
+        return redirect()->route('keuangan.arus-kas')
+            ->with('success', "Pengeluaran kas [{$validated['title']}] sebesar Rp " . number_format($validated['amount'], 0, ',', '.') . " berhasil dicatat dalam Buku Kas Umum!");
+    }
+
+    /**
+     * Destroy expense (Session-backed)
+     */
+    public function destroyArusKas(string $id)
+    {
+        $demo = DemoDataManager::getInstance();
+        $exp = $demo->findFinanceExpense($id);
+
+        if (!$exp) {
+            return redirect()->route('keuangan.arus-kas')->with('error', 'Catatan pengeluaran tidak ditemukan.');
+        }
+
+        $sessionDeleted = session('demo_finance_expenses_deleted', []);
+        if (!in_array($id, $sessionDeleted)) {
+            $sessionDeleted[] = $id;
+            session(['demo_finance_expenses_deleted' => $sessionDeleted]);
+        }
+
+        return redirect()->route('keuangan.arus-kas')
+            ->with('success', "Catatan pengeluaran [{$exp['title']}] berhasil dibatalkan dari buku kas.");
+    }
 }

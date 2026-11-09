@@ -150,6 +150,7 @@
           <li class="{{ request()->is('keuangan/pos-biaya*') ? 'active' : '' }}"><a href="{{ route('keuangan.pos-biaya') }}"><i class="fa fa-circle-o"></i> Pos Biaya & Tarif</a></li>
           <li class="{{ request()->is('keuangan/tagihan*') ? 'active' : '' }}"><a href="{{ route('keuangan.tagihan') }}"><i class="fa fa-circle-o"></i> Tagihan Santri</a></li>
           <li class="{{ request()->is('keuangan/transaksi*') ? 'active' : '' }}"><a href="{{ route('keuangan.transaksi') }}"><i class="fa fa-circle-o"></i> Penerimaan Pembayaran</a></li>
+          <li class="{{ request()->is('keuangan/arus-kas*') ? 'active' : '' }}"><a href="{{ route('keuangan.arus-kas') }}"><i class="fa fa-circle-o"></i> Arus Kas (Masuk/Keluar)</a></li>
           <li class="{{ request()->is('keuangan/tunggakan*') ? 'active' : '' }}"><a href="{{ route('keuangan.tunggakan') }}"><i class="fa fa-circle-o"></i> Tunggakan & Piutang</a></li>
           <li class="{{ request()->is('keuangan/beasiswa*') ? 'active' : '' }}"><a href="{{ route('keuangan.beasiswa') }}"><i class="fa fa-circle-o"></i> Beasiswa & Potongan</a></li>
           <li class="{{ request()->is('keuangan/laporan*') ? 'active' : '' }}"><a href="{{ route('keuangan.laporan') }}"><i class="fa fa-circle-o"></i> Laporan Keuangan</a></li>

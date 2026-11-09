@@ -221,6 +221,9 @@ Route::prefix('keuangan')->name('keuangan.')->group(function () {
     Route::get('/beasiswa/{id}/destroy', [KeuanganController::class, 'destroyBeasiswa'])->name('beasiswa.destroy');
     Route::get('/tunggakan', [KeuanganController::class, 'tunggakan'])->name('tunggakan');
     Route::post('/tunggakan/send-notice', [KeuanganController::class, 'sendTunggakanNotice'])->name('tunggakan.notice');
+    Route::get('/arus-kas', [KeuanganController::class, 'arusKas'])->name('arus-kas');
+    Route::post('/arus-kas', [KeuanganController::class, 'storeArusKas'])->name('arus-kas.store');
+    Route::get('/arus-kas/{id}/destroy', [KeuanganController::class, 'destroyArusKas'])->name('arus-kas.destroy');
     Route::get('/laporan', makePlaceholder('Laporan Keuangan', 'Laporan Penerimaan & Tunggakan', 'fa-balance-scale'))->name('laporan');
 });
 

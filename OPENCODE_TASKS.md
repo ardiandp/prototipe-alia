@@ -83,7 +83,7 @@ update `docs/PROGRESS.md`, report changed files and blockers, then stop.
 -   [x] T09.4 Payment simulation.
 -   [x] T09.5 Scholarship/discount.
 -   [x] T09.6 Arrears.
--   [ ] T09.7 Cash in/out.
+-   [x] T09.7 Cash in/out.
 -   [ ] T09.8 Finance reports.
 -   [ ] T10.1 Employee profiles/organization.
 -   [ ] T10.2 Staff attendance.

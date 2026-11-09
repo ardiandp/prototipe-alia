@@ -9,8 +9,8 @@ Catatan pemantauan progres implementasi prototipe Alia Islamic School.
 - **Batch Aktif**: Batch D (Learning, Islamic Programs, Student Affairs)
 - **Batch Aktif**: Batch E (Boarding, Finance, HRIS)
 - **Task Terakhir Selesai**:
-  - `T09.6`: Arrears (Keuangan: Manajemen Piutang & Surat Peringatan Tunggakan SPP Santri, Laporan Penuaan Piutang / Aging Report 1-30/31-60/>60 Hari Kritis, Penerbitan Surat Peringatan SP-1/SP-2 Berkop Resmi Alia, Form Kirim Pengingat, dan Filter Unit/Aging/Kelas/Search).
-- **Task Selanjutnya**: `T09.7`: Cash in/out (Keuangan: Manajemen Kas Masuk & Kas Keluar Operasional, Buku Kas Umum / Jurnal Pengeluaran, Pos Belanja Dapur/Listrik/Honorarium, dan Saldo Buku Kas).
+  - `T09.7`: Cash in/out (Keuangan: Manajemen Arus Kas Masuk & Kas Keluar Operasional, Buku Kas Umum / Jurnal Mutasi Kas Terintegrasi, Pos Belanja Dapur/Listrik/ATK/Honorarium, Modal Bukti Voucher Kas Masuk BKM & Kas Keluar BKK, Form Input Kas Keluar Baru, dan Format Cetak Buku Kas).
+- **Task Selanjutnya**: `T09.8`: Finance reports (Keuangan: Laporan Keuangan Komprehensif, Laporan Penerimaan SPP & Piutang, Laporan Realisasi Anggaran Operasional, Neraca Kas, dan Ekspor Laporan).
 
 ---
 
@@ -188,6 +188,10 @@ Catatan pemantauan progres implementasi prototipe Alia Islamic School.
   - Controller: [`KeuanganController.php`](file:///c:/laragon/www/prototipe-alia/app/Http/Controllers/KeuanganController.php) (`tunggakan`, `sendTunggakanNotice`).
   - View: [`resources/views/keuangan/tunggakan.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/keuangan/tunggakan.blade.php) (Tabel aging report piutang santri, 4 kartu info box aging 1-30/31-60/>60 hari kritis, modal penerbitan SP-1/SP-2/SP-3 WhatsApp, modal surat pemberitahuan tunggakan resmi berkop sekolah, filter unit/aging/kelas/search).
   - Rute aktif `/keuangan/tunggakan`, `/keuangan/tunggakan/send-notice` (POST), dan penambahan sub-menu di sidebar.
+- `[x] T09.7`: Cash In/Out (Buku Kas Umum & Mutasi Arus Kas):
+  - Controller: [`KeuanganController.php`](file:///c:/laragon/www/prototipe-alia/app/Http/Controllers/KeuanganController.php) (`arusKas`, `storeArusKas`, `destroyArusKas`).
+  - View: [`resources/views/keuangan/arus-kas.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/keuangan/arus-kas.blade.php) (Tabel jurnal buku kas umum integrasi debit/kredit, 4 info box total kas masuk/keluar/saldo/mutasi, modal pencatatan pengeluaran baru berbasis sesi, modal cetak bukti voucher kas masuk BKM & keluar BKK, filter aliran kas/kategori/bulan/search, cetak buku kas).
+  - Rute aktif `/keuangan/arus-kas`, `/keuangan/arus-kas` (POST), `/keuangan/arus-kas/{id}/destroy`, serta penambahan sub-menu di sidebar.
 
 
 
