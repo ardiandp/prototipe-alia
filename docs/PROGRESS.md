@@ -10,8 +10,8 @@ Catatan pemantauan progres implementasi prototipe Alia Islamic School.
 - **Batch Aktif**: Batch E (Boarding, Finance, HRIS)
 - **Batch Aktif**: Batch F (Facilities, Inventory, Portals)
 - **Task Terakhir Selesai**:
-  - `T12.5`: Maintenance (Inventaris & Logistik: Pemeliharaan & Kalibrasi Alat Inventaris Berkala, Servis Alat Praktikum/Multimedia, Riwayat Tindakan, Biaya, dan Update Kondisi Fisik Pasca-Servis Otomatis).
-- **Task Selanjutnya**: `T12.6`: Inventory reports (Inventaris & Logistik: Kartu Stok, Rekap Mutasi In/Out Logistik, Valuasi Nilai Aset Fisik & Simulasi Export/Print Laporan Resmi Berkop Alia).
+  - `T12.6`: Inventory reports (Inventaris & Logistik: Kartu Stok Bin Card Per Barang, Jurnal Mutasi Keluar-Masuk, Rekapitulasi Valuasi Aset Logistik, Evaluasi Kondisi Fisik Alat, & Format Cetak Kartu Fisik Berkop Alia).
+- **Task Selanjutnya**: `T13.1`: Parent Portal shell (Portal Wali Santri: Layout Khusus Mobile-friendly Orang Tua Santri, Navigasi Pintasan, Switcher Anak/Santri, & Profil Wali).
 
 ---
 
@@ -281,6 +281,11 @@ Catatan pemantauan progres implementasi prototipe Alia Islamic School.
   - Controller: [`InventarisController.php`](file:///c:/laragon/www/prototipe-alia/app/Http/Controllers/InventarisController.php) (`pemeliharaan`, `storePemeliharaan`, `updateStatusPemeliharaan`, `destroyPemeliharaan`) dengan fitur pembaruan kondisi fisik barang secara otomatis ke master data barang ketika status servis diselesaikan (`selesai` -> `kondisi_akhir`).
   - View: [`resources/views/inventaris/pemeliharaan.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/inventaris/pemeliharaan.blade.php) (3 Tab: Buku Jurnal Servis & Perbaikan, Kalender & Jadwal Servis/Kalibrasi Mendatang, Rekapitulasi Biaya Pemeliharaan Aset, 4 info box total riwayat servis/dalam perbaikan/selesai/total biaya servis, modal surat perintah kerja servis berkop Alia, modal update status & hasil servis, form pencatatan servis baru, filter status/kondisi/search, cetak).
   - Rute aktif `/inventaris/pemeliharaan`, `/inventaris/pemeliharaan` (POST), `/inventaris/pemeliharaan/{id}/status` (POST), `/inventaris/pemeliharaan/{id}/destroy`, serta link menu di sidebar AdminLTE.
+- `[x] T12.6`: Inventory Reports (Laporan Logistik & Kartu Stok):
+  - Controller: [`InventarisController.php`](file:///c:/laragon/www/prototipe-alia/app/Http/Controllers/InventarisController.php) (`laporan`) yang menyajikan integrasi data master barang, penerimaan barang masuk, bon pengeluaran barang keluar, pengadaan PO, dan pemeliharaan alat inventaris.
+  - View: [`resources/views/inventaris/laporan.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/inventaris/laporan.blade.php) (4 Tab: Kartu Stok Per Barang / Bin Card dengan perhitungan saldo berjalan otomatis, Jurnal Mutasi Arus Logistik Keseluruhan, Rekapitulasi Valuasi Aset & Komposisi Kategori dengan standar FIFO, Rekap Kondisi Fisik Alat & deteksi dini unit rusak ringan/berat, modal pratinjau fisik kartu stok gudang berkop Alia lengkap dengan tanda tangan Kabag Sarpras & Petugas Gudang, cetak).
+  - Rute aktif `/inventaris/laporan` dan `/inventaris/stok` (alias), serta update menu navigasi di sidebar AdminLTE.
+  - **Fase 12 (Inventaris & Logistik) RESMI 100% SELESAI.**
 
 
 

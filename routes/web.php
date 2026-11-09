@@ -301,7 +301,8 @@ Route::prefix('inventaris')->name('inventaris.')->group(function () {
     Route::post('/pemeliharaan', [InventarisController::class, 'storePemeliharaan'])->name('pemeliharaan.store');
     Route::post('/pemeliharaan/{id}/status', [InventarisController::class, 'updateStatusPemeliharaan'])->name('pemeliharaan.status');
     Route::get('/pemeliharaan/{id}/destroy', [InventarisController::class, 'destroyPemeliharaan'])->name('pemeliharaan.destroy');
-    Route::get('/stok', makePlaceholder('Stok & ATK', 'Inventaris Barang Masuk/Keluar', 'fa-boxes'))->name('stok');
+    Route::get('/laporan', [InventarisController::class, 'laporan'])->name('laporan');
+    Route::get('/stok', [InventarisController::class, 'laporan'])->name('stok');
 });
 
 // Portal Wali / Santri

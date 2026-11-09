@@ -973,5 +973,158 @@ class InventarisController extends Controller
 
         return redirect()->route('inventaris.pemeliharaan')->with('info', "Catatan servis alat ID: {$id} berhasil dihapus dari sesi demo.");
     }
+
+    /**
+     * T12.6 - Inventory Reports / Laporan Inventaris, Kartu Stok & Valuasi Aset Logistik
+     */
+    public function laporan(Request $request)
+    {
+        $demo = DemoDataManager::getInstance();
+        $items = $demo->getInventoryItems();
+        $receipts = $demo->getStockReceipts();
+        $issues = $demo->getStockIssues();
+        $procurements = $demo->getInventoryProcurements();
+        $maintenances = $demo->getInventoryMaintenances();
+
+        $activeTab = $request->get('tab', 'kartu_stok'); // kartu_stok, mutasi, valuasi_aset, kondisi_alat
+        $categoryFilter = $request->get('category', 'all');
+        $selectedItemId = $request->get('item_id', $items[0]['id'] ?? 'INV-001');
+
+        // Filter barang per kategori
+        $filteredItems = array_filter($items, function ($item) use ($categoryFilter) {
+            return ($categoryFilter === 'all') || (($item['category'] ?? '') === $categoryFilter);
+        });
+
+        // 1. Kartu Stok untuk barang terpilih
+        $selectedItem = $demo->findInventoryItem($selectedItemId) ?? ($items[0] ?? null);
+        $stockCardMutations = [];
+
+        if ($selectedItem) {
+            // Transaksi masuk
+            foreach ($receipts as $rcv) {
+                if (($rcv['item_id'] ?? '') === $selectedItem['id'] || ($rcv['item_name'] ?? '') === $selectedItem['name']) {
+                    $stockCardMutations[] = [
+                        'date' => $rcv['receipt_date'] ?? date('Y-m-d'),
+                        'ref_number' => $rcv['receipt_code'] ?? 'RCV',
+                        'type' => 'in',
+                        'type_label' => 'Barang Masuk (Inbound)',
+                        'source_destination' => $rcv['source_name'] ?? 'Penerimaan Gudang',
+                        'qty_in' => (int)($rcv['quantity'] ?? 0),
+                        'qty_out' => 0,
+                        'unit' => $selectedItem['unit'] ?? 'Unit',
+                        'officer' => $rcv['officer_name'] ?? 'Petugas Logistik',
+                        'notes' => $rcv['notes'] ?? '-'
+                    ];
+                }
+            }
+
+            // Transaksi keluar
+            foreach ($issues as $iss) {
+                if (($iss['item_id'] ?? '') === $selectedItem['id'] || ($iss['item_name'] ?? '') === $selectedItem['name']) {
+                    $stockCardMutations[] = [
+                        'date' => $iss['issue_date'] ?? date('Y-m-d'),
+                        'ref_number' => $iss['issue_code'] ?? 'ISS',
+                        'type' => 'out',
+                        'type_label' => 'Distribusi Keluar (Outbound)',
+                        'source_destination' => ($iss['destination'] ?? 'Unit') . ' (' . ($iss['recipient_name'] ?? 'Penerima') . ')',
+                        'qty_in' => 0,
+                        'qty_out' => (int)($iss['quantity'] ?? 0),
+                        'unit' => $selectedItem['unit'] ?? 'Unit',
+                        'officer' => $iss['officer_name'] ?? 'Petugas Logistik',
+                        'notes' => $iss['purpose'] ?? '-'
+                    ];
+                }
+            }
+
+            // Urutkan riwayat mutasi berdasarkan tanggal
+            usort($stockCardMutations, fn($a, $b) => strcmp($a['date'], $b['date']));
+        }
+
+        // 2. Gabungan Rekapitulasi Mutasi Logistik Keseluruhan
+        $allMutations = [];
+        foreach ($receipts as $rcv) {
+            $allMutations[] = [
+                'date' => $rcv['receipt_date'] ?? date('Y-m-d'),
+                'code' => $rcv['receipt_code'] ?? 'RCV',
+                'type' => 'Masuk',
+                'item_name' => $rcv['item_name'] ?? '-',
+                'category' => $rcv['category'] ?? '-',
+                'qty' => $rcv['quantity'] ?? 0,
+                'unit' => $rcv['unit'] ?? 'Pcs',
+                'partner' => $rcv['source_name'] ?? '-',
+                'officer' => $rcv['officer_name'] ?? 'Petugas Logistik'
+            ];
+        }
+        foreach ($issues as $iss) {
+            $allMutations[] = [
+                'date' => $iss['issue_date'] ?? date('Y-m-d'),
+                'code' => $iss['issue_code'] ?? 'ISS',
+                'type' => 'Keluar',
+                'item_name' => $iss['item_name'] ?? '-',
+                'category' => $iss['category'] ?? '-',
+                'qty' => $iss['quantity'] ?? 0,
+                'unit' => $iss['unit'] ?? 'Pcs',
+                'partner' => ($iss['destination'] ?? '-') . ' - ' . ($iss['recipient_name'] ?? '-'),
+                'officer' => $iss['officer_name'] ?? 'Petugas Logistik'
+            ];
+        }
+        usort($allMutations, fn($a, $b) => strcmp($b['date'], $a['date']));
+
+        // 3. Valuasi Nilai Total Aset Logistik
+        $totalItemsCount = count($items);
+        $totalAssetValue = 0;
+        $categorySummary = [];
+        $conditionSummary = [
+            'baik' => 0,
+            'rusak_ringan' => 0,
+            'rusak_berat' => 0
+        ];
+
+        foreach ($items as $it) {
+            $val = ($it['stock'] ?? 0) * ($it['unit_price'] ?? 0);
+            $totalAssetValue += $val;
+
+            $cat = $it['category'] ?? 'lainnya';
+            if (!isset($categorySummary[$cat])) {
+                $categorySummary[$cat] = [
+                    'count' => 0,
+                    'total_stock' => 0,
+                    'total_value' => 0
+                ];
+            }
+            $categorySummary[$cat]['count']++;
+            $categorySummary[$cat]['total_stock'] += ($it['stock'] ?? 0);
+            $categorySummary[$cat]['total_value'] += $val;
+
+            $cond = $it['condition'] ?? 'baik';
+            if (isset($conditionSummary[$cond])) {
+                $conditionSummary[$cond]++;
+            }
+        }
+
+        // Metrik Ringkasan Laporan
+        $totalReceiptQty = array_sum(array_column($receipts, 'quantity'));
+        $totalIssueQty = array_sum(array_column($issues, 'quantity'));
+        $totalMaintenanceCost = array_sum(array_column($maintenances, 'cost'));
+
+        return view('inventaris.laporan', compact(
+            'items',
+            'filteredItems',
+            'selectedItem',
+            'stockCardMutations',
+            'allMutations',
+            'activeTab',
+            'categoryFilter',
+            'selectedItemId',
+            'totalItemsCount',
+            'totalAssetValue',
+            'categorySummary',
+            'conditionSummary',
+            'totalReceiptQty',
+            'totalIssueQty',
+            'totalMaintenanceCost'
+        ));
+    }
 }
+
 
