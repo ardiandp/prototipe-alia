@@ -189,6 +189,7 @@
           <li class="{{ request()->is('inventaris/penerimaan*') ? 'active' : '' }}"><a href="{{ route('inventaris.penerimaan') }}"><i class="fa fa-circle-o"></i> Penerimaan Masuk</a></li>
           <li class="{{ request()->is('inventaris/pengeluaran*') ? 'active' : '' }}"><a href="{{ route('inventaris.pengeluaran') }}"><i class="fa fa-circle-o"></i> Pengeluaran Keluar</a></li>
           <li class="{{ request()->is('inventaris/pengadaan*') ? 'active' : '' }}"><a href="{{ route('inventaris.pengadaan') }}"><i class="fa fa-circle-o"></i> Pengadaan Logistik (PO)</a></li>
+          <li class="{{ request()->is('inventaris/pemeliharaan*') ? 'active' : '' }}"><a href="{{ route('inventaris.pemeliharaan') }}"><i class="fa fa-circle-o"></i> Pemeliharaan Alat</a></li>
           <li class="{{ request()->is('inventaris/stok*') ? 'active' : '' }}"><a href="{{ route('inventaris.stok') }}"><i class="fa fa-circle-o"></i> Stok & ATK</a></li>
         </ul>
       </li>

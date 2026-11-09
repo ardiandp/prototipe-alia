@@ -795,5 +795,183 @@ class InventarisController extends Controller
 
         return redirect()->route('inventaris.pengadaan')->with('info', "Pengadaan logistik ID: {$id} berhasil dihapus dari sesi demo.");
     }
+
+    /**
+     * T12.5 - Inventory Maintenance / Pemeliharaan, Kalibrasi & Servis Alat Inventaris
+     */
+    public function pemeliharaan(Request $request)
+    {
+        $demo = DemoDataManager::getInstance();
+        $maintenances = $demo->getInventoryMaintenances();
+        $items = $demo->getInventoryItems();
+
+        $activeTab = $request->get('tab', 'daftar'); // daftar, jadwal_kalibrasi, rekap_biaya
+        $statusFilter = $request->get('status', 'all');
+        $conditionFilter = $request->get('condition', 'all');
+        $search = $request->get('search');
+
+        $filteredMaintenances = array_filter($maintenances, function ($imn) use ($statusFilter, $conditionFilter, $search) {
+            $matchStatus = ($statusFilter === 'all') || (($imn['status'] ?? '') === $statusFilter);
+            $matchCondition = ($conditionFilter === 'all') || (($imn['condition_after'] ?? '') === $conditionFilter);
+            $matchSearch = true;
+            if ($search) {
+                $matchSearch = stripos($imn['item_name'] ?? '', $search) !== false ||
+                               stripos($imn['service_code'] ?? '', $search) !== false ||
+                               stripos($imn['serial_number'] ?? '', $search) !== false ||
+                               stripos($imn['technician_name'] ?? '', $search) !== false ||
+                               stripos($imn['vendor_service'] ?? '', $search) !== false;
+            }
+            return $matchStatus && $matchCondition && $matchSearch;
+        });
+
+        // Metrik Ringkasan Servis Inventaris
+        $totalServices = count($maintenances);
+        $totalCost = array_sum(array_column($maintenances, 'cost'));
+        $inServiceCount = count(array_filter($maintenances, fn($m) => ($m['status'] ?? '') === 'dalam_servis'));
+        $completedCount = count(array_filter($maintenances, fn($m) => ($m['status'] ?? '') === 'selesai'));
+
+        return view('inventaris.pemeliharaan', compact(
+            'filteredMaintenances',
+            'maintenances',
+            'items',
+            'activeTab',
+            'statusFilter',
+            'conditionFilter',
+            'search',
+            'totalServices',
+            'totalCost',
+            'inServiceCount',
+            'completedCount'
+        ));
+    }
+
+    /**
+     * Catat Tindakan Pemeliharaan / Kalibrasi Alat Baru
+     */
+    public function storePemeliharaan(Request $request)
+    {
+        $validated = $request->validate([
+            'item_id' => 'required|string',
+            'serial_number' => 'nullable|string|max:100',
+            'service_date' => 'required|date',
+            'condition_before' => 'required|in:baik,rusak_ringan,rusak_berat',
+            'issue_description' => 'required|string|max:500',
+            'action_taken' => 'required|string|max:500',
+            'technician_name' => 'required|string|max:100',
+            'vendor_service' => 'nullable|string|max:150',
+            'cost' => 'required|numeric|min:0',
+            'condition_after' => 'required|in:baik,rusak_ringan,rusak_berat',
+            'status' => 'required|in:dalam_servis,selesai,afkir',
+            'next_maintenance_date' => 'nullable|date',
+            'notes' => 'nullable|string|max:500',
+        ]);
+
+        $demo = DemoDataManager::getInstance();
+        $item = $demo->findInventoryItem($validated['item_id']);
+
+        $itemName = $item['name'] ?? 'Alat Inventaris';
+        $itemCode = $item['item_code'] ?? 'BRG/INV';
+
+        $allMaintenances = $demo->getInventoryMaintenances();
+        $count = count($allMaintenances) + 1;
+        $serviceCode = "SRV/LOG/" . date('Y') . "/" . str_pad($count, 3, '0', STR_PAD_LEFT);
+
+        $newMaintenance = [
+            'id' => 'IMN-' . str_pad($count, 3, '0', STR_PAD_LEFT),
+            'service_code' => $serviceCode,
+            'item_id' => $validated['item_id'],
+            'item_name' => $itemName,
+            'item_code' => $itemCode,
+            'serial_number' => $validated['serial_number'] ?: ('SN-' . strtoupper(substr(md5(uniqid()), 0, 8))),
+            'service_date' => $validated['service_date'],
+            'condition_before' => $validated['condition_before'],
+            'issue_description' => $validated['issue_description'],
+            'action_taken' => $validated['action_taken'],
+            'technician_name' => $validated['technician_name'],
+            'vendor_service' => $validated['vendor_service'] ?: 'Bengkel Internal Logistik Alia',
+            'cost' => (float)$validated['cost'],
+            'condition_after' => $validated['condition_after'],
+            'status' => $validated['status'],
+            'next_maintenance_date' => $validated['next_maintenance_date'] ?: date('Y-m-d', strtotime('+6 months')),
+            'notes' => $validated['notes'] ?: '-'
+        ];
+
+        // 1. Catat ke demo_inventory_maintenances_added
+        $sessionAdded = session('demo_inventory_maintenances_added', []);
+        $sessionAdded[] = $newMaintenance;
+        session(['demo_inventory_maintenances_added' => $sessionAdded]);
+
+        // 2. Perbarui kondisi fisik barang di master inventaris jika status selesai
+        if ($item && $validated['status'] === 'selesai') {
+            $sessionItemUpdated = session('demo_inventory_items_updated', []);
+            $existingItemUpdate = $sessionItemUpdated[$item['id']] ?? [];
+
+            $sessionItemUpdated[$item['id']] = array_merge($existingItemUpdate, [
+                'condition' => $validated['condition_after']
+            ]);
+            session(['demo_inventory_items_updated' => $sessionItemUpdated]);
+        }
+
+        return redirect()->route('inventaris.pemeliharaan')->with('success', "Riwayat servis & kalibrasi alat \"{$itemName}\" ({$serviceCode}) berhasil disimpan!");
+    }
+
+    /**
+     * Update Status Penyelesaian Servis Alat
+     */
+    public function updateStatusPemeliharaan(Request $request, string $id)
+    {
+        $validated = $request->validate([
+            'status' => 'required|in:dalam_servis,selesai,afkir',
+            'condition_after' => 'required|in:baik,rusak_ringan,rusak_berat',
+            'actual_cost' => 'nullable|numeric|min:0',
+            'notes' => 'nullable|string|max:500',
+        ]);
+
+        $sessionUpdated = session('demo_inventory_maintenances_updated', []);
+        $existing = $sessionUpdated[$id] ?? [];
+
+        $demo = DemoDataManager::getInstance();
+        $maintenance = $demo->findInventoryMaintenance($id);
+
+        $updateData = [
+            'status' => $validated['status'],
+            'condition_after' => $validated['condition_after'],
+            'notes' => $validated['notes'] ?: 'Servis tuntas diselesaikan teknisi.'
+        ];
+
+        if (isset($validated['actual_cost'])) {
+            $updateData['cost'] = (float)$validated['actual_cost'];
+        }
+
+        $sessionUpdated[$id] = array_merge($existing, $updateData);
+        session(['demo_inventory_maintenances_updated' => $sessionUpdated]);
+
+        // Jika selesai, pastikan master item terupdate kondisinya
+        if ($maintenance && !empty($maintenance['item_id']) && $validated['status'] === 'selesai') {
+            $sessionItemUpdated = session('demo_inventory_items_updated', []);
+            $existingItemUpdate = $sessionItemUpdated[$maintenance['item_id']] ?? [];
+
+            $sessionItemUpdated[$maintenance['item_id']] = array_merge($existingItemUpdate, [
+                'condition' => $validated['condition_after']
+            ]);
+            session(['demo_inventory_items_updated' => $sessionItemUpdated]);
+        }
+
+        return redirect()->route('inventaris.pemeliharaan')->with('success', "Status servis {$id} berhasil diperbarui (Kondisi pasca-servis: " . strtoupper($validated['condition_after']) . ")!");
+    }
+
+    /**
+     * Hapus Catatan Pemeliharaan Alat dari Sesi Demo
+     */
+    public function destroyPemeliharaan(string $id)
+    {
+        $sessionDeleted = session('demo_inventory_maintenances_deleted', []);
+        if (!in_array($id, $sessionDeleted)) {
+            $sessionDeleted[] = $id;
+            session(['demo_inventory_maintenances_deleted' => $sessionDeleted]);
+        }
+
+        return redirect()->route('inventaris.pemeliharaan')->with('info', "Catatan servis alat ID: {$id} berhasil dihapus dari sesi demo.");
+    }
 }
 

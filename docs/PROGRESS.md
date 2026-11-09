@@ -10,8 +10,8 @@ Catatan pemantauan progres implementasi prototipe Alia Islamic School.
 - **Batch Aktif**: Batch E (Boarding, Finance, HRIS)
 - **Batch Aktif**: Batch F (Facilities, Inventory, Portals)
 - **Task Terakhir Selesai**:
-  - `T12.4`: Procurement simulation (Inventaris & Logistik: Siklus Lengkap Pengadaan Barang Gudang, Usulan Request Belanja, Verifikasi Approval Pimpinan, Penerbitan Surat Purchase Order - PO Resmi Berkop Alia, dan Konfirmasi Penerimaan Inbound Otomatis Menambah Stok Master).
-- **Task Selanjutnya**: `T12.5`: Maintenance (Inventaris & Logistik: Pemeliharaan & Kalibrasi Alat Inventaris Berkala, Servis Alat Praktikum/Multimedia, Riwayat Tindakan, Biaya, dan Kondisi Fisik Pasca-Servis).
+  - `T12.5`: Maintenance (Inventaris & Logistik: Pemeliharaan & Kalibrasi Alat Inventaris Berkala, Servis Alat Praktikum/Multimedia, Riwayat Tindakan, Biaya, dan Update Kondisi Fisik Pasca-Servis Otomatis).
+- **Task Selanjutnya**: `T12.6`: Inventory reports (Inventaris & Logistik: Kartu Stok, Rekap Mutasi In/Out Logistik, Valuasi Nilai Aset Fisik & Simulasi Export/Print Laporan Resmi Berkop Alia).
 
 ---
 
@@ -276,6 +276,11 @@ Catatan pemantauan progres implementasi prototipe Alia Islamic School.
   - Controller: [`InventarisController.php`](file:///c:/laragon/www/prototipe-alia/app/Http/Controllers/InventarisController.php) (`pengadaan`, `storePengadaan`, `approvePengadaan`, `receivePengadaan`, `destroyPengadaan`) dengan integrasi otomatis penambahan stok master inventaris dan pencatatan BASTB saat barang dari PO dikonfirmasi diterima.
   - View: [`resources/views/inventaris/pengadaan.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/inventaris/pengadaan.blade.php) (3 Tab: Daftar Pengadaan & Status PO, Antrean Approval Pimpinan, Diagram Alur Siklus Pengadaan Workflow, 4 info box total berkas/menunggu approval/PO terbit/total anggaran, modal fisik pratinjau surat Purchase Order berkop Alia Islamic School, modal konfirmasi penerimaan barang, form permintaan baru dengan multi-item dan fitur auto-fill dari katalog master, filter unit/status/search, cetak).
   - Rute aktif `/inventaris/pengadaan`, `/inventaris/pengadaan` (POST), `/inventaris/pengadaan/{id}/approve` (POST), `/inventaris/pengadaan/{id}/receive` (POST), `/inventaris/pengadaan/{id}/destroy`, serta link menu di sidebar AdminLTE.
+- `[x] T12.5`: Maintenance (Pemeliharaan & Kalibrasi Alat Inventaris):
+  - Dataset baseline pemeliharaan & servis alat di [`DemoDataManager.php`](file:///c:/laragon/www/prototipe-alia/app/Support/DemoData/DemoDataManager.php) (`getInventoryMaintenances`, `findInventoryMaintenance`) mencakup servis proyektor laboratorium, kalibrasi timbangan analitik kimia, servis AC perpustakaan, dan perbaikan printer LaserJet tata usaha.
+  - Controller: [`InventarisController.php`](file:///c:/laragon/www/prototipe-alia/app/Http/Controllers/InventarisController.php) (`pemeliharaan`, `storePemeliharaan`, `updateStatusPemeliharaan`, `destroyPemeliharaan`) dengan fitur pembaruan kondisi fisik barang secara otomatis ke master data barang ketika status servis diselesaikan (`selesai` -> `kondisi_akhir`).
+  - View: [`resources/views/inventaris/pemeliharaan.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/inventaris/pemeliharaan.blade.php) (3 Tab: Buku Jurnal Servis & Perbaikan, Kalender & Jadwal Servis/Kalibrasi Mendatang, Rekapitulasi Biaya Pemeliharaan Aset, 4 info box total riwayat servis/dalam perbaikan/selesai/total biaya servis, modal surat perintah kerja servis berkop Alia, modal update status & hasil servis, form pencatatan servis baru, filter status/kondisi/search, cetak).
+  - Rute aktif `/inventaris/pemeliharaan`, `/inventaris/pemeliharaan` (POST), `/inventaris/pemeliharaan/{id}/status` (POST), `/inventaris/pemeliharaan/{id}/destroy`, serta link menu di sidebar AdminLTE.
 
 
 

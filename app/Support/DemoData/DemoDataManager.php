@@ -74,6 +74,7 @@ class DemoDataManager
     private array $stockReceipts = [];
     private array $stockIssues = [];
     private array $inventoryProcurements = [];
+    private array $inventoryMaintenances = [];
 
     public function __construct()
     {
@@ -5416,6 +5417,86 @@ class DemoDataManager
                 'notes' => 'Permintaan baru masuk dari unit SMA untuk digitalisasi kelas tahun ajaran baru.'
             ]
         ];
+
+        // 31. Pemeliharaan & Servis Alat Inventaris (Inventory Maintenance & Calibration)
+        $this->inventoryMaintenances = [
+            [
+                'id' => 'IMN-001',
+                'service_code' => 'SRV/LOG/2026/001',
+                'item_id' => 'INV-003', // Proyektor Epson
+                'item_name' => 'Proyektor Epson EB-X500 3600 Lumens',
+                'item_code' => 'BRG/ELK/2026/001',
+                'serial_number' => 'EP-X500-SN882910',
+                'service_date' => '2026-11-04',
+                'condition_before' => 'rusak_ringan', // baik, rusak_ringan, rusak_berat
+                'issue_description' => 'Lampu proyektor redup dan filter debu optik tersumbat setelah 2.500 jam pemakaian di Lab SMA.',
+                'action_taken' => 'Pembersihan elemen optik (lens cleaning), penggantian bohlam lampu halogen OEM 200W, dan kalibrasi fokus.',
+                'technician_name' => 'Dwi Wahyudi (Teknisi Multimedia)',
+                'vendor_service' => 'Epson Authorized Service Center Jakarta',
+                'cost' => 850000,
+                'condition_after' => 'baik',
+                'status' => 'selesai', // dalam_servis, selesai, afkir
+                'next_maintenance_date' => '2027-05-04',
+                'notes' => 'Tingkat kecerahan kembali optimal 3600 ANSI Lumens, siap digunakan untuk KBM.'
+            ],
+            [
+                'id' => 'IMN-002',
+                'service_code' => 'SRV/LOG/2026/002',
+                'item_id' => 'INV-005', // Kursi Lipat Futura
+                'item_name' => 'Kursi Lipat Kuliah Futura F-717 Meja Belajar',
+                'item_code' => 'BRG/MBL/2026/001',
+                'serial_number' => 'FTR-BATCH-2024-5',
+                'service_date' => '2026-11-06',
+                'condition_before' => 'rusak_ringan',
+                'issue_description' => 'Engsel meja lipat goyang dan baut penahan patah pada 5 unit kursi kuliah santri.',
+                'action_taken' => 'Pengelasan ulang dudukan engsel besi, penggantian 10 set mur-baut baja, dan pelumasan anti-karat.',
+                'technician_name' => 'Agus Rohman (Tukang Bengkel Kampus)',
+                'vendor_service' => 'Bengkel Logistik Internal Alia',
+                'cost' => 175000,
+                'condition_after' => 'baik',
+                'status' => 'selesai',
+                'next_maintenance_date' => '2027-02-06',
+                'notes' => '5 unit kursi telah kokoh kembali dan disimpan di ruang kelas 10 SMA.'
+            ],
+            [
+                'id' => 'IMN-003',
+                'service_code' => 'SRV/LOG/2026/003',
+                'item_id' => 'INV-010', // Tensimeter Digital
+                'item_name' => 'Tensimeter Digital OMRON HEM-7120',
+                'item_code' => 'BRG/UKS/2026/001',
+                'serial_number' => 'OMR-7120-ID-4411',
+                'service_date' => '2026-11-08',
+                'condition_before' => 'baik',
+                'issue_description' => 'Kalibrasi presisi sensor tensimeter berkala 6 bulanan sesuai standar medis Puskesmas.',
+                'action_taken' => 'Uji akurasi perbandingan aneroid sphygmomanometer merkuri dan penggantian selang manset udara.',
+                'technician_name' => 'Ns. Ratna Dewi, S.Kep. (Perawat UKS)',
+                'vendor_service' => 'PT Kalibrasi Medika Indonesia',
+                'cost' => 120000,
+                'condition_after' => 'baik',
+                'status' => 'selesai',
+                'next_maintenance_date' => '2027-05-08',
+                'notes' => 'Sertifikat kalibrasi terbit berlaku s/d Mei 2027, deviasi pengukuran < 2 mmHg.'
+            ],
+            [
+                'id' => 'IMN-004',
+                'service_code' => 'SRV/LOG/2026/004',
+                'item_id' => 'INV-004', // Kabel Roll
+                'item_name' => 'Kabel Roll Terminal Kuningan 15 Meter Uticon',
+                'item_code' => 'BRG/ELK/2026/002',
+                'serial_number' => 'UTC-15M-002',
+                'service_date' => '2026-11-09',
+                'condition_before' => 'rusak_ringan',
+                'issue_description' => 'Steker arde hangus akibat korsleting beban berlebih dan isolasi kabel terkelupas.',
+                'action_taken' => 'Penggantian kepala colokan steker arde baru Broco dan pemotongan ujung kabel 20 cm.',
+                'technician_name' => 'Pak Joko Sutrisno (Teknisi Listrik)',
+                'vendor_service' => 'Bengkel Listrik Kampus',
+                'cost' => 45000,
+                'condition_after' => 'baik',
+                'status' => 'dalam_servis',
+                'next_maintenance_date' => '2027-03-09',
+                'notes' => 'Sedang dilakukan pengujian kontinuitas dengan multimeter sebelum diserahkan kembali.'
+            ]
+        ];
     }
 
     // Getters
@@ -7580,6 +7661,43 @@ class DemoDataManager
         foreach ($this->getInventoryProcurements() as $po) {
             if ($po['id'] === $id || ($po['po_number'] ?? '') === $id || ($po['request_code'] ?? '') === $id) {
                 return $po;
+            }
+        }
+        return null;
+    }
+
+    public function getInventoryMaintenances(): array
+    {
+        $sessionAdded = [];
+        $sessionDeleted = [];
+        $sessionUpdated = [];
+        try {
+            if (function_exists('session') && app()->has('session')) {
+                $sessionAdded = session('demo_inventory_maintenances_added', []);
+                $sessionDeleted = session('demo_inventory_maintenances_deleted', []);
+                $sessionUpdated = session('demo_inventory_maintenances_updated', []);
+            }
+        } catch (\Throwable $e) {}
+
+        $list = array_merge($this->inventoryMaintenances, $sessionAdded);
+        $filtered = array_filter($list, function($imn) use ($sessionDeleted) {
+            return !in_array($imn['id'], $sessionDeleted);
+        });
+
+        foreach ($filtered as &$item) {
+            if (isset($sessionUpdated[$item['id']])) {
+                $item = array_merge($item, $sessionUpdated[$item['id']]);
+            }
+        }
+
+        return array_values($filtered);
+    }
+
+    public function findInventoryMaintenance(string $id): ?array
+    {
+        foreach ($this->getInventoryMaintenances() as $imn) {
+            if ($imn['id'] === $id || ($imn['service_code'] ?? '') === $id) {
+                return $imn;
             }
         }
         return null;
