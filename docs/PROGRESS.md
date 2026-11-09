@@ -10,8 +10,8 @@ Catatan pemantauan progres implementasi prototipe Alia Islamic School.
 - **Batch Aktif**: Batch E (Boarding, Finance, HRIS)
 - **Batch Aktif**: Batch F (Facilities, Inventory, Portals)
 - **Task Terakhir Selesai**:
-  - `T11.4`: Procurement requests (Sarpras & Fasilitas: Pengajuan Pengadaan Sarpras Baru, Multi-Item Rincian Barang & Subtotal Belanja, Estimasi Anggaran RAPBS, Alur Persetujuan Yayasan, Lembar Cetak Formulir Usulan Berkop Alia — Penutup Phase 11 Sarpras SELESAI 100%).
-- **Task Selanjutnya**: `T12.1`: Item master (Inventaris & Logistik: Master Data Barang, Kategori ATK/Elektronik/Alat Kebersihan, Kode Barcode & Satuan).
+  - `T12.1`: Item master (Inventaris & Logistik: Katalog Master Barang, Klasifikasi 7 Kategori ATK/Elektronik/Mebelair/Kebersihan/Olahraga/Lab/UKS, Penomoran Kode SKU & Barcode Tag EAN-13, Monitoring Batas Minimum Stok Alert, Valuasi FIFO, Modal Kartu Label Fisik Berkop Alia).
+- **Task Selanjutnya**: `T12.2`: Stock receipt (Inventaris & Logistik: Penerimaan Barang Masuk, Surat Jalan Vendor / Donatur / BOS, Petugas Penerima, dan Penambahan Stok Fisik Otomatis).
 
 ---
 
@@ -254,6 +254,14 @@ Catatan pemantauan progres implementasi prototipe Alia Islamic School.
   - Controller: [`SarprasController.php`](file:///c:/laragon/www/prototipe-alia/app/Http/Controllers/SarprasController.php) (`pengadaan`, `storePengadaan`, `approvePengadaan`, `destroyPengadaan`) dengan dukungan multi-item dinamis dan kalkulasi subtotal/total otomatis.
   - View: [`resources/views/sarpras/pengadaan.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/sarpras/pengadaan.blade.php) (3 Tab: Daftar Usulan Pengadaan, Antrean Persetujuan Yayasan, Rekapitulasi per Sumber Dana, 4 info box total usulan/menunggu approval/disetujui/total anggaran, modal formulir pengadaan & rincian RAB resmi berkop Alia Islamic School, modal persetujuan anggaran pimpinan, form usulan baru dengan penambahan baris barang dinamis, filter kategori/urgensi/status/search, cetak).
   - Rute aktif `/sarpras/pengadaan`, `/sarpras/pengadaan` (POST), `/sarpras/pengadaan/{id}/approve` (POST), `/sarpras/pengadaan/{id}/destroy`, serta link menu di sidebar AdminLTE.
+
+### Batch F — Facilities, Inventory, Portals (Phase 12 Inventaris & Logistik)
+- `[x] T12.1`: Item Master (Katalog Master Barang Inventaris Sekolah):
+  - Dataset master barang inventaris di [`DemoDataManager.php`](file:///c:/laragon/www/prototipe-alia/app/Support/DemoData/DemoDataManager.php) (`getInventoryItems`, `findInventoryItem`) mencakup ATK HVS & spidol, proyektor multimedia, kabel roll, kursi lipat kuliah futura, whiteboard magnetik, karbol kebersihan, bola futsal molten, gelas kimia pyrex lab, dan tensimeter digital UKS.
+  - Controller baru: [`InventarisController.php`](file:///c:/laragon/www/prototipe-alia/app/Http/Controllers/InventarisController.php) (`barang`, `storeBarang`, `updateBarang`, `destroyBarang`).
+  - View: [`resources/views/inventaris/barang.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/inventaris/barang.blade.php) (3 Tab: Katalog Master Barang Inventaris, Peringatan Stok Menipis, Rekapitulasi Valuasi per Kategori, 4 info box total item/kuantitas fisik/total valuasi rupiah/alert stok menipis, modal kartu label barcode resmi berkop Alia Islamic School, modal edit data barang, form pendaftaran barang baru, filter kategori/kondisi/stok/search, cetak).
+  - Rute aktif `/inventaris/barang`, `/inventaris/barang` (POST), `/inventaris/barang/{id}` (POST), `/inventaris/barang/{id}/destroy`, serta submenu aktif di sidebar.
+
 
 
 

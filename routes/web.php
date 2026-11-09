@@ -13,6 +13,7 @@ use App\Http\Controllers\AsramaController;
 use App\Http\Controllers\KeuanganController;
 use App\Http\Controllers\HrisController;
 use App\Http\Controllers\SarprasController;
+use App\Http\Controllers\InventarisController;
 
 // Helper untuk route placeholder view
 function makePlaceholder($title, $subtitle, $icon = 'fa-cube') {
@@ -281,6 +282,10 @@ Route::prefix('sarpras')->name('sarpras.')->group(function () {
 });
 
 Route::prefix('inventaris')->name('inventaris.')->group(function () {
+    Route::get('/barang', [InventarisController::class, 'barang'])->name('barang');
+    Route::post('/barang', [InventarisController::class, 'storeBarang'])->name('barang.store');
+    Route::post('/barang/{id}', [InventarisController::class, 'updateBarang'])->name('barang.update');
+    Route::get('/barang/{id}/destroy', [InventarisController::class, 'destroyBarang'])->name('barang.destroy');
     Route::get('/stok', makePlaceholder('Stok & ATK', 'Inventaris Barang Masuk/Keluar', 'fa-boxes'))->name('stok');
 });
 

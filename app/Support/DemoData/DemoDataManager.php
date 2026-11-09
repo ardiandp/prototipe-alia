@@ -70,6 +70,7 @@ class DemoDataManager
     private array $roomBookings = [];
     private array $maintenanceReports = [];
     private array $facilityProcurements = [];
+    private array $inventoryItems = [];
 
     public function __construct()
     {
@@ -4962,6 +4963,180 @@ class DemoDataManager
                 'notes' => 'Barang telah diterima lengkap 100%, diuji coba, dan tercatat dalam buku inventaris laboratorium.'
             ]
         ];
+
+        // 27. Master Barang Inventaris Sekolah (Inventory Items Master)
+        $this->inventoryItems = [
+            [
+                'id' => 'INV-001',
+                'item_code' => 'BRG/ATK/2026/001',
+                'barcode' => '899100100101',
+                'name' => 'Kertas HVS A4 80 GSM PaperOne',
+                'category' => 'atk', // atk, elektronik, mebelair, kebersihan, olahraga, laboratorium, uks_medis
+                'category_label' => 'Alat Tulis Kantor (ATK)',
+                'unit' => 'Rim', // Rim, Box, Pcs, Unit, Set, Botol, Pack
+                'location' => 'Gudang Logistik Utama (Rak ATK A-1)',
+                'stock' => 85,
+                'min_stock' => 20,
+                'unit_price' => 54000,
+                'condition' => 'baik', // baik, rusak_ringan, rusak_berat
+                'specification' => 'Ukuran 210 x 297 mm, 80 gram, 500 lembar per rim. Warna putih ultra.',
+                'status' => 'aktif',
+                'notes' => 'Kebutuhan rutin fotokopi lembar soal ujian dan administrasi tata usaha.'
+            ],
+            [
+                'id' => 'INV-002',
+                'item_code' => 'BRG/ATK/2026/002',
+                'barcode' => '899100100102',
+                'name' => 'Spidol Boardmarker Snowman Hitam (BG-12)',
+                'category' => 'atk',
+                'category_label' => 'Alat Tulis Kantor (ATK)',
+                'unit' => 'Box',
+                'location' => 'Gudang Logistik Utama (Rak ATK A-2)',
+                'stock' => 12,
+                'min_stock' => 15, // Menandakan stok menipis di bawah minimum
+                'unit_price' => 108000,
+                'condition' => 'baik',
+                'specification' => 'Tinta isi ulang whiteboard marker, 1 box berisi 12 batang.',
+                'status' => 'aktif',
+                'notes' => 'Perlu re-order ke supplier ATK pekan depan.'
+            ],
+            [
+                'id' => 'INV-003',
+                'item_code' => 'BRG/ELK/2026/001',
+                'barcode' => '899200200201',
+                'name' => 'Proyektor Epson EB-X500 3600 Lumens',
+                'category' => 'elektronik',
+                'category_label' => 'Elektronik & Multimedia',
+                'unit' => 'Unit',
+                'location' => 'Ruang Server & Audio Visual (Lemari B-1)',
+                'stock' => 14,
+                'min_stock' => 2,
+                'unit_price' => 6250000,
+                'condition' => 'baik',
+                'specification' => 'Resolusi XGA 1024x768, HDMI/VGA Input, Lampu tahan hingga 12.000 jam.',
+                'status' => 'aktif',
+                'notes' => '8 unit terpasang permanen di kelas SMA, 6 unit cadangan bergerak.'
+            ],
+            [
+                'id' => 'INV-004',
+                'item_code' => 'BRG/ELK/2026/002',
+                'barcode' => '899200200202',
+                'name' => 'Kabel Roll Terminal Kuningan 15 Meter Uticon',
+                'category' => 'elektronik',
+                'category_label' => 'Elektronik & Kelistrikan',
+                'unit' => 'Pcs',
+                'location' => 'Gudang Logistik Utama (Rak B-3)',
+                'stock' => 8,
+                'min_stock' => 5,
+                'unit_price' => 135000,
+                'condition' => 'baik',
+                'specification' => '4 lubang soket arde, kabel tebal 3x0.75 mm², saklar on-off lampu.',
+                'status' => 'aktif',
+                'notes' => 'Untuk acara insidental di aula dan selasar masjid.'
+            ],
+            [
+                'id' => 'INV-005',
+                'item_code' => 'BRG/MBL/2026/001',
+                'barcode' => '899300300301',
+                'name' => 'Kursi Lipat Kuliah Futura F-717 Meja Belajar',
+                'category' => 'mebelair',
+                'category_label' => 'Mebelair & Furnitur',
+                'unit' => 'Unit',
+                'location' => 'Gudang Mebelair Gedung Utsman Lt 1',
+                'stock' => 120,
+                'min_stock' => 20,
+                'unit_price' => 385000,
+                'condition' => 'baik',
+                'specification' => 'Rangka pipa besi lapis chrome, bantalan busa vinyl biru tua, meja lipat melamine.',
+                'status' => 'aktif',
+                'notes' => '100 unit kondisi baik siap pakai, 5 unit perlu las engsel meja lipat.'
+            ],
+            [
+                'id' => 'INV-006',
+                'item_code' => 'BRG/MBL/2026/002',
+                'barcode' => '899300300302',
+                'name' => 'Whiteboard Magnetic 120 x 240 cm Stand Roda',
+                'category' => 'mebelair',
+                'category_label' => 'Mebelair & Perlengkapan Kelas',
+                'unit' => 'Unit',
+                'location' => 'Gudang Mebelair Gedung Utsman Lt 1',
+                'stock' => 18,
+                'min_stock' => 3,
+                'unit_price' => 1150000,
+                'condition' => 'baik',
+                'specification' => 'Papan tulis formika putih magnetik 2 muka, rangka besi penyangga beroda.',
+                'status' => 'aktif',
+                'notes' => 'Dipakai di seluruh ruang rombel SMA dan halaqah tahfidz.'
+            ],
+            [
+                'id' => 'INV-007',
+                'item_code' => 'BRG/KBR/2026/001',
+                'barcode' => '899400400401',
+                'name' => 'Cairan Pembersih Lantai Karbol Sereh Wipol 4 Liter',
+                'category' => 'kebersihan',
+                'category_label' => 'Kebersihan & Sanitasi',
+                'unit' => 'Jerigen',
+                'location' => 'Pos Cleaning Service & Janitor Asrama',
+                'stock' => 6,
+                'min_stock' => 10, // Di bawah batas minimum
+                'unit_price' => 78000,
+                'condition' => 'baik',
+                'specification' => 'Formula pinus anti-bakteri 99.9%, kemasan jerigen isi 4.000 ml.',
+                'status' => 'aktif',
+                'notes' => 'Stok menipis untuk kebutuhan harian asrama santri ikhwan & akhwat.'
+            ],
+            [
+                'id' => 'INV-008',
+                'item_code' => 'BRG/OLG/2026/001',
+                'barcode' => '899500500501',
+                'name' => 'Bola Futsal Molten F9V-2000 Original',
+                'category' => 'olahraga',
+                'category_label' => 'Sarana & Alat Olahraga',
+                'unit' => 'Pcs',
+                'location' => 'Ruang Guru PJOK (Loker Alat C-2)',
+                'stock' => 15,
+                'min_stock' => 5,
+                'unit_price' => 320000,
+                'condition' => 'baik',
+                'specification' => 'Bahan PU leather jahit mesin 32 panel, pantulan rendah khusus lapangan futsal.',
+                'status' => 'aktif',
+                'notes' => 'Dipakai ekstrakurikuler futsal dan pembelajaran PJOK.'
+            ],
+            [
+                'id' => 'INV-009',
+                'item_code' => 'BRG/LAB/2026/001',
+                'barcode' => '899600600601',
+                'name' => 'Gelas Kimia Beaker Glass Pyrex 250 ml',
+                'category' => 'laboratorium',
+                'category_label' => 'Laboratorium & Sains',
+                'unit' => 'Pcs',
+                'location' => 'Laboratorium Sains (Lemari Reagen D-1)',
+                'stock' => 45,
+                'min_stock' => 15,
+                'unit_price' => 42000,
+                'condition' => 'baik',
+                'specification' => 'Kaca borosilikat tahan panas hingga 400°C, skala ukur timbul putih.',
+                'status' => 'aktif',
+                'notes' => 'Praktikum titrasi kimia dan biologi santri SMP & SMA.'
+            ],
+            [
+                'id' => 'INV-010',
+                'item_code' => 'BRG/UKS/2026/001',
+                'barcode' => '899700700701',
+                'name' => 'Tensimeter Digital OMRON HEM-7120',
+                'category' => 'uks_medis',
+                'category_label' => 'Kesehatan & UKS',
+                'unit' => 'Unit',
+                'location' => 'Ruang UKS Terpadu (Meja Perawat)',
+                'stock' => 4,
+                'min_stock' => 2,
+                'unit_price' => 540000,
+                'condition' => 'baik',
+                'specification' => 'Teknologi Intellisense, manset lengan 22-32 cm, baterai AA 4 buah.',
+                'status' => 'aktif',
+                'notes' => 'Pemeriksaan rutin tekanan darah santri dan dewan guru.'
+            ]
+        ];
     }
 
     // Getters
@@ -6994,6 +7169,43 @@ class DemoDataManager
         foreach ($this->getFacilityProcurements() as $prc) {
             if ($prc['id'] === $id || ($prc['request_code'] ?? '') === $id) {
                 return $prc;
+            }
+        }
+        return null;
+    }
+
+    public function getInventoryItems(): array
+    {
+        $sessionAdded = [];
+        $sessionDeleted = [];
+        $sessionUpdated = [];
+        try {
+            if (function_exists('session') && app()->has('session')) {
+                $sessionAdded = session('demo_inventory_items_added', []);
+                $sessionDeleted = session('demo_inventory_items_deleted', []);
+                $sessionUpdated = session('demo_inventory_items_updated', []);
+            }
+        } catch (\Throwable $e) {}
+
+        $list = array_merge($this->inventoryItems, $sessionAdded);
+        $filtered = array_filter($list, function($inv) use ($sessionDeleted) {
+            return !in_array($inv['id'], $sessionDeleted);
+        });
+
+        foreach ($filtered as &$item) {
+            if (isset($sessionUpdated[$item['id']])) {
+                $item = array_merge($item, $sessionUpdated[$item['id']]);
+            }
+        }
+
+        return array_values($filtered);
+    }
+
+    public function findInventoryItem(string $id): ?array
+    {
+        foreach ($this->getInventoryItems() as $inv) {
+            if ($inv['id'] === $id || ($inv['item_code'] ?? '') === $id || ($inv['barcode'] ?? '') === $id) {
+                return $inv;
             }
         }
         return null;

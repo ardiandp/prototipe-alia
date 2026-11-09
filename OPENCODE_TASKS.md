@@ -99,7 +99,7 @@ update `docs/PROGRESS.md`, report changed files and blockers, then stop.
 -   [x] T11.2 Room usage/booking.
 -   [x] T11.3 Maintenance/damage reports.
 -   [x] T11.4 Procurement requests.
--   [ ] T12.1 Item master.
+-   [x] T12.1 Item master.
 -   [ ] T12.2 Stock receipt.
 -   [ ] T12.3 Stock issue.
 -   [ ] T12.4 Procurement simulation.

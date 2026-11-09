@@ -185,6 +185,7 @@
           <li class="{{ request()->is('sarpras/peminjaman*') ? 'active' : '' }}"><a href="{{ route('sarpras.peminjaman') }}"><i class="fa fa-circle-o"></i> Peminjaman Ruangan</a></li>
           <li class="{{ request()->is('sarpras/pemeliharaan*') ? 'active' : '' }}"><a href="{{ route('sarpras.pemeliharaan') }}"><i class="fa fa-circle-o"></i> Pemeliharaan & Servis</a></li>
           <li class="{{ request()->is('sarpras/pengadaan*') ? 'active' : '' }}"><a href="{{ route('sarpras.pengadaan') }}"><i class="fa fa-circle-o"></i> Pengadaan Sarpras</a></li>
+          <li class="{{ request()->is('inventaris/barang*') ? 'active' : '' }}"><a href="{{ route('inventaris.barang') }}"><i class="fa fa-circle-o"></i> Master Barang</a></li>
           <li class="{{ request()->is('inventaris/stok*') ? 'active' : '' }}"><a href="{{ route('inventaris.stok') }}"><i class="fa fa-circle-o"></i> Stok & ATK</a></li>
         </ul>
       </li>
