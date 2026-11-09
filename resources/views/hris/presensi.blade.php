@@ -1,11 +1,15 @@
 @extends('layouts.app')
 
 @section('title', 'Presensi & Kehadiran Pegawai')
+@section('page_title', 'Presensi & Kehadiran Pegawai (HRIS)')
+@section('page_description', 'Monitoring Kehadiran, Jam Masuk/Pulang, & Rekapitulasi Keaktifan Pendidik/Tendik')
+@section('breadcrumbs')
+  <li>SDM / HRIS</li>
+      <li class="active">Presensi Pegawai</li>
+@endsection
 
 @section('content')
-<div class="content-wrapper">
-  <!-- Content Header -->
-  <section class="content-header">
+
     <h1>
       Presensi & Kehadiran Pegawai (HRIS)
       <small>Monitoring Kehadiran, Jam Masuk/Pulang, & Rekapitulasi Keaktifan Pendidik/Tendik</small>
@@ -529,8 +533,7 @@
       </div>
     </div>
 
-  </section>
-</div>
+  
 
 <!-- Modal Catat Presensi Manual -->
 <div class="modal fade" id="modal-add-attendance" tabindex="-1" role="dialog">

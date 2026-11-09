@@ -1,11 +1,15 @@
 @extends('layouts.app')
 
 @section('title', 'Penggajian & Payroll Pegawai')
+@section('page_title', 'Penggajian & Payroll Pegawai (HRIS)')
+@section('page_description', 'Simulasi Gaji Pokok, Tunjangan, Potongan BPJS/Infaq, dan Slip Gaji Digital Resmi')
+@section('breadcrumbs')
+  <li>SDM / HRIS</li>
+      <li class="active">Penggajian (Payroll)</li>
+@endsection
 
 @section('content')
-<div class="content-wrapper">
-  <!-- Content Header -->
-  <section class="content-header">
+
     <h1>
       Penggajian & Payroll Pegawai (HRIS)
       <small>Simulasi Gaji Pokok, Tunjangan, Potongan BPJS/Infaq, dan Slip Gaji Digital Resmi</small>
@@ -622,8 +626,7 @@
       </div>
     </div>
 
-  </section>
-</div>
+  
 
 <!-- Modal Terbitkan Slip Gaji Baru -->
 <div class="modal fade" id="modal-add-payroll" tabindex="-1" role="dialog">

@@ -1,24 +1,15 @@
 @extends('layouts.app')
 
 @section('title', 'Data Pegawai & Struktur Organisasi')
+@section('page_title', 'SDM & Kepegawaian (HRIS)')
+@section('page_description', 'Profil Pegawai, Penempatan Unit, dan Struktur Organisasi Alia Islamic School')
+
+@section('breadcrumbs')
+  <li>SDM / HRIS</li>
+  <li class="active">Pegawai & Struktur</li>
+@endsection
 
 @section('content')
-<div class="content-wrapper">
-  <!-- Content Header -->
-  <section class="content-header">
-    <h1>
-      SDM & Kepegawaian (HRIS)
-      <small>Profil Pegawai, Penempatan Unit, dan Struktur Organisasi Alia Islamic School</small>
-    </h1>
-    <ol class="breadcrumb">
-      <li><a href="{{ route('dashboard') }}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
-      <li>SDM / HRIS</li>
-      <li class="active">Pegawai & Struktur</li>
-    </ol>
-  </section>
-
-  <!-- Main content -->
-  <section class="content">
 
     <!-- Flash Messages -->
     @if(session('success'))
@@ -648,9 +639,6 @@
 
       </div>
     </div>
-
-  </section>
-</div>
 
 <!-- Modal Tambah Pegawai Baru -->
 <div class="modal fade" id="modal-add-staff" tabindex="-1" role="dialog">

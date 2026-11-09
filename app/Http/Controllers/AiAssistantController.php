@@ -291,3 +291,4 @@ class AiAssistantController extends Controller
         ];
     }
 }
+

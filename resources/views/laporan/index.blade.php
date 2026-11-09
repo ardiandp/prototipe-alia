@@ -1,6 +1,11 @@
 @extends('layouts.app')
 
 @section('title', 'Pusat Laporan & Ekspor Terpadu')
+@section('page_title', 'Pusat Laporan & Ekspor Terpadu')
+@section('page_description', 'Laporan Eksekutif Yayasan, Akademik, PPDB, Keuangan, SDM, & Sarpras')
+@section('breadcrumbs')
+  <li class="active">Pusat Laporan</li>
+@endsection
 
 @push('styles')
 <style>
@@ -36,9 +41,7 @@
 @endpush
 
 @section('content')
-<div class="content-wrapper">
-  <!-- Content Header -->
-  <section class="content-header">
+
     <h1>
       Pusat Laporan & Ekspor Terpadu
       <small>Laporan Eksekutif Yayasan, Akademik, PPDB, Keuangan, SDM, & Sarpras</small>

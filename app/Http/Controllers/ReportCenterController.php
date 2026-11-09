@@ -73,3 +73,4 @@ class ReportCenterController extends Controller
         ));
     }
 }
+

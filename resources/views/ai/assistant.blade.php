@@ -1,6 +1,11 @@
 @extends('layouts.app')
 
 @section('title', 'AI School Assistant Demo')
+@section('page_title', 'Alia AI School Assistant')
+@section('page_description', 'Asisten Cerdas Analisis Data Sekolah Berbasis Model Bahasa Terintegrasi')
+@section('breadcrumbs')
+  <li class="active">AI School Assistant</li>
+@endsection
 
 @push('styles')
 <style>
@@ -142,9 +147,7 @@
 @endpush
 
 @section('content')
-<div class="content-wrapper">
-  <!-- Content Header -->
-  <section class="content-header">
+
     <h1>
       Alia AI School Assistant
       <small>Asisten Cerdas Analisis Data Sekolah Berbasis Model Bahasa Terintegrasi</small>
@@ -357,3 +360,4 @@
   });
 </script>
 @endpush
+

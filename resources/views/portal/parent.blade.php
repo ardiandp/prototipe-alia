@@ -1,6 +1,11 @@
 @extends('layouts.app')
 
 @section('title', 'Portal Wali Santri & Orang Tua')
+@section('page_title', 'Portal Orang Tua / Wali Santri')
+@section('page_description', 'Alia Islamic School Integrated Mobile Portal')
+@section('breadcrumbs')
+  <li class="active">Portal Orang Tua</li>
+@endsection
 
 @push('styles')
 <style>
@@ -102,9 +107,7 @@
 @endpush
 
 @section('content')
-<div class="content-wrapper">
-  <!-- Content Header -->
-  <section class="content-header">
+
     <h1>
       Portal Orang Tua / Wali Santri
       <small>Alia Islamic School Integrated Mobile Portal</small>

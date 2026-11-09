@@ -1,11 +1,15 @@
 @extends('layouts.app')
 
 @section('title', 'Pelatihan & Pengembangan Kompetensi Pegawai')
+@section('page_title', 'Pengembangan Kompetensi & Pelatihan (HRIS)')
+@section('page_description', 'Sertifikasi Pendidik, Workshop, Pelatihan Berkelanjutan, dan Rencana Karir SDM')
+@section('breadcrumbs')
+  <li>SDM / HRIS</li>
+      <li class="active">Pelatihan & Kompetensi</li>
+@endsection
 
 @section('content')
-<div class="content-wrapper">
-  <!-- Content Header -->
-  <section class="content-header">
+
     <h1>
       Pengembangan Kompetensi & Pelatihan (HRIS)
       <small>Sertifikasi Pendidik, Workshop, Pelatihan Berkelanjutan, dan Rencana Karir SDM</small>
@@ -552,8 +556,7 @@
       </div>
     </div>
 
-  </section>
-</div>
+  
 
 <!-- Modal Daftarkan Pelatihan Baru -->
 <div class="modal fade" id="modal-add-training" tabindex="-1" role="dialog">

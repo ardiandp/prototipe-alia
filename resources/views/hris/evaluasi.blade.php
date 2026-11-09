@@ -3,9 +3,7 @@
 @section('title', 'Evaluasi Kinerja Pegawai (PKG)')
 
 @section('content')
-<div class="content-wrapper">
-  <!-- Content Header -->
-  <section class="content-header">
+
     <h1>
       Evaluasi Kinerja Pegawai & Guru (PKG)
       <small>Penilaian Kinerja 4 Pilar Kompetensi, Rapor Kinerja, dan Rekomendasi Karir</small>
@@ -591,8 +589,7 @@
       </div>
     </div>
 
-  </section>
-</div>
+  
 
 <!-- Modal Input Penilaian Kinerja Baru -->
 <div class="modal fade" id="modal-add-evaluation" tabindex="-1" role="dialog">

@@ -1,6 +1,11 @@
 @extends('layouts.app')
 
 @section('title', 'Pengaturan Sistem & Profil Institusi')
+@section('page_title', 'Pengaturan Sistem & Konfigurasi')
+@section('page_description', 'Profil Institusi, Struktur Unit/TA, Switcher Peran Demo, & Reset Data')
+@section('breadcrumbs')
+  <li class="active">Pengaturan Sistem</li>
+@endsection
 
 @push('styles')
 <style>
@@ -38,9 +43,7 @@
 @endpush
 
 @section('content')
-<div class="content-wrapper">
-  <!-- Content Header -->
-  <section class="content-header">
+
     <h1>
       Pengaturan Sistem & Konfigurasi
       <small>Profil Institusi, Struktur Unit/TA, Switcher Peran Demo, & Reset Data</small>
@@ -430,3 +433,4 @@
   <!-- /.content -->
 </div>
 @endsection
+

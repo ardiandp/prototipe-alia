@@ -34,9 +34,7 @@
 @endpush
 
 @section('content')
-<div class="content-wrapper">
-  <!-- Content Header -->
-  <section class="content-header">
+
     <h1>
       e-Learning & LMS Santri
       <small>Materi Pembelajaran, Video Edukasi, & Pengumpulan Tugas Mandiri</small>

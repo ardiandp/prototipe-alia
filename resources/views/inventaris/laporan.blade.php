@@ -1,11 +1,15 @@
 @extends('layouts.app')
 
 @section('title', 'Laporan & Kartu Stok Inventaris')
+@section('page_title', 'Laporan Logistik & Kartu Stok')
+@section('page_description', 'Rekapitulasi Arus Mutasi, Kartu Stok Barang, & Valuasi Aset Sekolah')
+@section('breadcrumbs')
+  <li><a href="{{ route('inventaris.barang') }}">Inventaris & Logistik</a></li>
+      <li class="active">Laporan & Kartu Stok</li>
+@endsection
 
 @section('content')
-<div class="content-wrapper">
-  <!-- Content Header -->
-  <section class="content-header">
+
     <h1>
       Laporan Logistik & Kartu Stok
       <small>Rekapitulasi Arus Mutasi, Kartu Stok Barang, & Valuasi Aset Sekolah</small>

@@ -1,53 +1,15 @@
 @extends('layouts.app')
 
 @section('title', 'Pengajuan Cuti & Izin Pegawai')
+@section('page_title', 'Pengajuan Cuti & Izin Pegawai (HRIS)')
+@section('page_description', 'Manajemen Permohonan Cuti, Alur Persetujuan, dan Saldo Hak Cuti Tahunan')
+
+@section('breadcrumbs')
+  <li>SDM / HRIS</li>
+  <li class="active">Pengajuan Cuti</li>
+@endsection
 
 @section('content')
-<div class="content-wrapper">
-  <!-- Content Header -->
-  <section class="content-header">
-    <h1>
-      Pengajuan Cuti & Izin Pegawai (HRIS)
-      <small>Manajemen Permohonan Cuti, Alur Persetujuan, dan Saldo Hak Cuti Tahunan</small>
-    </h1>
-    <ol class="breadcrumb">
-      <li><a href="{{ route('dashboard') }}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
-      <li>SDM / HRIS</li>
-      <li class="active">Pengajuan Cuti</li>
-    </ol>
-  </section>
-
-  <!-- Main content -->
-  <section class="content">
-
-    <!-- Flash Messages -->
-    @if(session('success'))
-      <div class="alert alert-success alert-dismissible">
-        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-        <h4><i class="icon fa fa-check"></i> Berhasil!</h4>
-        {{ session('success') }}
-      </div>
-    @endif
-
-    @if(session('info'))
-      <div class="alert alert-info alert-dismissible">
-        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-        <h4><i class="icon fa fa-info"></i> Informasi</h4>
-        {{ session('info') }}
-      </div>
-    @endif
-
-    @if($errors->any())
-      <div class="alert alert-danger alert-dismissible">
-        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-        <h4><i class="icon fa fa-ban"></i> Terjadi Kesalahan!</h4>
-        <ul>
-          @foreach($errors->all() as $error)
-            <li>{{ $error }}</li>
-          @endforeach
-        </ul>
-      </div>
-    @endif
 
     <!-- Callout Prototipe -->
     <div class="callout callout-info" style="border-left-color: #6b46c1;">
@@ -522,9 +484,6 @@
 
       </div>
     </div>
-
-  </section>
-</div>
 
 <!-- Modal Ajukan Cuti Baru -->
 <div class="modal fade" id="modal-add-leave" tabindex="-1" role="dialog">

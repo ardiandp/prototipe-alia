@@ -1,11 +1,15 @@
 @extends('layouts.app')
 
 @section('title', 'Lembur Pegawai & SPKL')
+@section('page_title', 'Manajemen Lembur & SPKL (HRIS)')
+@section('page_description', 'Surat Perintah Kerja Lembur, Jam Kegiatan Tambahan, & Kompensasi Honor Lembur')
+@section('breadcrumbs')
+  <li>SDM / HRIS</li>
+      <li class="active">Lembur & SPKL</li>
+@endsection
 
 @section('content')
-<div class="content-wrapper">
-  <!-- Content Header -->
-  <section class="content-header">
+
     <h1>
       Manajemen Lembur & SPKL (HRIS)
       <small>Surat Perintah Kerja Lembur, Jam Kegiatan Tambahan, & Kompensasi Honor Lembur</small>
@@ -572,8 +576,7 @@
       </div>
     </div>
 
-  </section>
-</div>
+  
 
 <!-- Modal Terbitkan SPKL Baru -->
 <div class="modal fade" id="modal-add-overtime" tabindex="-1" role="dialog">

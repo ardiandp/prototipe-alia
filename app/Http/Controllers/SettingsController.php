@@ -159,3 +159,4 @@ class SettingsController extends Controller
         return redirect()->route('settings.index', ['tab' => 'role_switcher']);
     }
 }
+

@@ -1,6 +1,12 @@
 @extends('layouts.app')
 
 @section('title', 'Portal Mandiri Santri')
+@section('page_title', 'Portal Santri — Alia Islamic School')
+@section('page_description', 'Ruang Belajar Mandiri, Jadwal Pelajaran, & e-Learning Terpadu')
+@section('breadcrumbs')
+  <li><a href="{{ route('portal.dashboard') }}">Portal</a></li>
+      <li class="active">Santri</li>
+@endsection
 
 @push('styles')
 <style>
@@ -47,9 +53,7 @@
 @endpush
 
 @section('content')
-<div class="content-wrapper">
-  <!-- Content Header -->
-  <section class="content-header">
+
     <h1>
       Portal Santri — Alia Islamic School
       <small>Ruang Belajar Mandiri, Jadwal Pelajaran, & e-Learning Terpadu</small>
