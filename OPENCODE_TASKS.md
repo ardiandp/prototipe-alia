@@ -51,22 +51,22 @@ update `docs/PROGRESS.md`, report changed files and blockers, then stop.
 
 -   [x] T05.1 Digital classes.
 -   [x] T05.2 Learning materials.
--   [ ] T05.3 Assignments.
--   [ ] T05.4 Submission monitoring.
--   [ ] T05.5 Quiz demo.
--   [ ] T05.6 Learning progress.
--   [ ] T06.1 Tahfidz programs/targets.
--   [ ] T06.2 Memorization records.
--   [ ] T06.3 Murojaah.
--   [ ] T06.4 Tahfidz progress.
--   [ ] T06.5 Diniyah subjects/schedules.
--   [ ] T06.6 Tahfidz report.
--   [ ] T07.1 Violations/guidance points.
--   [ ] T07.2 Achievements.
--   [ ] T07.3 Counseling (BK).
--   [ ] T07.4 Extracurricular.
--   [ ] T07.5 UKS.
--   [ ] T07.6 Student mutation.
+-   [x] T05.3 Assignments.
+-   [x] T05.4 Submission monitoring.
+-   [x] T05.5 Quiz demo.
+-   [x] T05.6 Learning progress.
+-   [x] T06.1 Tahfidz programs/targets.
+-   [x] T06.2 Memorization records.
+-   [x] T06.3 Murojaah.
+-   [x] T06.4 Tahfidz progress.
+-   [x] T06.5 Diniyah subjects/schedules.
+-   [x] T06.6 Tahfidz report.
+-   [x] T07.1 Violations/guidance points.
+-   [x] T07.2 Achievements.
+-   [x] T07.3 Counseling (BK).
+-   [x] T07.4 Extracurricular.
+-   [x] T07.5 UKS.
+-   [x] T07.6 Student mutation.
 
 ## Batch E --- Boarding, finance, HRIS
 

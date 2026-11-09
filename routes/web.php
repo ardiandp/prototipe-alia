@@ -7,6 +7,8 @@ use App\Http\Controllers\MasterDataController;
 use App\Http\Controllers\PpdbController;
 use App\Http\Controllers\AcademicController;
 use App\Http\Controllers\LmsController;
+use App\Http\Controllers\TahfidzController;
+use App\Http\Controllers\KesiswaanController;
 
 // Helper untuk route placeholder view
 function makePlaceholder($title, $subtitle, $icon = 'fa-cube') {
@@ -113,24 +115,64 @@ Route::prefix('lms')->name('lms.')->group(function () {
     Route::post('/materi', [LmsController::class, 'storeMateri'])->name('materi.store');
     Route::get('/materi/{id}/toggle', [LmsController::class, 'togglePublishMateri'])->name('materi.toggle');
     Route::get('/materi/{id}/destroy', [LmsController::class, 'destroyMateri'])->name('materi.destroy');
-    Route::get('/tugas', makePlaceholder('Tugas & Submission', 'Penugasan & Pengumpulan PR Siswa', 'fa-tasks'))->name('tugas');
-    Route::get('/ujian', makePlaceholder('Ujian Online / CBT', 'Computer Based Testing & Bank Soal', 'fa-question-circle'))->name('ujian');
+    Route::get('/tugas', [LmsController::class, 'tugas'])->name('tugas');
+    Route::post('/tugas', [LmsController::class, 'storeTugas'])->name('tugas.store');
+    Route::get('/tugas/{id}/destroy', [LmsController::class, 'destroyTugas'])->name('tugas.destroy');
+    Route::get('/tugas/{assignmentId}/submission', [LmsController::class, 'submission'])->name('tugas.submission');
+    Route::post('/tugas/{assignmentId}/grade/{studentId}', [LmsController::class, 'gradeSubmission'])->name('tugas.grade');
+    Route::post('/tugas/{assignmentId}/simulate', [LmsController::class, 'simulateUpload'])->name('tugas.simulate');
+    Route::get('/ujian', [LmsController::class, 'ujian'])->name('ujian');
+    Route::post('/ujian', [LmsController::class, 'storeUjian'])->name('ujian.store');
+    Route::get('/ujian/{id}/destroy', [LmsController::class, 'destroyUjian'])->name('ujian.destroy');
+    Route::get('/progres', [LmsController::class, 'progres'])->name('progres');
 });
 
 // Tahfidz & Diniyah
 Route::prefix('tahfidz')->name('tahfidz.')->group(function () {
-    Route::get('/target', makePlaceholder('Target & Halaqah', 'Pembagian Kelompok Halaqah Al-Quran', 'fa-bookmark'))->name('target');
-    Route::get('/setoran', makePlaceholder('Setoran Hafalan (Ziyadah)', 'Catatan Surat, Ayat, & Nilai Kelancaran', 'fa-microphone'))->name('setoran');
-    Route::get('/murojaah', makePlaceholder('Murojaah & Ujian Tahfidz', 'Pemantauan Pengulangan Hafalan', 'fa-repeat'))->name('murojaah');
-    Route::get('/diniyah', makePlaceholder('Kurikulum Diniyah', 'Kitab Kuning, Hadits, & Bahasa Arab', 'fa-book'))->name('diniyah');
+    Route::get('/target', [TahfidzController::class, 'target'])->name('target');
+    Route::post('/halaqah', [TahfidzController::class, 'storeHalaqah'])->name('halaqah.store');
+    Route::post('/program', [TahfidzController::class, 'storeProgram'])->name('program.store');
+    Route::get('/halaqah/{id}/destroy', [TahfidzController::class, 'destroyHalaqah'])->name('halaqah.destroy');
+    Route::post('/halaqah/{id}/assign', [TahfidzController::class, 'assignStudent'])->name('halaqah.assign');
+    Route::get('/setoran', [TahfidzController::class, 'setoran'])->name('setoran');
+    Route::post('/setoran', [TahfidzController::class, 'storeSetoran'])->name('setoran.store');
+    Route::get('/setoran/{id}/destroy', [TahfidzController::class, 'destroySetoran'])->name('setoran.destroy');
+    Route::get('/murojaah', [TahfidzController::class, 'murojaah'])->name('murojaah');
+    Route::post('/murojaah', [TahfidzController::class, 'storeMurojaah'])->name('murojaah.store');
+    Route::get('/murojaah/{id}/destroy', [TahfidzController::class, 'destroyMurojaah'])->name('murojaah.destroy');
+    Route::get('/progres', [TahfidzController::class, 'progres'])->name('progres');
+    Route::get('/diniyah', [TahfidzController::class, 'diniyah'])->name('diniyah');
+    Route::post('/diniyah/kitab', [TahfidzController::class, 'storeSubject'])->name('diniyah.kitab.store');
+    Route::post('/diniyah/jadwal', [TahfidzController::class, 'storeSchedule'])->name('diniyah.jadwal.store');
+    Route::get('/diniyah/jadwal/{id}/destroy', [TahfidzController::class, 'destroySchedule'])->name('diniyah.jadwal.destroy');
+    Route::get('/rapor', [TahfidzController::class, 'rapor'])->name('rapor');
+    Route::post('/rapor/{studentId}/catatan', [TahfidzController::class, 'updateCatatanRapor'])->name('rapor.catatan');
 });
 
 // Kesiswaan & Pembinaan
 Route::prefix('kesiswaan')->name('kesiswaan.')->group(function () {
-    Route::get('/pelanggaran', makePlaceholder('Poin & Pelanggaran', 'Sistem Tata Tertib & Buku Poin', 'fa-exclamation-triangle'))->name('pelanggaran');
-    Route::get('/prestasi', makePlaceholder('Prestasi Siswa', 'Catatan Penghargaan & Lomba', 'fa-star'))->name('prestasi');
-    Route::get('/konseling', makePlaceholder('Bimbingan Konseling (BK)', 'Konsultasi & Layanan Pembinaan', 'fa-comments-o'))->name('konseling');
-    Route::get('/ekskul', makePlaceholder('Ekstrakurikuler', 'Kegiatan Pilihan & Bakat Santri', 'fa-soccer-ball-o'))->name('ekskul');
+    Route::get('/pelanggaran', [KesiswaanController::class, 'pelanggaran'])->name('pelanggaran');
+    Route::post('/pelanggaran', [KesiswaanController::class, 'storePelanggaran'])->name('pelanggaran.store');
+    Route::get('/pelanggaran/{id}/destroy', [KesiswaanController::class, 'destroyPelanggaran'])->name('pelanggaran.destroy');
+    Route::post('/pelanggaran/aturan', [KesiswaanController::class, 'storeRule'])->name('pelanggaran.rule.store');
+    Route::get('/prestasi', [KesiswaanController::class, 'prestasi'])->name('prestasi');
+    Route::post('/prestasi', [KesiswaanController::class, 'storePrestasi'])->name('prestasi.store');
+    Route::get('/prestasi/{id}/destroy', [KesiswaanController::class, 'destroyPrestasi'])->name('prestasi.destroy');
+    Route::get('/konseling', [KesiswaanController::class, 'konseling'])->name('konseling');
+    Route::post('/konseling', [KesiswaanController::class, 'storeKonseling'])->name('konseling.store');
+    Route::post('/konseling/{id}/update-status', [KesiswaanController::class, 'updateKonselingStatus'])->name('konseling.update-status');
+    Route::get('/konseling/{id}/destroy', [KesiswaanController::class, 'destroyKonseling'])->name('konseling.destroy');
+    Route::get('/ekskul', [KesiswaanController::class, 'ekskul'])->name('ekskul');
+    Route::post('/ekskul', [KesiswaanController::class, 'storeEkskul'])->name('ekskul.store');
+    Route::post('/ekskul/{id}/enroll', [KesiswaanController::class, 'enrollStudent'])->name('ekskul.enroll');
+    Route::get('/ekskul/{id}/destroy', [KesiswaanController::class, 'destroyEkskul'])->name('ekskul.destroy');
+    Route::get('/uks', [KesiswaanController::class, 'uks'])->name('uks');
+    Route::post('/uks/kunjungan', [KesiswaanController::class, 'storeUksVisit'])->name('uks.visit.store');
+    Route::post('/uks/obat', [KesiswaanController::class, 'storeUksMedicine'])->name('uks.medicine.store');
+    Route::get('/uks/kunjungan/{id}/destroy', [KesiswaanController::class, 'destroyUksVisit'])->name('uks.visit.destroy');
+    Route::get('/mutasi', [KesiswaanController::class, 'mutasi'])->name('mutasi');
+    Route::post('/mutasi', [KesiswaanController::class, 'storeMutasi'])->name('mutasi.store');
+    Route::get('/mutasi/{id}/destroy', [KesiswaanController::class, 'destroyMutasi'])->name('mutasi.destroy');
 });
 
 // Asrama / Boarding

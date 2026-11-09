@@ -86,6 +86,7 @@
           <li class="{{ request()->is('lms/materi*') ? 'active' : '' }}"><a href="{{ route('lms.materi') }}"><i class="fa fa-circle-o"></i> Materi Pembelajaran</a></li>
           <li class="{{ request()->is('lms/tugas*') ? 'active' : '' }}"><a href="{{ route('lms.tugas') }}"><i class="fa fa-circle-o"></i> Tugas & Submission</a></li>
           <li class="{{ request()->is('lms/ujian*') ? 'active' : '' }}"><a href="{{ route('lms.ujian') }}"><i class="fa fa-circle-o"></i> Ujian Online / CBT</a></li>
+          <li class="{{ request()->is('lms/progres*') ? 'active' : '' }}"><a href="{{ route('lms.progres') }}"><i class="fa fa-circle-o"></i> Progres Belajar</a></li>
         </ul>
       </li>
 
@@ -99,7 +100,9 @@
           <li class="{{ request()->is('tahfidz/target*') ? 'active' : '' }}"><a href="{{ route('tahfidz.target') }}"><i class="fa fa-circle-o"></i> Target & Halaqah</a></li>
           <li class="{{ request()->is('tahfidz/setoran*') ? 'active' : '' }}"><a href="{{ route('tahfidz.setoran') }}"><i class="fa fa-circle-o"></i> Setoran Hafalan (Ziyadah)</a></li>
           <li class="{{ request()->is('tahfidz/murojaah*') ? 'active' : '' }}"><a href="{{ route('tahfidz.murojaah') }}"><i class="fa fa-circle-o"></i> Murojaah & Ujian</a></li>
+          <li class="{{ request()->is('tahfidz/progres*') ? 'active' : '' }}"><a href="{{ route('tahfidz.progres') }}"><i class="fa fa-circle-o"></i> Capaian & Progres</a></li>
           <li class="{{ request()->is('tahfidz/diniyah*') ? 'active' : '' }}"><a href="{{ route('tahfidz.diniyah') }}"><i class="fa fa-circle-o"></i> Kurikulum Diniyah</a></li>
+          <li class="{{ request()->is('tahfidz/rapor*') ? 'active' : '' }}"><a href="{{ route('tahfidz.rapor') }}"><i class="fa fa-circle-o"></i> Rapor Tahfidz</a></li>
         </ul>
       </li>
 
@@ -114,6 +117,8 @@
           <li class="{{ request()->is('kesiswaan/prestasi*') ? 'active' : '' }}"><a href="{{ route('kesiswaan.prestasi') }}"><i class="fa fa-circle-o"></i> Prestasi Siswa</a></li>
           <li class="{{ request()->is('kesiswaan/konseling*') ? 'active' : '' }}"><a href="{{ route('kesiswaan.konseling') }}"><i class="fa fa-circle-o"></i> Bimbingan Konseling (BK)</a></li>
           <li class="{{ request()->is('kesiswaan/ekskul*') ? 'active' : '' }}"><a href="{{ route('kesiswaan.ekskul') }}"><i class="fa fa-circle-o"></i> Ekstrakurikuler</a></li>
+          <li class="{{ request()->is('kesiswaan/uks*') ? 'active' : '' }}"><a href="{{ route('kesiswaan.uks') }}"><i class="fa fa-circle-o"></i> UKS & Kesehatan</a></li>
+          <li class="{{ request()->is('kesiswaan/mutasi*') ? 'active' : '' }}"><a href="{{ route('kesiswaan.mutasi') }}"><i class="fa fa-circle-o"></i> Mutasi Santri</a></li>
         </ul>
       </li>
 
