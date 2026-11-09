@@ -253,6 +253,10 @@ Route::prefix('hris')->name('hris.')->group(function () {
     Route::post('/penggajian', [HrisController::class, 'storePenggajian'])->name('penggajian.store');
     Route::post('/penggajian/{id}/approve', [HrisController::class, 'approvePenggajian'])->name('penggajian.approve');
     Route::get('/penggajian/{id}/destroy', [HrisController::class, 'destroyPenggajian'])->name('penggajian.destroy');
+    Route::get('/pelatihan', [HrisController::class, 'pelatihan'])->name('pelatihan');
+    Route::post('/pelatihan', [HrisController::class, 'storePelatihan'])->name('pelatihan.store');
+    Route::post('/pelatihan/{id}/complete', [HrisController::class, 'completePelatihan'])->name('pelatihan.complete');
+    Route::get('/pelatihan/{id}/destroy', [HrisController::class, 'destroyPelatihan'])->name('pelatihan.destroy');
 });
 
 // Sarpras & Inventaris

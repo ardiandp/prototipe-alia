@@ -1073,5 +1073,167 @@ class HrisController extends Controller
 
         return redirect()->route('hris.penggajian')->with('info', "Slip gaji ID: {$id} berhasil dihapus dari sesi demo.");
     }
+
+    /**
+     * T10.7 - Competency Development / Pengembangan Kompetensi Pegawai (Pelatihan & Sertifikasi)
+     */
+    public function pelatihan(Request $request)
+    {
+        $demo = DemoDataManager::getInstance();
+        $teachers = $demo->getTeachers();
+        $trainings = $demo->getStaffTrainings();
+        $units = $demo->getUnits();
+
+        $activeTab = $request->get('tab', 'daftar'); // daftar, rencana, sertifikasi
+        $statusFilter = $request->get('status', 'all');
+        $categoryFilter = $request->get('category', 'all');
+        $unitFilter = $request->get('unit', 'all');
+        $search = $request->get('search');
+
+        // Filter daftar pelatihan
+        $filteredTrainings = array_filter($trainings, function ($trn) use ($statusFilter, $categoryFilter, $unitFilter, $search) {
+            $matchStatus = ($statusFilter === 'all') || (($trn['status'] ?? '') === $statusFilter);
+            $matchCat = ($categoryFilter === 'all') || (($trn['category'] ?? '') === $categoryFilter);
+            $matchUnit = ($unitFilter === 'all') || (($trn['unit_id'] ?? '') === $unitFilter);
+            $matchSearch = true;
+            if ($search) {
+                $matchSearch = stripos($trn['title'], $search) !== false ||
+                               stripos($trn['name'], $search) !== false ||
+                               stripos($trn['organizer'], $search) !== false ||
+                               stripos($trn['doc_number'] ?? '', $search) !== false ||
+                               stripos($trn['output_target'] ?? '', $search) !== false;
+            }
+            return $matchStatus && $matchCat && $matchUnit && $matchSearch;
+        });
+
+        // Metrik Ringkasan Pengembangan Kompetensi
+        $totalProgram = count($trainings);
+        $totalSelesai = count(array_filter($trainings, fn($t) => ($t['status'] ?? '') === 'selesai'));
+        $totalBerjalan = count(array_filter($trainings, fn($t) => ($t['status'] ?? '') === 'berjalan'));
+        $totalHours = array_sum(array_column($trainings, 'duration_hours'));
+        $totalInvestment = array_sum(array_column($trainings, 'cost'));
+
+        // Guru bersertifikat pendidik / sanad
+        $certifiedStaff = array_filter($trainings, fn($t) => !empty($t['certificate_number']));
+
+        return view('hris.pelatihan', compact(
+            'filteredTrainings',
+            'trainings',
+            'teachers',
+            'units',
+            'activeTab',
+            'statusFilter',
+            'categoryFilter',
+            'unitFilter',
+            'search',
+            'totalProgram',
+            'totalSelesai',
+            'totalBerjalan',
+            'totalHours',
+            'totalInvestment',
+            'certifiedStaff'
+        ));
+    }
+
+    /**
+     * Daftarkan Program Pelatihan / Diklat Baru
+     */
+    public function storePelatihan(Request $request)
+    {
+        $validated = $request->validate([
+            'teacher_id' => 'required|string',
+            'title' => 'required|string|max:200',
+            'category' => 'required|in:sertifikasi,workshop,seminar,inhouse,kurikulum',
+            'organizer' => 'required|string|max:150',
+            'location' => 'required|string|max:150',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+            'duration_hours' => 'required|numeric|min:1',
+            'cost' => 'nullable|numeric|min:0',
+            'cost_source' => 'required|string|max:100',
+            'certificate_number' => 'nullable|string|max:100',
+            'description' => 'required|string|max:500',
+            'output_target' => 'required|string|max:255',
+        ]);
+
+        $demo = DemoDataManager::getInstance();
+        $teacher = $demo->findTeacher($validated['teacher_id']);
+        if (!$teacher) {
+            return redirect()->back()->withErrors(['teacher_id' => 'Pegawai tidak ditemukan.']);
+        }
+
+        $categoryLabels = [
+            'sertifikasi' => 'Sertifikasi Profesi Pendidik',
+            'workshop' => 'Workshop & Pelatihan Teknis',
+            'seminar' => 'Seminar & Lokakarya Ilmiah',
+            'inhouse' => 'In-House Training (IHT) Yayasan',
+            'kurikulum' => 'Bimtek Kurikulum & Asesmen'
+        ];
+
+        $count = count($demo->getStaffTrainings()) + 1;
+        $docNumber = 'DIKLAT/ALIA/2026/' . str_pad($count, 3, '0', STR_PAD_LEFT);
+
+        $newTraining = [
+            'id' => 'TRN-' . str_pad($count, 3, '0', STR_PAD_LEFT),
+            'doc_number' => $docNumber,
+            'teacher_id' => $teacher['id'],
+            'name' => $teacher['name'],
+            'nip' => $teacher['nip'] ?? '-',
+            'unit_id' => $teacher['unit_id'] ?? 'UNIT-SMA',
+            'title' => $validated['title'],
+            'category' => $validated['category'],
+            'category_label' => $categoryLabels[$validated['category']] ?? 'Pelatihan Kompetensi',
+            'organizer' => $validated['organizer'],
+            'location' => $validated['location'],
+            'start_date' => $validated['start_date'],
+            'end_date' => $validated['end_date'],
+            'duration_hours' => (float)$validated['duration_hours'],
+            'cost' => (float)($validated['cost'] ?? 0),
+            'cost_source' => $validated['cost_source'],
+            'certificate_number' => $validated['certificate_number'] ?? null,
+            'status' => 'terdaftar',
+            'description' => $validated['description'],
+            'output_target' => $validated['output_target']
+        ];
+
+        $sessionAdded = session('demo_staff_trainings_added', []);
+        $sessionAdded[] = $newTraining;
+        session(['demo_staff_trainings_added' => $sessionAdded]);
+
+        return redirect()->route('hris.pelatihan')->with('success', "Program pelatihan \"{$validated['title']}\" untuk {$teacher['name']} berhasil didaftarkan!");
+    }
+
+    /**
+     * Konfirmasi Penyelesaian Pelatihan & Terbitkan Nomor Sertifikat
+     */
+    public function completePelatihan(Request $request, string $id)
+    {
+        $validated = $request->validate([
+            'certificate_number' => 'required|string|max:100',
+        ]);
+
+        $sessionUpdated = session('demo_staff_trainings_updated', []);
+        $sessionUpdated[$id] = [
+            'status' => 'selesai',
+            'certificate_number' => $validated['certificate_number']
+        ];
+        session(['demo_staff_trainings_updated' => $sessionUpdated]);
+
+        return redirect()->route('hris.pelatihan')->with('success', "Pelatihan ID: {$id} berhasil diselesaikan dan nomor sertifikat telah tercatat!");
+    }
+
+    /**
+     * Hapus Data Pelatihan dari Sesi Demo
+     */
+    public function destroyPelatihan(string $id)
+    {
+        $sessionDeleted = session('demo_staff_trainings_deleted', []);
+        if (!in_array($id, $sessionDeleted)) {
+            $sessionDeleted[] = $id;
+            session(['demo_staff_trainings_deleted' => $sessionDeleted]);
+        }
+
+        return redirect()->route('hris.pelatihan')->with('info', "Catatan pelatihan ID: {$id} berhasil dihapus dari sesi demo.");
+    }
 }
 

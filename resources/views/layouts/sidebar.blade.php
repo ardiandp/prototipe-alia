@@ -170,6 +170,7 @@
           <li class="{{ request()->is('hris/lembur*') ? 'active' : '' }}"><a href="{{ route('hris.lembur') }}"><i class="fa fa-circle-o"></i> Lembur & SPKL</a></li>
           <li class="{{ request()->is('hris/evaluasi*') ? 'active' : '' }}"><a href="{{ route('hris.evaluasi') }}"><i class="fa fa-circle-o"></i> Evaluasi Kinerja (PKG)</a></li>
           <li class="{{ request()->is('hris/penggajian*') ? 'active' : '' }}"><a href="{{ route('hris.penggajian') }}"><i class="fa fa-circle-o"></i> Penggajian (Payroll)</a></li>
+          <li class="{{ request()->is('hris/pelatihan*') ? 'active' : '' }}"><a href="{{ route('hris.pelatihan') }}"><i class="fa fa-circle-o"></i> Pelatihan & Kompetensi</a></li>
         </ul>
       </li>
 

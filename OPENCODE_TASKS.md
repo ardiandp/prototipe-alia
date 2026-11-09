@@ -91,7 +91,7 @@ update `docs/PROGRESS.md`, report changed files and blockers, then stop.
 -   [x] T10.4 Overtime.
 -   [x] T10.5 Performance evaluation.
 -   [x] T10.6 Payroll simulation.
--   [ ] T10.7 Competency development.
+-   [x] T10.7 Competency development.
 
 ## Batch F --- Facilities, inventory, portals
 

@@ -65,6 +65,7 @@ class DemoDataManager
     private array $staffOvertimes = [];
     private array $staffEvaluations = [];
     private array $staffPayrolls = [];
+    private array $staffTrainings = [];
 
     public function __construct()
     {
@@ -4294,6 +4295,120 @@ class DemoDataManager
                 'notes' => 'Penggajian staf tenaga kependidikan tata usaha keuangan.'
             ]
         ];
+
+        // 22. Pengembangan Kompetensi Pegawai & Pelatihan (Staff Trainings & Competency Development)
+        $this->staffTrainings = [
+            [
+                'id' => 'TRN-001',
+                'doc_number' => 'DIKLAT/ALIA/2026/001',
+                'teacher_id' => 'GUR-007', // Nurul Hasanah, M.Pd.
+                'name' => 'Nurul Hasanah, M.Pd.',
+                'nip' => '1985162010011007',
+                'unit_id' => 'UNIT-SMA',
+                'title' => 'Program Sertifikasi Guru Profesional (PPG Dalam Jabatan)',
+                'category' => 'sertifikasi', // sertifikasi, workshop, seminar, inhouse, kurikulum
+                'category_label' => 'Sertifikasi Profesi Pendidik',
+                'organizer' => 'Balai Diklat Kemdikbudristek & Universitas Negeri Jakarta',
+                'location' => 'Jakarta (Hybrid: Daring & Luring)',
+                'start_date' => '2026-11-09',
+                'end_date' => '2026-12-20',
+                'duration_hours' => 64,
+                'cost' => 0, // Dibiayai APBN / Beasiswa Kemdikbud
+                'cost_source' => 'Beasiswa Pemerintah (Gratis)',
+                'certificate_number' => 'CERT-PPG-2026-0982',
+                'status' => 'berjalan', // terdaftar, berjalan, selesai
+                'description' => 'Pendalaman materi pedagogik dan bidang studi Fisika SMA berbasis kurikulum merdeka.',
+                'output_target' => 'Sertifikat Pendidik (Gr.) dan pemenuhan kualifikasi guru profesional yayasan.'
+            ],
+            [
+                'id' => 'TRN-002',
+                'doc_number' => 'DIKLAT/ALIA/2026/002',
+                'teacher_id' => 'GUR-002', // Aisyah Salsabila
+                'name' => 'Aisyah Salsabila, S.Pd.I.',
+                'nip' => '1985112010011002',
+                'unit_id' => 'UNIT-SMP',
+                'title' => 'Daurah Sanad Tajwid Matan Al-Jazariyah & Tuhfatul Athfal',
+                'category' => 'workshop',
+                'category_label' => 'Workshop Sanad & Tahfidz Quran',
+                'organizer' => 'Lembaga Pengembangan Tahfidz Quran (LPTQ) Markaz Al-Qur\'an',
+                'location' => 'Hotel Balairung Jakarta',
+                'start_date' => '2026-10-15',
+                'end_date' => '2026-10-18',
+                'duration_hours' => 32,
+                'cost' => 1750000,
+                'cost_source' => 'Anggaran Yayasan Alia (HRD)',
+                'certificate_number' => 'SANAD-JZR-2026-441',
+                'status' => 'selesai',
+                'description' => 'Pelatihan intensif tajwid bersanad muttashil sampai ke Rasulullah SAW untuk pengajar tahfidz.',
+                'output_target' => 'Ijazah Sanad Matan Jazariyah dan kurikulum tahsin mutqin santriwati.'
+            ],
+            [
+                'id' => 'TRN-003',
+                'doc_number' => 'DIKLAT/ALIA/2026/003',
+                'teacher_id' => 'GUR-006', // Budi Santoso
+                'name' => 'Budi Santoso, S.Kom.',
+                'nip' => '1985152010011006',
+                'unit_id' => 'UNIT-SMA',
+                'title' => 'Workshop AI & Machine Learning dalam Pembelajaran Koding Sekolah Menengah',
+                'category' => 'workshop',
+                'category_label' => 'Teknologi Informasi & AI Education',
+                'organizer' => 'Google for Education & Asosiasi Guru TIK Indonesia (AGTIK)',
+                'location' => 'Auditorium Kampus UI Depok',
+                'start_date' => '2026-10-24',
+                'end_date' => '2026-10-25',
+                'duration_hours' => 16,
+                'cost' => 750000,
+                'cost_source' => 'Anggaran Yayasan Alia (HRD)',
+                'certificate_number' => 'GFE-AI-2026-8819',
+                'status' => 'selesai',
+                'description' => 'Eksplorasi modul kecerdasan buatan (GenAI), prompt engineering edukatif, dan koding Python untuk santri.',
+                'output_target' => 'Modul ajar ekstrakurikuler koding & robotika cerdas Alia Islamic School.'
+            ],
+            [
+                'id' => 'TRN-004',
+                'doc_number' => 'DIKLAT/ALIA/2026/004',
+                'teacher_id' => 'GUR-004', // Rahmat Hidayat
+                'name' => 'Rahmat Hidayat, M.Sc.',
+                'nip' => '1985132010011004',
+                'unit_id' => 'UNIT-SMA',
+                'title' => 'Bimbingan Teknis Penyusunan Asesmen Pembelajaran Berdiferensiasi Kurikulum Merdeka',
+                'category' => 'kurikulum',
+                'category_label' => 'Pengembangan Kurikulum & Asesmen',
+                'organizer' => 'Musyawarah Kerja Kepala Sekolah (MKKS) Swasta Jakarta Timur',
+                'location' => 'Aula BPMP DKI Jakarta',
+                'start_date' => '2026-11-18',
+                'end_date' => '2026-11-19',
+                'duration_hours' => 18,
+                'cost' => 500000,
+                'cost_source' => 'Anggaran Unit SMA Alia',
+                'certificate_number' => null,
+                'status' => 'terdaftar',
+                'description' => 'Strategi merancang asesmen diagnostik, formatif adaptif, dan rubrik portofolio capaian pembelajaran.',
+                'output_target' => 'Bank instrumen asesmen berdiferensiasi SMA Islam Alia.'
+            ],
+            [
+                'id' => 'TRN-005',
+                'doc_number' => 'DIKLAT/ALIA/2026/005',
+                'teacher_id' => 'GUR-011', // Ust. Muhammad Ihsan
+                'name' => 'Ust. Muhammad Ihsan, S.Pd.I.',
+                'nip' => '1985202010011011',
+                'unit_id' => 'UNIT-SD',
+                'title' => 'In-House Training (IHT): Penguatan Karakter Profil Pelajar Pancasila Rahmatan Lil Alamin',
+                'category' => 'inhouse',
+                'category_label' => 'In-House Training (IHT) Yayasan',
+                'organizer' => 'Divisi Penjaminan Mutu & HRD Yayasan Alia',
+                'location' => 'Masjid Kampus Terpadu Alia',
+                'start_date' => '2026-10-05',
+                'end_date' => '2026-10-06',
+                'duration_hours' => 16,
+                'cost' => 350000,
+                'cost_source' => 'Anggaran Yayasan Alia (HRD)',
+                'certificate_number' => 'IHT-P3RA-2026-012',
+                'status' => 'selesai',
+                'description' => 'Pelatihan internal integrasi nilai adab nabawiyah ke dalam tema P5 Kurikulum Merdeka jenjang SD/SMP.',
+                'output_target' => 'Buku panduan proyek penguatan karakter islami terpadu Alia.'
+            ]
+        ];
     }
 
     // Getters
@@ -6141,6 +6256,43 @@ class DemoDataManager
         foreach ($this->getStaffPayrolls() as $pay) {
             if ($pay['id'] === $id || ($pay['slip_number'] ?? '') === $id) {
                 return $pay;
+            }
+        }
+        return null;
+    }
+
+    public function getStaffTrainings(): array
+    {
+        $sessionAdded = [];
+        $sessionDeleted = [];
+        $sessionUpdated = [];
+        try {
+            if (function_exists('session') && app()->has('session')) {
+                $sessionAdded = session('demo_staff_trainings_added', []);
+                $sessionDeleted = session('demo_staff_trainings_deleted', []);
+                $sessionUpdated = session('demo_staff_trainings_updated', []);
+            }
+        } catch (\Throwable $e) {}
+
+        $list = array_merge($this->staffTrainings, $sessionAdded);
+        $filtered = array_filter($list, function($trn) use ($sessionDeleted) {
+            return !in_array($trn['id'], $sessionDeleted);
+        });
+
+        foreach ($filtered as &$item) {
+            if (isset($sessionUpdated[$item['id']])) {
+                $item = array_merge($item, $sessionUpdated[$item['id']]);
+            }
+        }
+
+        return array_values($filtered);
+    }
+
+    public function findStaffTraining(string $id): ?array
+    {
+        foreach ($this->getStaffTrainings() as $trn) {
+            if ($trn['id'] === $id || ($trn['doc_number'] ?? '') === $id) {
+                return $trn;
             }
         }
         return null;
