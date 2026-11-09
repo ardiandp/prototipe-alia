@@ -10,8 +10,8 @@ Catatan pemantauan progres implementasi prototipe Alia Islamic School.
 - **Batch Aktif**: Batch E (Boarding, Finance, HRIS)
 - **Batch Aktif**: Batch F (Facilities, Inventory, Portals)
 - **Task Terakhir Selesai**:
-  - `T11.1`: Facility registry (Sarpras & Fasilitas: Registrasi Tanah & Lahan Kampus SHM Wakaf, Bangunan Gedung Bertingkat, Sarana Lapangan Olahraga, Ruangan Laboratorium & Fasilitas Khusus, Utilitas Daya Listrik/Genset, Pembaruan Kondisi Fisik Fasilitas, Valuasi Buku Aset, Cetak Kartu Induk Fasilitas Berkop Alia).
-- **Task Selanjutnya**: `T11.2`: Room usage/booking (Peminjaman Ruang Lab/Aula/Lapangan, Jadwal Penggunaan, dan Status Approval).
+  - `T11.2`: Room usage/booking (Sarpras & Fasilitas: Manajemen Peminjaman Ruangan Khusus, Lab Komputer/Sains/Bahasa, Aula Serbaguna, Lapangan Olahraga, Deteksi Bentrok Jadwal, Linimasa Timeline Pemakaian Mingguan, Surat Izin Berkop Alia, dan Alur Persetujuan Sarpras).
+- **Task Selanjutnya**: `T11.3`: Maintenance/damage reports (Sarpras & Fasilitas: Laporan Kerusakan, Tingkat Prioritas, Penugasan Teknisi, dan Progres Perbaikan).
 
 ---
 
@@ -239,6 +239,12 @@ Catatan pemantauan progres implementasi prototipe Alia Islamic School.
   - Controller: [`SarprasController.php`](file:///c:/laragon/www/prototipe-alia/app/Http/Controllers/SarprasController.php) (`fasilitas`, `storeFasilitas`, `updateKondisi`, `destroyFasilitas`).
   - View: [`resources/views/sarpras/fasilitas.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/sarpras/fasilitas.blade.php) (3 Tab: Buku Register Aset Sarpras, Ruangan & Fasilitas Khusus, Rekapitulasi & Valuasi Aset, 4 info box total aset/nilai perolehan/kondisi prima/perlu pemeliharaan, modal kartu inventaris aset resmi berkop Alia Islamic School, modal pembaruan kondisi fisik, form pendaftaran aset baru, filter kategori/kondisi/search, cetak).
   - Rute aktif `/sarpras/fasilitas`, `/sarpras/fasilitas` (POST), `/sarpras/fasilitas/{id}/kondisi` (POST), `/sarpras/fasilitas/{id}/destroy`, serta update link di sidebar AdminLTE.
+- `[x] T11.2`: Room Usage & Booking (Peminjaman Ruangan & Fasilitas Khusus):
+  - Dataset baseline peminjaman ruangan di [`DemoDataManager.php`](file:///c:/laragon/www/prototipe-alia/app/Support/DemoData/DemoDataManager.php) (`getRoomBookings`, `findRoomBooking`) dengan daftar tempat pinjam lab komputer/sains/bahasa, aula serbaguna, masjid, dan lapangan olahraga.
+  - Controller: [`SarprasController.php`](file:///c:/laragon/www/prototipe-alia/app/Http/Controllers/SarprasController.php) (`peminjaman`, `storePeminjaman`, `approvePeminjaman`, `destroyPeminjaman`) dengan sistem auto-conflict detection jadwal jika ada jam yang bertabrakan.
+  - View: [`resources/views/sarpras/peminjaman.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/sarpras/peminjaman.blade.php) (3 Tab: Daftar Peminjaman & Status, Jadwal Pemakaian Ruangan Linimasa Timeline, Antrean Persetujuan Sarpras, 4 info box total/pending/disetujui/selesai, modal surat izin pemakaian resmi berkop Alia Islamic School, modal keputusan persetujuan & alasan penolakan, form permohonan baru, filter ruangan/status/tanggal/search, cetak).
+  - Rute aktif `/sarpras/peminjaman`, `/sarpras/peminjaman` (POST), `/sarpras/peminjaman/{id}/approve` (POST), `/sarpras/peminjaman/{id}/destroy`, serta link menu di sidebar AdminLTE.
+
 
 
 

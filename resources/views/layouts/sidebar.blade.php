@@ -182,6 +182,7 @@
         </a>
         <ul class="treeview-menu">
           <li class="{{ request()->is('sarpras/fasilitas*') ? 'active' : '' }}"><a href="{{ route('sarpras.fasilitas') }}"><i class="fa fa-circle-o"></i> Fasilitas & Aset</a></li>
+          <li class="{{ request()->is('sarpras/peminjaman*') ? 'active' : '' }}"><a href="{{ route('sarpras.peminjaman') }}"><i class="fa fa-circle-o"></i> Peminjaman Ruangan</a></li>
           <li class="{{ request()->is('sarpras/pemeliharaan*') ? 'active' : '' }}"><a href="{{ route('sarpras.pemeliharaan') }}"><i class="fa fa-circle-o"></i> Pemeliharaan & Servis</a></li>
           <li class="{{ request()->is('inventaris/stok*') ? 'active' : '' }}"><a href="{{ route('inventaris.stok') }}"><i class="fa fa-circle-o"></i> Stok & ATK</a></li>
         </ul>

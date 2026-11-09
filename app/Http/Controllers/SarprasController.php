@@ -178,4 +178,240 @@ class SarprasController extends Controller
 
         return redirect()->route('sarpras.fasilitas')->with('info', "Aset fasilitas ID: {$id} berhasil dihapus dari register sesi demo.");
     }
+
+    /**
+     * T11.2 - Room Usage and Booking / Peminjaman & Jadwal Ruangan Khusus, Lab & Aula
+     */
+    public function peminjaman(Request $request)
+    {
+        $demo = DemoDataManager::getInstance();
+        $bookings = $demo->getRoomBookings();
+        $rooms = $demo->getFacilityRooms();
+        $assets = $demo->getFacilityAssets();
+        $teachers = $demo->getTeachers();
+        $units = $demo->getUnits();
+
+        // Kumpulkan daftar ruangan & lapangan yang bisa dipinjam
+        $bookableVenues = [];
+        foreach ($rooms as $r) {
+            $bookableVenues[] = [
+                'id' => $r['id'],
+                'name' => $r['name'],
+                'location' => $r['location'] ?? 'Kampus Alia',
+                'capacity' => $r['capacity'] ?? 30,
+                'type' => $r['type'] ?? 'Ruangan'
+            ];
+        }
+        foreach ($assets as $a) {
+            if (in_array($a['category'] ?? '', ['lapangan', 'gedung', 'ruangan'])) {
+                // Jangan duplikasi jika sudah ada
+                $exists = false;
+                foreach ($bookableVenues as $bv) {
+                    if ($bv['name'] === $a['name']) {
+                        $exists = true;
+                        break;
+                    }
+                }
+                if (!$exists) {
+                    $bookableVenues[] = [
+                        'id' => $a['id'],
+                        'name' => $a['name'],
+                        'location' => $a['location'],
+                        'capacity' => $a['capacity'],
+                        'type' => $a['category_label'] ?? 'Sarpras Khusus'
+                    ];
+                }
+            }
+        }
+
+        $activeTab = $request->get('tab', 'daftar'); // daftar, jadwal, persetujuan
+        $statusFilter = $request->get('status', 'all');
+        $roomFilter = $request->get('room', 'all');
+        $dateFilter = $request->get('date');
+        $search = $request->get('search');
+
+        $filteredBookings = array_filter($bookings, function ($bkg) use ($statusFilter, $roomFilter, $dateFilter, $search) {
+            $matchStatus = ($statusFilter === 'all') || (($bkg['status'] ?? '') === $statusFilter);
+            $matchRoom = ($roomFilter === 'all') || (($bkg['room_id'] ?? '') === $roomFilter) || (($bkg['room_name'] ?? '') === $roomFilter);
+            $matchDate = empty($dateFilter) || (($bkg['booking_date'] ?? '') === $dateFilter);
+            $matchSearch = true;
+            if ($search) {
+                $matchSearch = stripos($bkg['purpose'] ?? '', $search) !== false ||
+                               stripos($bkg['requester_name'] ?? '', $search) !== false ||
+                               stripos($bkg['room_name'] ?? '', $search) !== false ||
+                               stripos($bkg['booking_code'] ?? '', $search) !== false;
+            }
+            return $matchStatus && $matchRoom && $matchDate && $matchSearch;
+        });
+
+        // Metrik Ringkasan Peminjaman Ruangan
+        $totalBookings = count($bookings);
+        $totalPending = count(array_filter($bookings, fn($b) => ($b['status'] ?? '') === 'diajukan'));
+        $totalApproved = count(array_filter($bookings, fn($b) => ($b['status'] ?? '') === 'disetujui'));
+        $totalCompleted = count(array_filter($bookings, fn($b) => ($b['status'] ?? '') === 'selesai'));
+
+        return view('sarpras.peminjaman', compact(
+            'filteredBookings',
+            'bookings',
+            'bookableVenues',
+            'rooms',
+            'teachers',
+            'units',
+            'activeTab',
+            'statusFilter',
+            'roomFilter',
+            'dateFilter',
+            'search',
+            'totalBookings',
+            'totalPending',
+            'totalApproved',
+            'totalCompleted'
+        ));
+    }
+
+    /**
+     * Ajukan Permohonan Peminjaman Ruangan / Fasilitas Baru
+     */
+    public function storePeminjaman(Request $request)
+    {
+        $validated = $request->validate([
+            'room_id' => 'required|string',
+            'requester_name' => 'required|string|max:100',
+            'requester_role' => 'required|string|max:100',
+            'unit_id' => 'required|string',
+            'booking_date' => 'required|date',
+            'start_time' => 'required|string',
+            'end_time' => 'required|string',
+            'purpose' => 'required|string|max:255',
+            'attendees_count' => 'required|numeric|min:1',
+            'equipment_needed' => 'nullable|string|max:255',
+            'notes' => 'nullable|string|max:500',
+        ]);
+
+        $demo = DemoDataManager::getInstance();
+        $rooms = $demo->getFacilityRooms();
+        $assets = $demo->getFacilityAssets();
+
+        // Cari nama dan lokasi ruangan terpilih
+        $roomName = 'Fasilitas Kampus';
+        $roomLocation = 'Kampus Alia Islamic School';
+        foreach ($rooms as $r) {
+            if ($r['id'] === $validated['room_id']) {
+                $roomName = $r['name'];
+                $roomLocation = $r['location'] ?? 'Kampus Alia';
+                break;
+            }
+        }
+        if ($roomName === 'Fasilitas Kampus') {
+            foreach ($assets as $a) {
+                if ($a['id'] === $validated['room_id']) {
+                    $roomName = $a['name'];
+                    $roomLocation = $a['location'] ?? 'Kampus Alia';
+                    break;
+                }
+            }
+        }
+
+        $allBookings = $demo->getRoomBookings();
+        $count = count($allBookings) + 1;
+        $bookingCode = "PINJAM/RNG/" . date('Y') . "/" . str_pad($count, 3, '0', STR_PAD_LEFT);
+
+        // Deteksi Bentrok Jadwal Otomatis (conflict check)
+        $hasConflict = false;
+        foreach ($allBookings as $eb) {
+            if (($eb['room_id'] ?? '') === $validated['room_id'] &&
+                ($eb['booking_date'] ?? '') === $validated['booking_date'] &&
+                in_array($eb['status'] ?? '', ['disetujui', 'diajukan'])) {
+                // Cek tumpang tindih waktu
+                $existingStart = strtotime($eb['booking_date'] . ' ' . $eb['start_time']);
+                $existingEnd = strtotime($eb['booking_date'] . ' ' . $eb['end_time']);
+                $newStart = strtotime($validated['booking_date'] . ' ' . $validated['start_time']);
+                $newEnd = strtotime($validated['booking_date'] . ' ' . $validated['end_time']);
+
+                if ($newStart < $existingEnd && $newEnd > $existingStart) {
+                    $hasConflict = true;
+                    break;
+                }
+            }
+        }
+
+        $newBooking = [
+            'id' => 'BKG-' . str_pad($count, 3, '0', STR_PAD_LEFT),
+            'booking_code' => $bookingCode,
+            'room_id' => $validated['room_id'],
+            'room_name' => $roomName,
+            'room_location' => $roomLocation,
+            'requester_name' => $validated['requester_name'],
+            'requester_role' => $validated['requester_role'],
+            'unit_id' => $validated['unit_id'],
+            'booking_date' => $validated['booking_date'],
+            'start_time' => $validated['start_time'],
+            'end_time' => $validated['end_time'],
+            'purpose' => $validated['purpose'],
+            'attendees_count' => (int)$validated['attendees_count'],
+            'equipment_needed' => $validated['equipment_needed'] ?: 'Standar ruangan (tanpa perlengkapan tambahan)',
+            'status' => 'diajukan',
+            'approver_name' => null,
+            'approved_at' => null,
+            'rejection_reason' => null,
+            'notes' => $hasConflict
+                ? "[PERINGATAN SISTEM: Terindikasi bentrok jam pemakaian dengan permohonan lain!] " . ($validated['notes'] ?: '')
+                : ($validated['notes'] ?: '-')
+        ];
+
+        $sessionAdded = session('demo_room_bookings_added', []);
+        $sessionAdded[] = $newBooking;
+        session(['demo_room_bookings_added' => $sessionAdded]);
+
+        $msg = "Permohonan peminjaman \"{$roomName}\" ({$bookingCode}) berhasil diajukan ke Bagian Sarpras!";
+        if ($hasConflict) {
+            return redirect()->route('sarpras.peminjaman')->with('info', "{$msg} (Catatan: Terdeteksi potensi bentrok waktu pemakaian pada tanggal dan jam tersebut).");
+        }
+
+        return redirect()->route('sarpras.peminjaman')->with('success', $msg);
+    }
+
+    /**
+     * Persetujuan / Penolakan Peminjaman Ruangan
+     */
+    public function approvePeminjaman(Request $request, string $id)
+    {
+        $validated = $request->validate([
+            'status' => 'required|in:disetujui,ditolak,selesai',
+            'rejection_reason' => 'nullable|string|max:500',
+            'approver_name' => 'required|string|max:100',
+        ]);
+
+        $sessionUpdated = session('demo_room_bookings_updated', []);
+        $sessionUpdated[$id] = [
+            'status' => $validated['status'],
+            'approver_name' => $validated['approver_name'],
+            'approved_at' => date('Y-m-d H:i:s'),
+            'rejection_reason' => $validated['status'] === 'ditolak' ? ($validated['rejection_reason'] ?: 'Jadwal ruangan tidak tersedia atau bentrok.') : null,
+        ];
+        session(['demo_room_bookings_updated' => $sessionUpdated]);
+
+        $statusLabels = [
+            'disetujui' => 'DISETUJUI',
+            'ditolak' => 'DITOLAK',
+            'selesai' => 'DITANDAI SELESAI'
+        ];
+        $label = $statusLabels[$validated['status']] ?? $validated['status'];
+
+        return redirect()->route('sarpras.peminjaman')->with('success', "Permohonan peminjaman ruangan {$id} berhasil {$label}!");
+    }
+
+    /**
+     * Hapus Data Peminjaman Ruangan dari Sesi Demo
+     */
+    public function destroyPeminjaman(string $id)
+    {
+        $sessionDeleted = session('demo_room_bookings_deleted', []);
+        if (!in_array($id, $sessionDeleted)) {
+            $sessionDeleted[] = $id;
+            session(['demo_room_bookings_deleted' => $sessionDeleted]);
+        }
+
+        return redirect()->route('sarpras.peminjaman')->with('info', "Data peminjaman ruangan ID: {$id} berhasil dihapus dari sesi demo.");
+    }
 }

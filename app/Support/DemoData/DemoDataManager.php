@@ -67,6 +67,7 @@ class DemoDataManager
     private array $staffPayrolls = [];
     private array $staffTrainings = [];
     private array $facilityAssets = [];
+    private array $roomBookings = [];
 
     public function __construct()
     {
@@ -4558,6 +4559,136 @@ class DemoDataManager
                 'notes' => 'Sedang dijadwalkan pergantian aki starter dan servis filter solar berkala.'
             ]
         ];
+
+        // 24. Peminjaman & Pemakaian Ruangan / Fasilitas Khusus (Room Usage & Booking)
+        $this->roomBookings = [
+            [
+                'id' => 'BKG-001',
+                'booking_code' => 'PINJAM/RNG/2026/001',
+                'room_id' => 'RNG-201', // Lab Komputer
+                'room_name' => 'Laboratorium Komputer & Robotika',
+                'room_location' => 'Gedung Ali bin Abi Thalib (Lt 2)',
+                'requester_name' => 'Budi Santoso, S.Kom.',
+                'requester_role' => 'Guru Informatika SMA',
+                'unit_id' => 'UNIT-SMA',
+                'booking_date' => '2026-11-12',
+                'start_time' => '08:00',
+                'end_time' => '11:30',
+                'purpose' => 'Simulasi Ujian Computer-Based Test (CBT) dan Olimpiade Sains Komputer',
+                'attendees_count' => 35,
+                'equipment_needed' => 'Proyektor HD, 35 PC Client, Server CBT Lokal, Akses Internet Dedicated',
+                'status' => 'disetujui', // diajukan, disetujui, ditolak, selesai
+                'approver_name' => 'Dr. H. Zulkifli, Lc., M.A. (Wakabid Sarpras)',
+                'approved_at' => '2026-11-08 14:20:00',
+                'rejection_reason' => null,
+                'notes' => 'Harap pastikan ruangan dirapikan dan server di-shutdown setelah pemakaian.'
+            ],
+            [
+                'id' => 'BKG-002',
+                'booking_code' => 'PINJAM/RNG/2026/002',
+                'room_id' => 'RNG-302', // Aula Serbaguna
+                'room_name' => 'Aula Serbaguna / Islamic Center',
+                'room_location' => 'Gedung Utama Alia (Lt 3)',
+                'requester_name' => 'Ust. Fauzan Azhim, S.T.',
+                'requester_role' => 'Pembina OSIS & Kesiswaan SMA',
+                'unit_id' => 'UNIT-SMA',
+                'booking_date' => '2026-11-15',
+                'start_time' => '13:00',
+                'end_time' => '16:00',
+                'purpose' => 'Kajian Bulanan & Pelantikan Pengurus OSIS / ISMA Periode 2026/2027',
+                'attendees_count' => 180,
+                'equipment_needed' => 'Sound System 5000W, 4 Mic Wireless, Mimbar Podium, 200 Kursi Lipat',
+                'status' => 'disetujui',
+                'approver_name' => 'Dr. H. Zulkifli, Lc., M.A. (Wakabid Sarpras)',
+                'approved_at' => '2026-11-07 09:15:00',
+                'rejection_reason' => null,
+                'notes' => 'Petugas kebersihan wajib standby 30 menit sebelum dan sesudah acara.'
+            ],
+            [
+                'id' => 'BKG-003',
+                'booking_code' => 'PINJAM/RNG/2026/003',
+                'room_id' => 'RNG-401', // Masjid Jami'
+                'room_name' => 'Masjid Jami\' Kampus Alia',
+                'room_location' => 'Pusat Kampus Alia',
+                'requester_name' => 'Ust. Salman Al-Farisi, M.Pd.',
+                'requester_role' => 'Koordinator Tahfidz Al-Qur\'an',
+                'unit_id' => 'UNIT-SMP',
+                'booking_date' => '2026-11-16',
+                'start_time' => '07:30',
+                'end_time' => '12:00',
+                'purpose' => 'Tasmi\' Akbar Bil Ghoib 5 Juz Sekali Duduk Santri Kelas IX SMP',
+                'attendees_count' => 60,
+                'equipment_needed' => 'Mic Meja Musyrif, Sajadah Karpet Bersih, Sound Monitor Dalam',
+                'status' => 'diajukan',
+                'approver_name' => null,
+                'approved_at' => null,
+                'rejection_reason' => null,
+                'notes' => 'Acara sakral tahfidz; mohon tidak ada mobilisasi logistik bising di sekitar selasar.'
+            ],
+            [
+                'id' => 'BKG-004',
+                'booking_code' => 'PINJAM/RNG/2026/004',
+                'room_id' => 'RNG-202', // Lab Sains & Bahasa
+                'room_name' => 'Laboratorium Sains & Bahasa',
+                'room_location' => 'Gedung Ali bin Abi Thalib (Lt 2)',
+                'requester_name' => 'Aisyah Salsabila, S.Pd.I.',
+                'requester_role' => 'Guru Bahasa Arab & Inggris',
+                'unit_id' => 'UNIT-SMP',
+                'booking_date' => '2026-11-14',
+                'start_time' => '09:00',
+                'end_time' => '11:00',
+                'purpose' => 'Praktikum Listening Comprehension & Muhadatsah Interaktif',
+                'attendees_count' => 28,
+                'equipment_needed' => '30 Unit Headset Master, Master Audio Console, Proyektor Smart TV',
+                'status' => 'disetujui',
+                'approver_name' => 'Dr. H. Zulkifli, Lc., M.A. (Wakabid Sarpras)',
+                'approved_at' => '2026-11-08 10:45:00',
+                'rejection_reason' => null,
+                'notes' => 'Kunci lab dapat diambil di pos piket satpam 15 menit sebelum praktikum.'
+            ],
+            [
+                'id' => 'BKG-005',
+                'booking_code' => 'PINJAM/RNG/2026/005',
+                'room_id' => 'FCL-005', // Lapangan Olahraga
+                'room_name' => 'Lapangan Olahraga Multifungsi (Futsal, Basket, Voli)',
+                'room_location' => 'Area Terbuka Tengah Kampus',
+                'requester_name' => 'Irfan Maulana, S.Pd.',
+                'requester_role' => 'Guru PJOK & Pembina Olahraga',
+                'unit_id' => 'UNIT-SMA',
+                'booking_date' => '2026-11-15',
+                'start_time' => '15:30',
+                'end_time' => '17:30',
+                'purpose' => 'Pertandingan Persahabatan Futsal Antar Asrama Santri Putra',
+                'attendees_count' => 80,
+                'equipment_needed' => 'Bola Futsal Molten, Peluit, Papan Skor Manual, Rompi Tanding',
+                'status' => 'ditolak',
+                'approver_name' => 'Dr. H. Zulkifli, Lc., M.A. (Wakabid Sarpras)',
+                'approved_at' => '2026-11-08 16:30:00',
+                'rejection_reason' => 'Jadwal bentrok dengan agenda gladi bersih wisuda tahfidz di selasar tengah.',
+                'notes' => 'Disarankan reschedule ke hari Ahad pagi pukul 07.00 - 09.30 WIB.'
+            ],
+            [
+                'id' => 'BKG-006',
+                'booking_code' => 'PINJAM/RNG/2026/006',
+                'room_id' => 'RNG-301', // Perpustakaan
+                'room_name' => 'Perpustakaan & Ruang Baca Digital',
+                'room_location' => 'Gedung Pusat Perpustakaan (Lt 1)',
+                'requester_name' => 'Zahra Amalia, S.Hum.',
+                'requester_role' => 'Staf Tata Usaha & Literasi SD',
+                'unit_id' => 'UNIT-SD',
+                'booking_date' => '2026-11-13',
+                'start_time' => '10:00',
+                'end_time' => '11:30',
+                'purpose' => 'Storytelling Islami & Safari Literasi Santri Cilik SD Islam Alia',
+                'attendees_count' => 24,
+                'equipment_needed' => 'Karpet Duduk Edukatif, Layar Proyektor Portabel, Puppet Show Kit',
+                'status' => 'selesai',
+                'approver_name' => 'Dr. H. Zulkifli, Lc., M.A. (Wakabid Sarpras)',
+                'approved_at' => '2026-11-06 08:30:00',
+                'rejection_reason' => null,
+                'notes' => 'Kegiatan telah selesai dilaksanakan dengan tertib.'
+            ]
+        ];
     }
 
     // Getters
@@ -6479,6 +6610,43 @@ class DemoDataManager
         foreach ($this->getFacilityAssets() as $ast) {
             if ($ast['id'] === $id || ($ast['asset_code'] ?? '') === $id) {
                 return $ast;
+            }
+        }
+        return null;
+    }
+
+    public function getRoomBookings(): array
+    {
+        $sessionAdded = [];
+        $sessionDeleted = [];
+        $sessionUpdated = [];
+        try {
+            if (function_exists('session') && app()->has('session')) {
+                $sessionAdded = session('demo_room_bookings_added', []);
+                $sessionDeleted = session('demo_room_bookings_deleted', []);
+                $sessionUpdated = session('demo_room_bookings_updated', []);
+            }
+        } catch (\Throwable $e) {}
+
+        $list = array_merge($this->roomBookings, $sessionAdded);
+        $filtered = array_filter($list, function($bkg) use ($sessionDeleted) {
+            return !in_array($bkg['id'], $sessionDeleted);
+        });
+
+        foreach ($filtered as &$item) {
+            if (isset($sessionUpdated[$item['id']])) {
+                $item = array_merge($item, $sessionUpdated[$item['id']]);
+            }
+        }
+
+        return array_values($filtered);
+    }
+
+    public function findRoomBooking(string $id): ?array
+    {
+        foreach ($this->getRoomBookings() as $bkg) {
+            if ($bkg['id'] === $id || ($bkg['booking_code'] ?? '') === $id) {
+                return $bkg;
             }
         }
         return null;

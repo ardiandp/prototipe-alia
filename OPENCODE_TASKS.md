@@ -96,7 +96,7 @@ update `docs/PROGRESS.md`, report changed files and blockers, then stop.
 ## Batch F --- Facilities, inventory, portals
 
 -   [x] T11.1 Facility registry.
--   [ ] T11.2 Room usage/booking.
+-   [x] T11.2 Room usage/booking.
 -   [ ] T11.3 Maintenance/damage reports.
 -   [ ] T11.4 Procurement requests.
 -   [ ] T12.1 Item master.
