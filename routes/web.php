@@ -310,6 +310,9 @@ Route::prefix('inventaris')->name('inventaris.')->group(function () {
 Route::prefix('portal')->name('portal.')->group(function () {
     Route::get('/dashboard', [PortalController::class, 'parentDashboard'])->name('dashboard');
     Route::get('/wali', [PortalController::class, 'parentDashboard'])->name('parent');
+    Route::get('/santri', [PortalController::class, 'studentDashboard'])->name('student');
+    Route::get('/santri/lms', [PortalController::class, 'studentLms'])->name('student.lms');
+    Route::post('/santri/tugas/submit', [PortalController::class, 'submitTugas'])->name('student.tugas.submit');
 });
 
 // AI Assistant & Laporan & Pengaturan

@@ -110,9 +110,9 @@ update `docs/PROGRESS.md`, report changed files and blockers, then stop.
 -   [x] T13.3 Parent academic/attendance.
 -   [x] T13.4 Parent tahfidz/finance.
 -   [x] T13.5 Parent permission/announcements.
--   [ ] T13.6 Student Portal shell.
--   [ ] T13.7 Student dashboard/schedule.
--   [ ] T13.8 Student LMS pages.
+-   [x] T13.6 Student Portal shell.
+-   [x] T13.7 Student dashboard/schedule.
+-   [x] T13.8 Student LMS pages.
 
 ## Batch G --- AI demo, reports, settings
 

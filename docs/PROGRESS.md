@@ -10,8 +10,9 @@ Catatan pemantauan progres implementasi prototipe Alia Islamic School.
 - **Batch Aktif**: Batch E (Boarding, Finance, HRIS)
 - **Batch Aktif**: Batch F (Facilities, Inventory, Portals)
 - **Task Terakhir Selesai**:
-  - `T13.1 - T13.5`: Parent Portal (Portal Mobile-Friendly Terpadu Wali Santri & Orang Tua: Header Card Profil Wali & Switcher Multi-Anak, 6 Tombol Akses Pintasan Cepat, Tab Ringkasan Perkembangan Santri, Rapor Transkrip Nilai & Presensi Belajar, Log Setoran Ziyadah & Murojaah Tahfidz, Tagihan SPP & Virtual Account Bank Syariah Indonesia, Pengajuan Izin Keluar/Pesiar Asrama, serta Papan Pengumuman Sekolah).
-- **Task Selanjutnya**: `T13.6 - T13.8`: Student Portal (Portal Mandiri Santri: Shell Portal Santri, Dashboard & Jadwal Pelajaran Harian, Akses Kelas Digital LMS, Materi & Pengumpulan Tugas Online).
+  - `T13.6 - T13.8`: Student Portal & LMS (Portal Mandiri Santri: Shell Portal Santri, Banner Identitas Santri, Switcher Profil Santri Demo, Dashboard & Jadwal Pelajaran Harian, Jadwal Mingguan Lengkap Per Hari, Akses Kelas Digital LMS, Modul Materi & Unduh PDF, serta Form Pengumpulan Tugas Mandiri Santri).
+  - **Batch F (Fase 11, Fase 12, dan Fase 13 Portals) RESMI 100% SELESAI.**
+- **Task Selanjutnya**: `T14.1`: Chat interface (AI School Assistant Demo: Antarmuka Chat Modern Chatbot Cerdas Alia dengan Persona AI Islami & Widget Quick Prompts).
 
 ---
 
@@ -290,6 +291,13 @@ Catatan pemantauan progres implementasi prototipe Alia Islamic School.
   - Controller baru: [`PortalController.php`](file:///c:/laragon/www/prototipe-alia/app/Http/Controllers/PortalController.php) (`parentDashboard`) yang menghubungkan entitas wali santri dengan santri terdaftar serta data lintas modul (akademik, tahfidz, keuangan, dan asrama).
   - View: [`resources/views/portal/parent.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/portal/parent.blade.php) (Header Card gradien modern Deep Navy - Purple dengan Profil Wali Santri, pill selector switcher multi-anak santri, 6 tombol akses cepat mobile-friendly, 6 tab komprehensif: Ringkasan 4 Pilar Santri & Biodata, Nilai Rapor & Presensi Belajar, Capaian Tahfidz & Rekam Setoran Surah, Tagihan SPP & Nomor Virtual Account BSI otomatis, Form Pengajuan Izin Keluar/Pesiar ke Musyrif Asrama, serta Papan Pengumuman Sekolah terpadu).
   - Rute aktif `/portal/dashboard` dan `/portal/wali`.
+- `[x] T13.6 - T13.8`: Student Portal & LMS (Portal Mandiri Santri & e-Learning Terpadu):
+  - Controller: [`PortalController.php`](file:///c:/laragon/www/prototipe-alia/app/Http/Controllers/PortalController.php) (`studentDashboard`, `studentLms`, `submitTugas`) dengan integrasi data siswa, jadwal pelajaran rombel, kelas digital, materi belajar, dan tugas mandiri.
+  - Views:
+    - [`resources/views/portal/student.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/portal/student.blade.php) (Banner Profil Santri, selector santri demo, 4 info box santri, tab jadwal hari ini, jadwal mingguan terstruktur per hari Senin-Sabtu, dan tabel tugas/kuis LMS).
+    - [`resources/views/portal/student_lms.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/portal/student_lms.blade.php) (Katalog kartu kelas digital, tab modul pembelajaran digital dengan fitur unduh file, dan lembar kerja tugas mandiri santri dengan form pengumpulan jawaban).
+  - Rute aktif `/portal/santri`, `/portal/santri/lms`, `/portal/santri/tugas/submit` (POST), serta integrasi submenu pohon navigasi di sidebar AdminLTE.
+  - **Batch F (Fase 11, 12, dan 13) RESMI 100% SELESAI.**
 
 
 

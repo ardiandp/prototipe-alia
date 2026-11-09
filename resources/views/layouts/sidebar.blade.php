@@ -197,10 +197,21 @@
       <li class="header">PORTAL & INTEGRASI</li>
 
       <!-- Portal Orang Tua / Santri -->
-      <li class="{{ request()->is('portal*') ? 'active' : '' }}">
-        <a href="{{ route('portal.dashboard') }}">
-          <i class="fa fa-mobile-phone text-aqua" style="font-size:18px;"></i> <span>Portal Orang Tua/Santri</span>
+      <li class="treeview {{ request()->is('portal*') ? 'active' : '' }}">
+        <a href="#">
+          <i class="fa fa-mobile-phone text-aqua" style="font-size:18px;"></i> <span>Portal Terpadu</span>
+          <span class="pull-right-container">
+            <i class="fa fa-angle-left pull-right"></i>
+          </span>
         </a>
+        <ul class="treeview-menu">
+          <li class="{{ request()->is('portal/dashboard*') || request()->is('portal/wali*') ? 'active' : '' }}">
+            <a href="{{ route('portal.dashboard') }}"><i class="fa fa-circle-o"></i> Portal Orang Tua/Wali</a>
+          </li>
+          <li class="{{ request()->is('portal/santri*') ? 'active' : '' }}">
+            <a href="{{ route('portal.student') }}"><i class="fa fa-circle-o"></i> Portal Mandiri Santri</a>
+          </li>
+        </ul>
       </li>
 
       <!-- AI School Assistant -->
