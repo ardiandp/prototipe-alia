@@ -168,6 +168,7 @@
           <li class="{{ request()->is('hris/presensi*') ? 'active' : '' }}"><a href="{{ route('hris.presensi') }}"><i class="fa fa-circle-o"></i> Presensi Pegawai</a></li>
           <li class="{{ request()->is('hris/cuti*') ? 'active' : '' }}"><a href="{{ route('hris.cuti') }}"><i class="fa fa-circle-o"></i> Pengajuan Cuti / Izin</a></li>
           <li class="{{ request()->is('hris/lembur*') ? 'active' : '' }}"><a href="{{ route('hris.lembur') }}"><i class="fa fa-circle-o"></i> Lembur & SPKL</a></li>
+          <li class="{{ request()->is('hris/evaluasi*') ? 'active' : '' }}"><a href="{{ route('hris.evaluasi') }}"><i class="fa fa-circle-o"></i> Evaluasi Kinerja (PKG)</a></li>
           <li class="{{ request()->is('hris/penggajian*') ? 'active' : '' }}"><a href="{{ route('hris.penggajian') }}"><i class="fa fa-circle-o"></i> Penggajian (Payroll)</a></li>
         </ul>
       </li>

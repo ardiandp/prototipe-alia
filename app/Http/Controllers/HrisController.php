@@ -737,5 +737,157 @@ class HrisController extends Controller
 
         return redirect()->route('hris.lembur')->with('info', "Catatan SPKL ID: {$id} berhasil dihapus dari sesi demo.");
     }
+
+    /**
+     * T10.5 - Performance Evaluation / Penilaian Kinerja Guru & Tendik (PKG)
+     */
+    public function evaluasi(Request $request)
+    {
+        $demo = DemoDataManager::getInstance();
+        $teachers = $demo->getTeachers();
+        $evaluations = $demo->getStaffEvaluations();
+        $units = $demo->getUnits();
+
+        $activeTab = $request->get('tab', 'daftar'); // daftar, rubrik, komparasi
+        $predicateFilter = $request->get('predicate', 'all');
+        $unitFilter = $request->get('unit', 'all');
+        $search = $request->get('search');
+
+        // Filter evaluasi kinerja
+        $filteredEvaluations = array_filter($evaluations, function ($evl) use ($predicateFilter, $unitFilter, $search) {
+            $matchPredicate = true;
+            if ($predicateFilter !== 'all') {
+                $matchPredicate = stripos($evl['predicate'], $predicateFilter) !== false;
+            }
+            $matchUnit = ($unitFilter === 'all') || (($evl['unit_id'] ?? '') === $unitFilter);
+            $matchSearch = true;
+            if ($search) {
+                $matchSearch = stripos($evl['name'], $search) !== false ||
+                               stripos($evl['nip'] ?? '', $search) !== false ||
+                               stripos($evl['doc_number'] ?? '', $search) !== false ||
+                               stripos($evl['position'] ?? '', $search) !== false ||
+                               stripos($evl['evaluator_name'] ?? '', $search) !== false;
+            }
+            return $matchPredicate && $matchUnit && $matchSearch;
+        });
+
+        // Metrik Ringkasan Evaluasi
+        $totalEvaluasi = count($evaluations);
+        $totalGradeA = count(array_filter($evaluations, fn($e) => stripos($e['predicate'], 'Amat Baik') !== false));
+        $totalGradeB = count(array_filter($evaluations, fn($e) => stripos($e['predicate'], 'Baik') !== false && stripos($e['predicate'], 'Amat Baik') === false));
+        $totalGradeC = count(array_filter($evaluations, fn($e) => stripos($e['predicate'], 'Cukup') !== false));
+        $avgScore = $totalEvaluasi > 0 ? round(array_sum(array_column($evaluations, 'final_score')) / $totalEvaluasi, 1) : 0;
+
+        // Pegawai yang belum dievaluasi
+        $evaluatedTeacherIds = array_column($evaluations, 'teacher_id');
+        $unevaluatedTeachers = array_filter($teachers, fn($t) => !in_array($t['id'], $evaluatedTeacherIds));
+
+        return view('hris.evaluasi', compact(
+            'filteredEvaluations',
+            'evaluations',
+            'teachers',
+            'units',
+            'activeTab',
+            'predicateFilter',
+            'unitFilter',
+            'search',
+            'totalEvaluasi',
+            'totalGradeA',
+            'totalGradeB',
+            'totalGradeC',
+            'avgScore',
+            'unevaluatedTeachers'
+        ));
+    }
+
+    /**
+     * Simpan Lembar Penilaian Kinerja Guru/Pegawai Baru (PKG)
+     */
+    public function storeEvaluasi(Request $request)
+    {
+        $validated = $request->validate([
+            'teacher_id' => 'required|string',
+            'period' => 'required|string|max:100',
+            'evaluator_name' => 'required|string|max:100',
+            'evaluation_date' => 'required|date',
+            'pedagogik_score' => 'required|numeric|min:0|max:100',
+            'profesional_score' => 'required|numeric|min:0|max:100',
+            'kepribadian_score' => 'required|numeric|min:0|max:100',
+            'sosial_score' => 'required|numeric|min:0|max:100',
+            'strengths' => 'required|string|max:500',
+            'recommendations' => 'required|string|max:500',
+        ]);
+
+        $demo = DemoDataManager::getInstance();
+        $teacher = $demo->findTeacher($validated['teacher_id']);
+        if (!$teacher) {
+            return redirect()->back()->withErrors(['teacher_id' => 'Pegawai tidak ditemukan.']);
+        }
+
+        // Kalkulasi Skor Akhir Berbobot (Pedagogik 30%, Profesional 30%, Kepribadian 20%, Sosial 20%)
+        $finalScore = round(
+            ($validated['pedagogik_score'] * 0.30) +
+            ($validated['profesional_score'] * 0.30) +
+            ($validated['kepribadian_score'] * 0.20) +
+            ($validated['sosial_score'] * 0.20),
+            1
+        );
+
+        // Penentuan Predikat
+        if ($finalScore >= 91) {
+            $predicate = 'Amat Baik (A)';
+        } elseif ($finalScore >= 76) {
+            $predicate = 'Baik (B)';
+        } elseif ($finalScore >= 61) {
+            $predicate = 'Cukup (C)';
+        } else {
+            $predicate = 'Kurang (D)';
+        }
+
+        $count = count($demo->getStaffEvaluations()) + 1;
+        $docNumber = 'PKG/ALIA/2026/' . $teacher['id'];
+
+        $newEvaluation = [
+            'id' => 'EVL-' . str_pad($count, 3, '0', STR_PAD_LEFT),
+            'doc_number' => $docNumber,
+            'teacher_id' => $teacher['id'],
+            'name' => $teacher['name'],
+            'nip' => $teacher['nip'] ?? '-',
+            'position' => $teacher['position'] ?? 'Tenaga Pendidik',
+            'unit_id' => $teacher['unit_id'] ?? 'UNIT-SMA',
+            'period' => $validated['period'],
+            'evaluator_name' => $validated['evaluator_name'],
+            'evaluation_date' => $validated['evaluation_date'],
+            'pedagogik_score' => (float)$validated['pedagogik_score'],
+            'profesional_score' => (float)$validated['profesional_score'],
+            'kepribadian_score' => (float)$validated['kepribadian_score'],
+            'sosial_score' => (float)$validated['sosial_score'],
+            'final_score' => $finalScore,
+            'predicate' => $predicate,
+            'strengths' => $validated['strengths'],
+            'recommendations' => $validated['recommendations'],
+            'status' => 'final'
+        ];
+
+        $sessionAdded = session('demo_staff_evaluations_added', []);
+        $sessionAdded[] = $newEvaluation;
+        session(['demo_staff_evaluations_added' => $sessionAdded]);
+
+        return redirect()->route('hris.evaluasi')->with('success', "Penilaian kinerja pegawai {$teacher['name']} berhasil diterbitkan dengan skor {$finalScore} ({$predicate})!");
+    }
+
+    /**
+     * Hapus Lembar Evaluasi dari Sesi Demo
+     */
+    public function destroyEvaluasi(string $id)
+    {
+        $sessionDeleted = session('demo_staff_evaluations_deleted', []);
+        if (!in_array($id, $sessionDeleted)) {
+            $sessionDeleted[] = $id;
+            session(['demo_staff_evaluations_deleted' => $sessionDeleted]);
+        }
+
+        return redirect()->route('hris.evaluasi')->with('info', "Lembar evaluasi kinerja ID: {$id} berhasil dihapus dari sesi demo.");
+    }
 }
 

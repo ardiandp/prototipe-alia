@@ -9,8 +9,8 @@ Catatan pemantauan progres implementasi prototipe Alia Islamic School.
 - **Batch Aktif**: Batch D (Learning, Islamic Programs, Student Affairs)
 - **Batch Aktif**: Batch E (Boarding, Finance, HRIS)
 - **Task Terakhir Selesai**:
-  - `T10.4`: Overtime (SDM/HRIS: Manajemen Lembur & Surat Perintah Kerja Lembur / SPKL, Rekapitulasi Jam Lembur & Hak Kompensasi per Pegawai, Standar Tarif Lembur Sore/Malam/Akhir Pekan, Modal Cetak Fisik SPKL Berkop Resmi Alia, Alur Approval Pimpinan & Penandaan Pembayaran, dan Form Penerbitan SPKL Baru).
-- **Task Selanjutnya**: `T10.5`: Performance evaluation (SDM/HRIS: Evaluasi Kinerja Pegawai / Penilaian Kinerja Guru & Tendik, Indikator Kompetensi Pedagogik/Profesional/Kepribadian/Sosial, Penilaian Kepala Sekolah, dan Rekapitulasi Skor Raport Kinerja).
+  - `T10.5`: Performance evaluation (SDM/HRIS: Penilaian Kinerja Guru & Tendik / PKG, Pembobotan 4 Pilar Pedagogik 30% / Profesional 30% / Kepribadian 20% / Sosial 20%, Konversi Predikat Amat Baik/Baik/Cukup/Kurang, Modal Lembar Rapor PKG Berkop Resmi Alia, Pemantauan Pegawai Belum Dievaluasi, dan Form Penilaian Asesor Berbasis Sesi).
+- **Task Selanjutnya**: `T10.6`: Payroll simulation (SDM/HRIS: Simulasi Penggajian & Payroll Pegawai, Komponen Gaji Pokok, Tunjangan Jabatan/Fungsional/Keluarga, Potongan BPJS/Infaq/Keterlambatan, dan Slip Gaji Digital Resmi).
 
 ---
 
@@ -216,6 +216,12 @@ Catatan pemantauan progres implementasi prototipe Alia Islamic School.
   - Controller: [`HrisController.php`](file:///c:/laragon/www/prototipe-alia/app/Http/Controllers/HrisController.php) (`lembur`, `storeLembur`, `approveLembur`, `destroyLembur`).
   - View: [`resources/views/hris/lembur.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/hris/lembur.blade.php) (3 Tab: Daftar SPKL, Rekapitulasi Jam & Honor per Pegawai, Ketentuan Standar Tarif Yayasan, 4 info box total SPKL/jam/kompensasi honor/menunggu approval, modal fisik SPKL berkop Alia, modal approval & penandaan status pembayaran, form penerbitan SPKL baru, filter status/kategori/unit/search, cetak).
   - Rute aktif `/hris/lembur`, `/hris/lembur` (POST), `/hris/lembur/{id}/approve` (POST), `/hris/lembur/{id}/destroy`, serta sub-menu di [`resources/views/layouts/sidebar.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/layouts/sidebar.blade.php).
+- `[x] T10.5`: Performance Evaluation (Evaluasi Kinerja Pegawai / PKG):
+  - Dataset baseline penilaian kinerja guru & tendik di [`DemoDataManager.php`](file:///c:/laragon/www/prototipe-alia/app/Support/DemoData/DemoDataManager.php) (`getStaffEvaluations`, `findStaffEvaluation`).
+  - Controller: [`HrisController.php`](file:///c:/laragon/www/prototipe-alia/app/Http/Controllers/HrisController.php) (`evaluasi`, `storeEvaluasi`, `destroyEvaluasi`).
+  - View: [`resources/views/hris/evaluasi.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/hris/evaluasi.blade.php) (3 Tab: Buku Rekap Penilaian PKG, Rubrik 4 Pilar Kompetensi & Bobot Pedagogik 30%/Profesional 30%/Kepribadian 20%/Sosial 20%, Monitoring Pegawai Belum Dievaluasi, 4 info box total evaluasi/predikat A/predikat B/rata-rata skor, modal lembar rapor kinerja resmi berkop Alia Islamic School, form instrumen asesmen baru, filter predikat/unit/search, cetak).
+  - Rute aktif `/hris/evaluasi`, `/hris/evaluasi` (POST), `/hris/evaluasi/{id}/destroy`, serta link menu di sidebar.
+
 
 
 

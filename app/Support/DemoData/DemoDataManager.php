@@ -63,6 +63,7 @@ class DemoDataManager
     private array $staffAttendance = [];
     private array $staffLeaves = [];
     private array $staffOvertimes = [];
+    private array $staffEvaluations = [];
 
     public function __construct()
     {
@@ -3987,6 +3988,115 @@ class DemoDataManager
                 'approver_notes' => 'Pengajuan jadwal bimbingan sore.'
             ]
         ];
+
+        // 20. Evaluasi Kinerja Pegawai & Guru (Staff Performance Evaluations / PKG)
+        $this->staffEvaluations = [
+            [
+                'id' => 'EVL-001',
+                'doc_number' => 'PKG/ALIA/2026/GUR-001',
+                'teacher_id' => 'GUR-001', // Dr. H. Zulkifli
+                'name' => 'Dr. H. Zulkifli, Lc., M.A.',
+                'nip' => '1985102010011001',
+                'position' => 'Ketua Yayasan / Dosen Pembina',
+                'unit_id' => 'UNIT-SMA',
+                'period' => 'Tahun Ajaran 2026/2027 Ganjil',
+                'evaluator_name' => 'Dewan Pembina Yayasan Alia',
+                'evaluation_date' => '2026-11-05',
+                'pedagogik_score' => 96,
+                'profesional_score' => 98,
+                'kepribadian_score' => 98,
+                'sosial_score' => 95,
+                'final_score' => 96.8,
+                'predicate' => 'Amat Baik (A)',
+                'strengths' => 'Kepemimpinan visioner, integrasi kurikulum diniyah dengan tsaqafah Islamiyah yang mendalam, teladan ibadah.',
+                'recommendations' => 'Mempertahankan mentoring manajerial pimpinan unit di bawah naungan yayasan.',
+                'status' => 'final'
+            ],
+            [
+                'id' => 'EVL-002',
+                'doc_number' => 'PKG/ALIA/2026/GUR-002',
+                'teacher_id' => 'GUR-002', // Aisyah Salsabila
+                'name' => 'Aisyah Salsabila, S.Pd.I.',
+                'nip' => '1985112010011002',
+                'position' => 'Koordinator Tahfidz Akhwat',
+                'unit_id' => 'UNIT-SMP',
+                'period' => 'Tahun Ajaran 2026/2027 Ganjil',
+                'evaluator_name' => 'Ustazah Siti Aminah, M.Pd.',
+                'evaluation_date' => '2026-11-04',
+                'pedagogik_score' => 94,
+                'profesional_score' => 96,
+                'kepribadian_score' => 95,
+                'sosial_score' => 92,
+                'final_score' => 94.3,
+                'predicate' => 'Amat Baik (A)',
+                'strengths' => 'Metodologi tasmi hafalan sangat teliti, qari’ah mutqin, interaksi ramah dan penuh keibuan terhadap santriwati.',
+                'recommendations' => 'Mengembangkan modul talaqqi berirama untuk santri pemula jenjang SMP.',
+                'status' => 'final'
+            ],
+            [
+                'id' => 'EVL-003',
+                'doc_number' => 'PKG/ALIA/2026/GUR-004',
+                'teacher_id' => 'GUR-004', // Rahmat Hidayat
+                'name' => 'Rahmat Hidayat, M.Sc.',
+                'nip' => '1985132010011004',
+                'position' => 'Waka Kurikulum SMA',
+                'unit_id' => 'UNIT-SMA',
+                'period' => 'Tahun Ajaran 2026/2027 Ganjil',
+                'evaluator_name' => 'Drs. H. Mulyadi, M.Pd.',
+                'evaluation_date' => '2026-11-03',
+                'pedagogik_score' => 90,
+                'profesional_score' => 94,
+                'kepribadian_score' => 88,
+                'sosial_score' => 86,
+                'final_score' => 89.5,
+                'predicate' => 'Baik (B)',
+                'strengths' => 'Penguasaan materi Matematika tingkat lanjut luar biasa, pembimbingan tim olimpiade sains efektif.',
+                'recommendations' => 'Tingkatkan ketepatan waktu hadir pagi apel dan variasi pembelajaran berdiferensiasi di kelas.',
+                'status' => 'final'
+            ],
+            [
+                'id' => 'EVL-004',
+                'doc_number' => 'PKG/ALIA/2026/GUR-006',
+                'teacher_id' => 'GUR-006', // Budi Santoso
+                'name' => 'Budi Santoso, S.Kom.',
+                'nip' => '1985152010011006',
+                'position' => 'Kepala Lab Komputer',
+                'unit_id' => 'UNIT-SMA',
+                'period' => 'Tahun Ajaran 2026/2027 Ganjil',
+                'evaluator_name' => 'Drs. H. Mulyadi, M.Pd.',
+                'evaluation_date' => '2026-11-05',
+                'pedagogik_score' => 86,
+                'profesional_score' => 92,
+                'kepribadian_score' => 88,
+                'sosial_score' => 85,
+                'final_score' => 87.8,
+                'predicate' => 'Baik (B)',
+                'strengths' => 'Sangat cekatan dalam menyelesaikan kendala teknis jaringan CBT dan sistem informasi lab.',
+                'recommendations' => 'Tingkatkan dokumentasi modul ajar praktikum koding untuk santri pemula.',
+                'status' => 'final'
+            ],
+            [
+                'id' => 'EVL-005',
+                'doc_number' => 'PKG/ALIA/2026/GUR-008',
+                'teacher_id' => 'GUR-008', // Irfan Maulana
+                'name' => 'Irfan Maulana, S.Pd.',
+                'nip' => '1985172010011008',
+                'position' => 'Pembina Ekstrakurikuler Silat',
+                'unit_id' => 'UNIT-SMP',
+                'period' => 'Tahun Ajaran 2026/2027 Ganjil',
+                'evaluator_name' => 'Ustazah Siti Aminah, M.Pd.',
+                'evaluation_date' => '2026-11-02',
+                'pedagogik_score' => 84,
+                'profesional_score' => 88,
+                'kepribadian_score' => 86,
+                'sosial_score' => 90,
+                'final_score' => 87.0,
+                'predicate' => 'Baik (B)',
+                'strengths' => 'Hubungan antarpribadi sangat akrab dengan santri, disiplin dalam pembinaan fisik dan silat.',
+                'recommendations' => 'Penguatan administrasi rancangan modul ajar PJOK kurikulum merdeka.',
+                'status' => 'final'
+            ]
+        ];
     }
 
     // Getters
@@ -5760,6 +5870,43 @@ class DemoDataManager
         foreach ($this->getStaffOvertimes() as $ovt) {
             if ($ovt['id'] === $id || ($ovt['spkl_number'] ?? '') === $id) {
                 return $ovt;
+            }
+        }
+        return null;
+    }
+
+    public function getStaffEvaluations(): array
+    {
+        $sessionAdded = [];
+        $sessionDeleted = [];
+        $sessionUpdated = [];
+        try {
+            if (function_exists('session') && app()->has('session')) {
+                $sessionAdded = session('demo_staff_evaluations_added', []);
+                $sessionDeleted = session('demo_staff_evaluations_deleted', []);
+                $sessionUpdated = session('demo_staff_evaluations_updated', []);
+            }
+        } catch (\Throwable $e) {}
+
+        $list = array_merge($this->staffEvaluations, $sessionAdded);
+        $filtered = array_filter($list, function($evl) use ($sessionDeleted) {
+            return !in_array($evl['id'], $sessionDeleted);
+        });
+
+        foreach ($filtered as &$item) {
+            if (isset($sessionUpdated[$item['id']])) {
+                $item = array_merge($item, $sessionUpdated[$item['id']]);
+            }
+        }
+
+        return array_values($filtered);
+    }
+
+    public function findStaffEvaluation(string $id): ?array
+    {
+        foreach ($this->getStaffEvaluations() as $evl) {
+            if ($evl['id'] === $id || ($evl['doc_number'] ?? '') === $id) {
+                return $evl;
             }
         }
         return null;

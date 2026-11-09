@@ -246,6 +246,9 @@ Route::prefix('hris')->name('hris.')->group(function () {
     Route::post('/lembur', [HrisController::class, 'storeLembur'])->name('lembur.store');
     Route::post('/lembur/{id}/approve', [HrisController::class, 'approveLembur'])->name('lembur.approve');
     Route::get('/lembur/{id}/destroy', [HrisController::class, 'destroyLembur'])->name('lembur.destroy');
+    Route::get('/evaluasi', [HrisController::class, 'evaluasi'])->name('evaluasi');
+    Route::post('/evaluasi', [HrisController::class, 'storeEvaluasi'])->name('evaluasi.store');
+    Route::get('/evaluasi/{id}/destroy', [HrisController::class, 'destroyEvaluasi'])->name('evaluasi.destroy');
     Route::get('/penggajian', makePlaceholder('Penggajian (Payroll)', 'Slip Gaji & Tunjangan Bulanan', 'fa-money'))->name('penggajian');
 });
 
