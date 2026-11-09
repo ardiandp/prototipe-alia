@@ -12,6 +12,7 @@ use App\Http\Controllers\KesiswaanController;
 use App\Http\Controllers\AsramaController;
 use App\Http\Controllers\KeuanganController;
 use App\Http\Controllers\HrisController;
+use App\Http\Controllers\SarprasController;
 
 // Helper untuk route placeholder view
 function makePlaceholder($title, $subtitle, $icon = 'fa-cube') {
@@ -261,7 +262,10 @@ Route::prefix('hris')->name('hris.')->group(function () {
 
 // Sarpras & Inventaris
 Route::prefix('sarpras')->name('sarpras.')->group(function () {
-    Route::get('/fasilitas', makePlaceholder('Fasilitas & Aset', 'Daftar Tanah, Gedung, & Sarana', 'fa-university'))->name('fasilitas');
+    Route::get('/fasilitas', [SarprasController::class, 'fasilitas'])->name('fasilitas');
+    Route::post('/fasilitas', [SarprasController::class, 'storeFasilitas'])->name('fasilitas.store');
+    Route::post('/fasilitas/{id}/kondisi', [SarprasController::class, 'updateKondisi'])->name('fasilitas.kondisi');
+    Route::get('/fasilitas/{id}/destroy', [SarprasController::class, 'destroyFasilitas'])->name('fasilitas.destroy');
     Route::get('/pemeliharaan', makePlaceholder('Pemeliharaan Sarpras', 'Log Perbaikan & Servis Alat', 'fa-wrench'))->name('pemeliharaan');
 });
 

@@ -66,6 +66,7 @@ class DemoDataManager
     private array $staffEvaluations = [];
     private array $staffPayrolls = [];
     private array $staffTrainings = [];
+    private array $facilityAssets = [];
 
     public function __construct()
     {
@@ -4409,6 +4410,154 @@ class DemoDataManager
                 'output_target' => 'Buku panduan proyek penguatan karakter islami terpadu Alia.'
             ]
         ];
+
+        // 23. Registrasi Sarana & Prasarana Fisik Kampus (Facility & Physical Assets)
+        $this->facilityAssets = [
+            [
+                'id' => 'FCL-001',
+                'asset_code' => 'AST/TNH/ALIA/001',
+                'name' => 'Lahan Kampus Asrama & Pendidikan Terpadu',
+                'category' => 'tanah', // tanah, gedung, lapangan, ruangan, utilitas
+                'category_label' => 'Tanah & Lahan Kampus',
+                'location' => 'Jl. Pondok Kopi Raya Kav. 8, Duren Sawit, Jakarta Timur',
+                'area_size' => '12.500 m²',
+                'capacity' => 1500,
+                'ownership_status' => 'Wakaf Bersertifikat (SHM)',
+                'procurement_year' => '2015',
+                'asset_value' => 37500000000,
+                'condition' => 'sangat_baik', // sangat_baik, baik, rusak_ringan, rusak_berat
+                'person_in_charge' => 'Dr. H. Zulkifli, Lc., M.A.',
+                'unit_id' => 'UNIT-SMA',
+                'status' => 'aktif',
+                'notes' => 'Lahan wakaf induk sarana asrama putra/putri, masjid, dan gedung sekolah terpadu.'
+            ],
+            [
+                'id' => 'FCL-002',
+                'asset_code' => 'AST/GDG/ALIA/001',
+                'name' => 'Gedung Utama Umar bin Khattab (SMA & Kantor)',
+                'category' => 'gedung',
+                'category_label' => 'Bangunan Gedung Bertingkat',
+                'location' => 'Kampus Terpadu Alia - Sisi Timur',
+                'area_size' => '2.400 m² (3 Lantai)',
+                'capacity' => 350,
+                'ownership_status' => 'Milik Yayasan',
+                'procurement_year' => '2018',
+                'asset_value' => 6200000000,
+                'condition' => 'sangat_baik',
+                'person_in_charge' => 'Drs. H. Mulyadi, M.Pd.',
+                'unit_id' => 'UNIT-SMA',
+                'status' => 'aktif',
+                'notes' => 'Terdiri dari 8 ruang kelas SMA, ruang kepala sekolah, tata usaha, dan ruang guru.'
+            ],
+            [
+                'id' => 'FCL-003',
+                'asset_code' => 'AST/GDG/ALIA/002',
+                'name' => 'Gedung Asrama Putra (Thalhah bin Ubaidillah)',
+                'category' => 'gedung',
+                'category_label' => 'Bangunan Gedung Bertingkat',
+                'location' => 'Kampus Asrama Barat',
+                'area_size' => '1.800 m² (3 Lantai)',
+                'capacity' => 120,
+                'ownership_status' => 'Milik Yayasan',
+                'procurement_year' => '2019',
+                'asset_value' => 4800000000,
+                'condition' => 'baik',
+                'person_in_charge' => 'Salman Al-Farisi, S.Sos.',
+                'unit_id' => 'UNIT-SMA',
+                'status' => 'aktif',
+                'notes' => 'Asrama mukim santri putra, dilengkapi 20 kamar, kamar mandi dalam, dan ruang jemur.'
+            ],
+            [
+                'id' => 'FCL-004',
+                'asset_code' => 'AST/GDG/ALIA/003',
+                'name' => 'Gedung Asrama Putri (Khadijah binti Khuwailid)',
+                'category' => 'gedung',
+                'category_label' => 'Bangunan Gedung Bertingkat',
+                'location' => 'Kampus Asrama Sisi Utara (Khusus Akhwat)',
+                'area_size' => '1.950 m² (3 Lantai)',
+                'capacity' => 130,
+                'ownership_status' => 'Milik Yayasan',
+                'procurement_year' => '2020',
+                'asset_value' => 5200000000,
+                'condition' => 'sangat_baik',
+                'person_in_charge' => 'Aisyah Salsabila, S.Pd.I.',
+                'unit_id' => 'UNIT-SMP',
+                'status' => 'aktif',
+                'notes' => 'Asrama tertutup khusus putri dengan pos satpam wanita dan akses finger scan.'
+            ],
+            [
+                'id' => 'FCL-005',
+                'asset_code' => 'AST/LPG/ALIA/001',
+                'name' => 'Lapangan Olahraga Multifungsi (Futsal, Basket, Voli)',
+                'category' => 'lapangan',
+                'category_label' => 'Sarana Lapangan Olahraga',
+                'location' => 'Area Terbuka Tengah Kampus',
+                'area_size' => '800 m²',
+                'capacity' => 200,
+                'ownership_status' => 'Milik Yayasan',
+                'procurement_year' => '2019',
+                'asset_value' => 450000000,
+                'condition' => 'baik',
+                'person_in_charge' => 'Irfan Maulana, S.Pd.',
+                'unit_id' => 'UNIT-SMP',
+                'status' => 'aktif',
+                'notes' => 'Lantai vinyl interlock outdoor, ring basket hidrolik, dan jaring pengaman sekeliling.'
+            ],
+            [
+                'id' => 'FCL-006',
+                'asset_code' => 'AST/IBD/ALIA/001',
+                'name' => 'Masjid Jami\' Kampus Alia Islamic School',
+                'category' => 'gedung',
+                'category_label' => 'Fasilitas Ibadah & Islamic Center',
+                'location' => 'Jantung Utama Kampus',
+                'area_size' => '950 m² (2 Lantai)',
+                'capacity' => 800,
+                'ownership_status' => 'Wakaf Penuh',
+                'procurement_year' => '2017',
+                'asset_value' => 3800000000,
+                'condition' => 'sangat_baik',
+                'person_in_charge' => 'Dr. H. Zulkifli, Lc., M.A.',
+                'unit_id' => 'UNIT-SMA',
+                'status' => 'aktif',
+                'notes' => 'Pusat shalat berjamaah 5 waktu, kajian diniyah ba\'da subuh, tasmi Quran, dan aula lantai 2.'
+            ],
+            [
+                'id' => 'FCL-007',
+                'asset_code' => 'AST/LAB/ALIA/001',
+                'name' => 'Laboratorium Komputer, Multimedia & Robotika',
+                'category' => 'ruangan',
+                'category_label' => 'Ruang Laboratorium & Praktikum',
+                'location' => 'Gedung Ali bin Abi Thalib Lt 2',
+                'area_size' => '120 m²',
+                'capacity' => 40,
+                'ownership_status' => 'Milik Yayasan',
+                'procurement_year' => '2021',
+                'asset_value' => 650000000,
+                'condition' => 'baik',
+                'person_in_charge' => 'Budi Santoso, S.Kom.',
+                'unit_id' => 'UNIT-SMA',
+                'status' => 'aktif',
+                'notes' => 'Dilengkapi 40 unit PC Core i5, server CBT cadangan, router Mikrotik, dan proyektor laser.'
+            ],
+            [
+                'id' => 'FCL-008',
+                'asset_code' => 'AST/UTL/ALIA/001',
+                'name' => 'Instalasi Gardu Listrik PLN & Genset Cadangan 100 kVA',
+                'category' => 'utilitas',
+                'category_label' => 'Utilitas & Sumber Daya',
+                'location' => 'Area Belakang Asrama Putra',
+                'area_size' => '36 m²',
+                'capacity' => 100, // kVA
+                'ownership_status' => 'Milik Yayasan',
+                'procurement_year' => '2020',
+                'asset_value' => 320000000,
+                'condition' => 'rusak_ringan',
+                'person_in_charge' => 'Koordinator Sarpras Yayasan',
+                'unit_id' => 'UNIT-SMA',
+                'status' => 'aktif',
+                'notes' => 'Sedang dijadwalkan pergantian aki starter dan servis filter solar berkala.'
+            ]
+        ];
     }
 
     // Getters
@@ -6293,6 +6442,43 @@ class DemoDataManager
         foreach ($this->getStaffTrainings() as $trn) {
             if ($trn['id'] === $id || ($trn['doc_number'] ?? '') === $id) {
                 return $trn;
+            }
+        }
+        return null;
+    }
+
+    public function getFacilityAssets(): array
+    {
+        $sessionAdded = [];
+        $sessionDeleted = [];
+        $sessionUpdated = [];
+        try {
+            if (function_exists('session') && app()->has('session')) {
+                $sessionAdded = session('demo_facility_assets_added', []);
+                $sessionDeleted = session('demo_facility_assets_deleted', []);
+                $sessionUpdated = session('demo_facility_assets_updated', []);
+            }
+        } catch (\Throwable $e) {}
+
+        $list = array_merge($this->facilityAssets, $sessionAdded);
+        $filtered = array_filter($list, function($ast) use ($sessionDeleted) {
+            return !in_array($ast['id'], $sessionDeleted);
+        });
+
+        foreach ($filtered as &$item) {
+            if (isset($sessionUpdated[$item['id']])) {
+                $item = array_merge($item, $sessionUpdated[$item['id']]);
+            }
+        }
+
+        return array_values($filtered);
+    }
+
+    public function findFacilityAsset(string $id): ?array
+    {
+        foreach ($this->getFacilityAssets() as $ast) {
+            if ($ast['id'] === $id || ($ast['asset_code'] ?? '') === $id) {
+                return $ast;
             }
         }
         return null;

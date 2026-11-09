@@ -8,10 +8,10 @@ Catatan pemantauan progres implementasi prototipe Alia Islamic School.
 
 - **Batch Aktif**: Batch D (Learning, Islamic Programs, Student Affairs)
 - **Batch Aktif**: Batch E (Boarding, Finance, HRIS)
-- **Batch Aktif**: Batch E (Boarding, Finance, HRIS) — SELESAI 100%
+- **Batch Aktif**: Batch F (Facilities, Inventory, Portals)
 - **Task Terakhir Selesai**:
-  - `T10.7`: Competency development (SDM/HRIS: Pengembangan Kompetensi Pegawai, Pelatihan/Workshop/Sertifikasi Pendidik, Direktori Sanad & Sertifikasi Resmi, Roadmap Pengembangan Karir 2026-2028, Modal Surat Tugas Diklat Berkop Alia, Konfirmasi Penerbitan Sertifikat, dan Form Pendaftaran Pelatihan Baru — Penutup Phase 10 SDM/HRIS).
-- **Task Selanjutnya**: `T11.1`: Facility registry (Sarpras & Fasilitas: Registrasi Tanah, Bangunan, Gedung Kampus, Lapangan, dan Kondisi Fisik Sarana Sekolah).
+  - `T11.1`: Facility registry (Sarpras & Fasilitas: Registrasi Tanah & Lahan Kampus SHM Wakaf, Bangunan Gedung Bertingkat, Sarana Lapangan Olahraga, Ruangan Laboratorium & Fasilitas Khusus, Utilitas Daya Listrik/Genset, Pembaruan Kondisi Fisik Fasilitas, Valuasi Buku Aset, Cetak Kartu Induk Fasilitas Berkop Alia).
+- **Task Selanjutnya**: `T11.2`: Room usage/booking (Peminjaman Ruang Lab/Aula/Lapangan, Jadwal Penggunaan, dan Status Approval).
 
 ---
 
@@ -232,6 +232,14 @@ Catatan pemantauan progres implementasi prototipe Alia Islamic School.
   - Controller: [`HrisController.php`](file:///c:/laragon/www/prototipe-alia/app/Http/Controllers/HrisController.php) (`pelatihan`, `storePelatihan`, `completePelatihan`, `destroyPelatihan`).
   - View: [`resources/views/hris/pelatihan.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/hris/pelatihan.blade.php) (3 Tab: Riwayat Program Pelatihan, Buku Registrasi Sertifikat & Sanad, Roadmap Peningkatan Kualifikasi Guru 2026-2028, 4 info box total program/selesai/akumulasi jam/investasi diklat, modal surat tugas resmi berkop Alia Islamic School, modal konfirmasi penyelesaian sertifikat, form pendaftaran pelatihan baru, filter status/kategori/unit/search, cetak).
   - Rute aktif `/hris/pelatihan`, `/hris/pelatihan` (POST), `/hris/pelatihan/{id}/complete` (POST), `/hris/pelatihan/{id}/destroy`, serta link menu di sidebar.
+
+### Batch F — Facilities, Inventory, Portals (Phase 11 Sarpras & Fasilitas)
+- `[x] T11.1`: Facility Registry (Registrasi Sarana & Prasarana Kampus):
+  - Dataset master aset sarpras fisik di [`DemoDataManager.php`](file:///c:/laragon/www/prototipe-alia/app/Support/DemoData/DemoDataManager.php) (`getFacilityAssets`, `findFacilityAsset`) mencakup tanah SHM Wakaf, gedung bertingkat (Umar, Thalhah, Khadijah), lapangan futsal/basket, lab komputer/bahasa/sains, masjid jami', gardu & genset utilitas 100 kVA.
+  - Controller: [`SarprasController.php`](file:///c:/laragon/www/prototipe-alia/app/Http/Controllers/SarprasController.php) (`fasilitas`, `storeFasilitas`, `updateKondisi`, `destroyFasilitas`).
+  - View: [`resources/views/sarpras/fasilitas.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/sarpras/fasilitas.blade.php) (3 Tab: Buku Register Aset Sarpras, Ruangan & Fasilitas Khusus, Rekapitulasi & Valuasi Aset, 4 info box total aset/nilai perolehan/kondisi prima/perlu pemeliharaan, modal kartu inventaris aset resmi berkop Alia Islamic School, modal pembaruan kondisi fisik, form pendaftaran aset baru, filter kategori/kondisi/search, cetak).
+  - Rute aktif `/sarpras/fasilitas`, `/sarpras/fasilitas` (POST), `/sarpras/fasilitas/{id}/kondisi` (POST), `/sarpras/fasilitas/{id}/destroy`, serta update link di sidebar AdminLTE.
+
 
 
 
