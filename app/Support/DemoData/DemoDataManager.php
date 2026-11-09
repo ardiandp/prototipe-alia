@@ -64,6 +64,7 @@ class DemoDataManager
     private array $staffLeaves = [];
     private array $staffOvertimes = [];
     private array $staffEvaluations = [];
+    private array $staffPayrolls = [];
 
     public function __construct()
     {
@@ -4097,6 +4098,202 @@ class DemoDataManager
                 'status' => 'final'
             ]
         ];
+
+        // 21. Penggajian & Simulasi Payroll Pegawai (Staff Payrolls)
+        $this->staffPayrolls = [
+            [
+                'id' => 'PAY-2026-11-001',
+                'slip_number' => 'SLIP/ALIA/2026/XI/001',
+                'teacher_id' => 'GUR-001', // Dr. H. Zulkifli
+                'name' => 'Dr. H. Zulkifli, Lc., M.A.',
+                'nip' => '1985102010011001',
+                'position' => 'Ketua Yayasan / Dosen Pembina',
+                'employment_status' => 'Guru Tetap Yayasan (GTY)',
+                'unit_id' => 'UNIT-SMA',
+                'month' => '2026-11',
+                'period_label' => 'November 2026',
+                'bank_name' => 'Bank Muamalat',
+                'account_number' => '301-0082-192',
+                'basic_salary' => 7500000,
+                'position_allowance' => 3000000,
+                'functional_allowance' => 1500000,
+                'family_allowance' => 800000,
+                'transport_meal_allowance' => 1200000,
+                'overtime_pay' => 0,
+                'bonus_incentive' => 500000,
+                'gross_salary' => 14500000,
+                'bpjs_kesehatan' => 145000,
+                'bpjs_ketenagakerjaan' => 290000,
+                'infaq_sedekah' => 250000,
+                'loan_deduction' => 0,
+                'late_deduction' => 0,
+                'total_deductions' => 685000,
+                'net_salary' => 13815000,
+                'payment_date' => '2026-11-25',
+                'status' => 'dibayarkan', // draft, disetujui, dibayarkan
+                'notes' => 'Gaji pokok dan tunjangan kehormatan ketua dewan pembina.'
+            ],
+            [
+                'id' => 'PAY-2026-11-002',
+                'slip_number' => 'SLIP/ALIA/2026/XI/002',
+                'teacher_id' => 'GUR-002', // Aisyah Salsabila
+                'name' => 'Aisyah Salsabila, S.Pd.I.',
+                'nip' => '1985112010011002',
+                'position' => 'Koordinator Tahfidz Akhwat',
+                'employment_status' => 'Guru Tetap Yayasan (GTY)',
+                'unit_id' => 'UNIT-SMP',
+                'month' => '2026-11',
+                'period_label' => 'November 2026',
+                'bank_name' => 'BSI (Bank Syariah Indonesia)',
+                'account_number' => '712-4458-901',
+                'basic_salary' => 4500000,
+                'position_allowance' => 1200000,
+                'functional_allowance' => 1000000,
+                'family_allowance' => 450000,
+                'transport_meal_allowance' => 850000,
+                'overtime_pay' => 0,
+                'bonus_incentive' => 300000,
+                'gross_salary' => 8300000,
+                'bpjs_kesehatan' => 83000,
+                'bpjs_ketenagakerjaan' => 166000,
+                'infaq_sedekah' => 100000,
+                'loan_deduction' => 0,
+                'late_deduction' => 0,
+                'total_deductions' => 349000,
+                'net_salary' => 7951000,
+                'payment_date' => '2026-11-25',
+                'status' => 'dibayarkan',
+                'notes' => 'Tunjangan koordinator tahfidz dan sertifikasi quranic.'
+            ],
+            [
+                'id' => 'PAY-2026-11-003',
+                'slip_number' => 'SLIP/ALIA/2026/XI/003',
+                'teacher_id' => 'GUR-003', // Salman Al-Farisi
+                'name' => 'Salman Al-Farisi, S.Sos.',
+                'nip' => '1985122010011003',
+                'position' => 'Mudir Asrama Santri',
+                'employment_status' => 'Guru Tetap Yayasan (GTY)',
+                'unit_id' => 'UNIT-SMA',
+                'month' => '2026-11',
+                'period_label' => 'November 2026',
+                'bank_name' => 'BSI (Bank Syariah Indonesia)',
+                'account_number' => '718-9902-331',
+                'basic_salary' => 4800000,
+                'position_allowance' => 1500000,
+                'functional_allowance' => 900000,
+                'family_allowance' => 500000,
+                'transport_meal_allowance' => 900000,
+                'overtime_pay' => 320000, // dari SPKL-002
+                'bonus_incentive' => 250000,
+                'gross_salary' => 9170000,
+                'bpjs_kesehatan' => 91700,
+                'bpjs_ketenagakerjaan' => 183400,
+                'infaq_sedekah' => 100000,
+                'loan_deduction' => 0,
+                'late_deduction' => 0,
+                'total_deductions' => 375100,
+                'net_salary' => 8794900,
+                'payment_date' => '2026-11-25',
+                'status' => 'dibayarkan',
+                'notes' => 'Termasuk honor piket malam asrama santri.'
+            ],
+            [
+                'id' => 'PAY-2026-11-004',
+                'slip_number' => 'SLIP/ALIA/2026/XI/004',
+                'teacher_id' => 'GUR-004', // Rahmat Hidayat
+                'name' => 'Rahmat Hidayat, M.Sc.',
+                'nip' => '1985132010011004',
+                'position' => 'Waka Kurikulum SMA',
+                'employment_status' => 'Guru Tetap Yayasan (GTY)',
+                'unit_id' => 'UNIT-SMA',
+                'month' => '2026-11',
+                'period_label' => 'November 2026',
+                'bank_name' => 'Bank Mandiri Syariah',
+                'account_number' => '140-00-9812-441',
+                'basic_salary' => 5000000,
+                'position_allowance' => 1800000,
+                'functional_allowance' => 1100000,
+                'family_allowance' => 500000,
+                'transport_meal_allowance' => 900000,
+                'overtime_pay' => 87500,
+                'bonus_incentive' => 0,
+                'gross_salary' => 9387500,
+                'bpjs_kesehatan' => 93875,
+                'bpjs_ketenagakerjaan' => 187750,
+                'infaq_sedekah' => 100000,
+                'loan_deduction' => 500000, // Angsuran koperasi guru
+                'late_deduction' => 25000, // Denda terlambat presensi
+                'total_deductions' => 906625,
+                'net_salary' => 8480875,
+                'payment_date' => '2026-11-25',
+                'status' => 'disetujui',
+                'notes' => 'Tunjangan wakil kepala sekolah bidang kurikulum.'
+            ],
+            [
+                'id' => 'PAY-2026-11-005',
+                'slip_number' => 'SLIP/ALIA/2026/XI/005',
+                'teacher_id' => 'GUR-006', // Budi Santoso
+                'name' => 'Budi Santoso, S.Kom.',
+                'nip' => '1985152010011006',
+                'position' => 'Kepala Lab Komputer',
+                'employment_status' => 'Guru Kontrak',
+                'unit_id' => 'UNIT-SMA',
+                'month' => '2026-11',
+                'period_label' => 'November 2026',
+                'bank_name' => 'BCA Syariah',
+                'account_number' => '029-881-209',
+                'basic_salary' => 3800000,
+                'position_allowance' => 800000,
+                'functional_allowance' => 600000,
+                'family_allowance' => 0,
+                'transport_meal_allowance' => 750000,
+                'overtime_pay' => 157500, // dari SPKL-001
+                'bonus_incentive' => 200000,
+                'gross_salary' => 6307500,
+                'bpjs_kesehatan' => 63075,
+                'bpjs_ketenagakerjaan' => 126150,
+                'infaq_sedekah' => 50000,
+                'loan_deduction' => 0,
+                'late_deduction' => 10000,
+                'total_deductions' => 249225,
+                'net_salary' => 6058275,
+                'payment_date' => '2026-11-25',
+                'status' => 'disetujui',
+                'notes' => 'Honor lembur instalasi lab ANBK terhitung.'
+            ],
+            [
+                'id' => 'PAY-2026-11-006',
+                'slip_number' => 'SLIP/ALIA/2026/XI/006',
+                'teacher_id' => 'GUR-010', // Nurul Hidayati (Keuangan)
+                'name' => 'Hj. Nurul Hidayati, S.E.',
+                'nip' => '1985192010011010',
+                'position' => 'Bendahara Utama Sekolah',
+                'employment_status' => 'Tenaga Kependidikan',
+                'unit_id' => 'UNIT-SMA',
+                'month' => '2026-11',
+                'period_label' => 'November 2026',
+                'bank_name' => 'BSI (Bank Syariah Indonesia)',
+                'account_number' => '711-2033-918',
+                'basic_salary' => 4600000,
+                'position_allowance' => 1400000,
+                'functional_allowance' => 800000,
+                'family_allowance' => 450000,
+                'transport_meal_allowance' => 850000,
+                'overtime_pay' => 122500,
+                'bonus_incentive' => 300000,
+                'gross_salary' => 8522500,
+                'bpjs_kesehatan' => 85225,
+                'bpjs_ketenagakerjaan' => 170450,
+                'infaq_sedekah' => 100000,
+                'loan_deduction' => 0,
+                'late_deduction' => 0,
+                'total_deductions' => 355675,
+                'net_salary' => 8166825,
+                'payment_date' => '2026-11-25',
+                'status' => 'dibayarkan',
+                'notes' => 'Penggajian staf tenaga kependidikan tata usaha keuangan.'
+            ]
+        ];
     }
 
     // Getters
@@ -5907,6 +6104,43 @@ class DemoDataManager
         foreach ($this->getStaffEvaluations() as $evl) {
             if ($evl['id'] === $id || ($evl['doc_number'] ?? '') === $id) {
                 return $evl;
+            }
+        }
+        return null;
+    }
+
+    public function getStaffPayrolls(): array
+    {
+        $sessionAdded = [];
+        $sessionDeleted = [];
+        $sessionUpdated = [];
+        try {
+            if (function_exists('session') && app()->has('session')) {
+                $sessionAdded = session('demo_staff_payrolls_added', []);
+                $sessionDeleted = session('demo_staff_payrolls_deleted', []);
+                $sessionUpdated = session('demo_staff_payrolls_updated', []);
+            }
+        } catch (\Throwable $e) {}
+
+        $list = array_merge($this->staffPayrolls, $sessionAdded);
+        $filtered = array_filter($list, function($pay) use ($sessionDeleted) {
+            return !in_array($pay['id'], $sessionDeleted);
+        });
+
+        foreach ($filtered as &$item) {
+            if (isset($sessionUpdated[$item['id']])) {
+                $item = array_merge($item, $sessionUpdated[$item['id']]);
+            }
+        }
+
+        return array_values($filtered);
+    }
+
+    public function findStaffPayroll(string $id): ?array
+    {
+        foreach ($this->getStaffPayrolls() as $pay) {
+            if ($pay['id'] === $id || ($pay['slip_number'] ?? '') === $id) {
+                return $pay;
             }
         }
         return null;

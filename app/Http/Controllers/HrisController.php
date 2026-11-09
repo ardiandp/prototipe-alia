@@ -889,5 +889,189 @@ class HrisController extends Controller
 
         return redirect()->route('hris.evaluasi')->with('info', "Lembar evaluasi kinerja ID: {$id} berhasil dihapus dari sesi demo.");
     }
+
+    /**
+     * T10.6 - Payroll Simulation / Penggajian & Slip Gaji Pegawai
+     */
+    public function penggajian(Request $request)
+    {
+        $demo = DemoDataManager::getInstance();
+        $teachers = $demo->getTeachers();
+        $payrolls = $demo->getStaffPayrolls();
+        $units = $demo->getUnits();
+
+        $activeTab = $request->get('tab', 'daftar'); // daftar, komponen, rekap
+        $monthFilter = $request->get('month', '2026-11');
+        $unitFilter = $request->get('unit', 'all');
+        $statusFilter = $request->get('status', 'all');
+        $search = $request->get('search');
+
+        // Filter daftar payroll
+        $filteredPayrolls = array_filter($payrolls, function ($pay) use ($monthFilter, $unitFilter, $statusFilter, $search) {
+            $matchMonth = ($monthFilter === 'all') || (($pay['month'] ?? '') === $monthFilter);
+            $matchUnit = ($unitFilter === 'all') || (($pay['unit_id'] ?? '') === $unitFilter);
+            $matchStatus = ($statusFilter === 'all') || (($pay['status'] ?? '') === $statusFilter);
+            $matchSearch = true;
+            if ($search) {
+                $matchSearch = stripos($pay['name'], $search) !== false ||
+                               stripos($pay['nip'] ?? '', $search) !== false ||
+                               stripos($pay['slip_number'] ?? '', $search) !== false ||
+                               stripos($pay['position'] ?? '', $search) !== false ||
+                               stripos($pay['bank_name'] ?? '', $search) !== false;
+            }
+            return $matchMonth && $matchUnit && $matchStatus && $matchSearch;
+        });
+
+        // Metrik Finansial Payroll
+        $totalSlips = count($payrolls);
+        $totalGross = array_sum(array_column($payrolls, 'gross_salary'));
+        $totalDeductions = array_sum(array_column($payrolls, 'total_deductions'));
+        $totalNetPayroll = array_sum(array_column($payrolls, 'net_salary'));
+        $totalDibayarkan = count(array_filter($payrolls, fn($p) => ($p['status'] ?? '') === 'dibayarkan'));
+
+        // Pegawai yang belum dibuatkan slip gaji bulan ini
+        $paidTeacherIds = array_column(array_filter($payrolls, fn($p) => ($p['month'] ?? '') === $monthFilter), 'teacher_id');
+        $unprocessedStaff = array_filter($teachers, fn($t) => !in_array($t['id'], $paidTeacherIds));
+
+        return view('hris.penggajian', compact(
+            'filteredPayrolls',
+            'payrolls',
+            'teachers',
+            'units',
+            'activeTab',
+            'monthFilter',
+            'unitFilter',
+            'statusFilter',
+            'search',
+            'totalSlips',
+            'totalGross',
+            'totalDeductions',
+            'totalNetPayroll',
+            'totalDibayarkan',
+            'unprocessedStaff'
+        ));
+    }
+
+    /**
+     * Generate & Simpan Slip Gaji Baru
+     */
+    public function storePenggajian(Request $request)
+    {
+        $validated = $request->validate([
+            'teacher_id' => 'required|string',
+            'month' => 'required|string',
+            'bank_name' => 'required|string|max:100',
+            'account_number' => 'required|string|max:50',
+            'basic_salary' => 'required|numeric|min:0',
+            'position_allowance' => 'nullable|numeric|min:0',
+            'functional_allowance' => 'nullable|numeric|min:0',
+            'family_allowance' => 'nullable|numeric|min:0',
+            'transport_meal_allowance' => 'nullable|numeric|min:0',
+            'overtime_pay' => 'nullable|numeric|min:0',
+            'bonus_incentive' => 'nullable|numeric|min:0',
+            'bpjs_kesehatan' => 'nullable|numeric|min:0',
+            'bpjs_ketenagakerjaan' => 'nullable|numeric|min:0',
+            'infaq_sedekah' => 'nullable|numeric|min:0',
+            'loan_deduction' => 'nullable|numeric|min:0',
+            'late_deduction' => 'nullable|numeric|min:0',
+            'payment_date' => 'required|date',
+            'notes' => 'nullable|string|max:255',
+        ]);
+
+        $demo = DemoDataManager::getInstance();
+        $teacher = $demo->findTeacher($validated['teacher_id']);
+        if (!$teacher) {
+            return redirect()->back()->withErrors(['teacher_id' => 'Pegawai tidak ditemukan.']);
+        }
+
+        $posAllowance = (float)($validated['position_allowance'] ?? 0);
+        $funcAllowance = (float)($validated['functional_allowance'] ?? 0);
+        $famAllowance = (float)($validated['family_allowance'] ?? 0);
+        $transAllowance = (float)($validated['transport_meal_allowance'] ?? 0);
+        $overtimePay = (float)($validated['overtime_pay'] ?? 0);
+        $bonus = (float)($validated['bonus_incentive'] ?? 0);
+
+        $gross = (float)$validated['basic_salary'] + $posAllowance + $funcAllowance + $famAllowance + $transAllowance + $overtimePay + $bonus;
+
+        $bpjsKes = (float)($validated['bpjs_kesehatan'] ?? round($gross * 0.01));
+        $bpjsTk = (float)($validated['bpjs_ketenagakerjaan'] ?? round($gross * 0.02));
+        $infaq = (float)($validated['infaq_sedekah'] ?? 100000);
+        $loan = (float)($validated['loan_deduction'] ?? 0);
+        $late = (float)($validated['late_deduction'] ?? 0);
+
+        $totalDeductions = $bpjsKes + $bpjsTk + $infaq + $loan + $late;
+        $net = max(0, $gross - $totalDeductions);
+
+        $count = count($demo->getStaffPayrolls()) + 1;
+        $slipNumber = 'SLIP/ALIA/' . date('Y/m', strtotime($validated['month'] . '-01')) . '/' . str_pad($count, 3, '0', STR_PAD_LEFT);
+
+        $newPayroll = [
+            'id' => 'PAY-' . $validated['month'] . '-' . str_pad($count, 3, '0', STR_PAD_LEFT),
+            'slip_number' => $slipNumber,
+            'teacher_id' => $teacher['id'],
+            'name' => $teacher['name'],
+            'nip' => $teacher['nip'] ?? '-',
+            'position' => $teacher['position'] ?? 'Tenaga Pendidik',
+            'employment_status' => $teacher['employment_status'] ?? 'Guru Tetap Yayasan (GTY)',
+            'unit_id' => $teacher['unit_id'] ?? 'UNIT-SMA',
+            'month' => $validated['month'],
+            'period_label' => date('F Y', strtotime($validated['month'] . '-01')),
+            'bank_name' => $validated['bank_name'],
+            'account_number' => $validated['account_number'],
+            'basic_salary' => (float)$validated['basic_salary'],
+            'position_allowance' => $posAllowance,
+            'functional_allowance' => $funcAllowance,
+            'family_allowance' => $famAllowance,
+            'transport_meal_allowance' => $transAllowance,
+            'overtime_pay' => $overtimePay,
+            'bonus_incentive' => $bonus,
+            'gross_salary' => $gross,
+            'bpjs_kesehatan' => $bpjsKes,
+            'bpjs_ketenagakerjaan' => $bpjsTk,
+            'infaq_sedekah' => $infaq,
+            'loan_deduction' => $loan,
+            'late_deduction' => $late,
+            'total_deductions' => $totalDeductions,
+            'net_salary' => $net,
+            'payment_date' => $validated['payment_date'],
+            'status' => 'dibayarkan',
+            'notes' => $validated['notes'] ?: 'Gaji dan tunjangan bulanan.'
+        ];
+
+        $sessionAdded = session('demo_staff_payrolls_added', []);
+        $sessionAdded[] = $newPayroll;
+        session(['demo_staff_payrolls_added' => $sessionAdded]);
+
+        return redirect()->route('hris.penggajian', ['month' => $validated['month']])->with('success', "Slip gaji {$teacher['name']} ({$slipNumber}) berhasil diterbitkan sebesar Rp " . number_format($net, 0, ',', '.') . "!");
+    }
+
+    /**
+     * Konfirmasi Pembayaran Slip Gaji
+     */
+    public function approvePenggajian(Request $request, string $id)
+    {
+        $sessionUpdated = session('demo_staff_payrolls_updated', []);
+        $sessionUpdated[$id] = [
+            'status' => 'dibayarkan',
+            'payment_date' => date('Y-m-d')
+        ];
+        session(['demo_staff_payrolls_updated' => $sessionUpdated]);
+
+        return redirect()->route('hris.penggajian')->with('success', "Gaji untuk slip {$id} berhasil dikonfirmasi dan ditandai telah dibayarkan!");
+    }
+
+    /**
+     * Hapus Data Penggajian dari Sesi Demo
+     */
+    public function destroyPenggajian(string $id)
+    {
+        $sessionDeleted = session('demo_staff_payrolls_deleted', []);
+        if (!in_array($id, $sessionDeleted)) {
+            $sessionDeleted[] = $id;
+            session(['demo_staff_payrolls_deleted' => $sessionDeleted]);
+        }
+
+        return redirect()->route('hris.penggajian')->with('info', "Slip gaji ID: {$id} berhasil dihapus dari sesi demo.");
+    }
 }
 

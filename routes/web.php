@@ -249,7 +249,10 @@ Route::prefix('hris')->name('hris.')->group(function () {
     Route::get('/evaluasi', [HrisController::class, 'evaluasi'])->name('evaluasi');
     Route::post('/evaluasi', [HrisController::class, 'storeEvaluasi'])->name('evaluasi.store');
     Route::get('/evaluasi/{id}/destroy', [HrisController::class, 'destroyEvaluasi'])->name('evaluasi.destroy');
-    Route::get('/penggajian', makePlaceholder('Penggajian (Payroll)', 'Slip Gaji & Tunjangan Bulanan', 'fa-money'))->name('penggajian');
+    Route::get('/penggajian', [HrisController::class, 'penggajian'])->name('penggajian');
+    Route::post('/penggajian', [HrisController::class, 'storePenggajian'])->name('penggajian.store');
+    Route::post('/penggajian/{id}/approve', [HrisController::class, 'approvePenggajian'])->name('penggajian.approve');
+    Route::get('/penggajian/{id}/destroy', [HrisController::class, 'destroyPenggajian'])->name('penggajian.destroy');
 });
 
 // Sarpras & Inventaris

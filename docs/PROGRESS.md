@@ -9,8 +9,8 @@ Catatan pemantauan progres implementasi prototipe Alia Islamic School.
 - **Batch Aktif**: Batch D (Learning, Islamic Programs, Student Affairs)
 - **Batch Aktif**: Batch E (Boarding, Finance, HRIS)
 - **Task Terakhir Selesai**:
-  - `T10.5`: Performance evaluation (SDM/HRIS: Penilaian Kinerja Guru & Tendik / PKG, Pembobotan 4 Pilar Pedagogik 30% / Profesional 30% / Kepribadian 20% / Sosial 20%, Konversi Predikat Amat Baik/Baik/Cukup/Kurang, Modal Lembar Rapor PKG Berkop Resmi Alia, Pemantauan Pegawai Belum Dievaluasi, dan Form Penilaian Asesor Berbasis Sesi).
-- **Task Selanjutnya**: `T10.6`: Payroll simulation (SDM/HRIS: Simulasi Penggajian & Payroll Pegawai, Komponen Gaji Pokok, Tunjangan Jabatan/Fungsional/Keluarga, Potongan BPJS/Infaq/Keterlambatan, dan Slip Gaji Digital Resmi).
+  - `T10.6`: Payroll simulation (SDM/HRIS: Simulasi Penggajian & Payroll Pegawai, Perhitungan Gaji Pokok & Multi-Tunjangan Jabatan/Fungsional/Keluarga/Transport/Lembur, Rincian Potongan BPJS Kesehatan/Ketenagakerjaan/Infaq 2.5%/Denda Presensi, Modal Slip Gaji Digital Resmi Berkop Alia, Konfirmasi Transfer Bank Syariah, dan Form Penerbitan Slip Gaji Baru).
+- **Task Selanjutnya**: `T10.7`: Competency development (SDM/HRIS: Pengembangan Kompetensi Pegawai, Pelatihan/Workshop/Sertifikasi Pendidik, Riwayat Diklat, dan Rencana Pengembangan Karir).
 
 ---
 
@@ -221,6 +221,12 @@ Catatan pemantauan progres implementasi prototipe Alia Islamic School.
   - Controller: [`HrisController.php`](file:///c:/laragon/www/prototipe-alia/app/Http/Controllers/HrisController.php) (`evaluasi`, `storeEvaluasi`, `destroyEvaluasi`).
   - View: [`resources/views/hris/evaluasi.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/hris/evaluasi.blade.php) (3 Tab: Buku Rekap Penilaian PKG, Rubrik 4 Pilar Kompetensi & Bobot Pedagogik 30%/Profesional 30%/Kepribadian 20%/Sosial 20%, Monitoring Pegawai Belum Dievaluasi, 4 info box total evaluasi/predikat A/predikat B/rata-rata skor, modal lembar rapor kinerja resmi berkop Alia Islamic School, form instrumen asesmen baru, filter predikat/unit/search, cetak).
   - Rute aktif `/hris/evaluasi`, `/hris/evaluasi` (POST), `/hris/evaluasi/{id}/destroy`, serta link menu di sidebar.
+- `[x] T10.6`: Payroll Simulation (Simulasi Penggajian & Payroll Pegawai):
+  - Dataset baseline penggajian bulanan pegawai, rekening bank syariah, struktur tunjangan lengkap, dan potongan di [`DemoDataManager.php`](file:///c:/laragon/www/prototipe-alia/app/Support/DemoData/DemoDataManager.php) (`getStaffPayrolls`, `findStaffPayroll`).
+  - Controller: [`HrisController.php`](file:///c:/laragon/www/prototipe-alia/app/Http/Controllers/HrisController.php) (`penggajian`, `storePenggajian`, `approvePenggajian`, `destroyPenggajian`).
+  - View: [`resources/views/hris/penggajian.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/hris/penggajian.blade.php) (3 Tab: Buku Penggajian & Slip Gaji, Struktur Komponen Gaji & Tunjangan, Pemantauan Pegawai Belum Diproses Payroll, 4 info box total slip/gaji bruto/total potongan/gaji bersih THP, modal slip gaji digital resmi berkop Alia Islamic School, aksi konfirmasi transfer bank, form penerbitan slip gaji baru, filter bulan/unit/status/search, cetak).
+  - Rute aktif `/hris/penggajian`, `/hris/penggajian` (POST), `/hris/penggajian/{id}/approve` (POST), `/hris/penggajian/{id}/destroy`, serta sub-menu aktif di sidebar.
+
 
 
 
