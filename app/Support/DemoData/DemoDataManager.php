@@ -71,6 +71,7 @@ class DemoDataManager
     private array $maintenanceReports = [];
     private array $facilityProcurements = [];
     private array $inventoryItems = [];
+    private array $stockReceipts = [];
 
     public function __construct()
     {
@@ -5137,6 +5138,94 @@ class DemoDataManager
                 'notes' => 'Pemeriksaan rutin tekanan darah santri dan dewan guru.'
             ]
         ];
+
+        // 28. Penerimaan Barang Masuk Logistik (Stock Receipts)
+        $this->stockReceipts = [
+            [
+                'id' => 'RCV-001',
+                'receipt_code' => 'MASUK/LOG/2026/001',
+                'delivery_order_no' => 'DO/SNW/2026/1101',
+                'receipt_date' => '2026-11-04',
+                'item_id' => 'INV-001', // Kertas HVS
+                'item_name' => 'Kertas HVS A4 80 GSM PaperOne',
+                'item_code' => 'BRG/ATK/2026/001',
+                'category' => 'atk',
+                'quantity' => 50,
+                'unit' => 'Rim',
+                'unit_price' => 54000,
+                'total_amount' => 2700000,
+                'source_type' => 'pembelian_vendor', // pembelian_vendor, dana_bos, hibah_donatur, yayasan
+                'source_label' => 'Pembelian Vendor / Supplier',
+                'source_name' => 'PT Toko Buku & ATK Barokah',
+                'officer_name' => 'H. Mulyadi (Staf Gudang & Logistik)',
+                'storage_location' => 'Gudang Logistik Utama (Rak ATK A-1)',
+                'condition_received' => 'baik', // baik, cacat_sebagian, rusak
+                'notes' => 'Diterima dalam kardus tersegel utuh 10 box (isi 5 rim per box).'
+            ],
+            [
+                'id' => 'RCV-002',
+                'receipt_code' => 'MASUK/LOG/2026/002',
+                'delivery_order_no' => 'SJ/EPSON/JKT/8821',
+                'receipt_date' => '2026-11-05',
+                'item_id' => 'INV-003', // Proyektor Epson
+                'item_name' => 'Proyektor Epson EB-X500 3600 Lumens',
+                'item_code' => 'BRG/ELK/2026/001',
+                'category' => 'elektronik',
+                'quantity' => 4,
+                'unit' => 'Unit',
+                'unit_price' => 6250000,
+                'total_amount' => 25000000,
+                'source_type' => 'dana_bos',
+                'source_label' => 'BOS Kinerja SMA Islam Alia',
+                'source_name' => 'CV Multi Media Teknologi',
+                'officer_name' => 'Budi Santoso, S.Kom. (Kepala Lab IT)',
+                'storage_location' => 'Ruang Server & Audio Visual (Lemari B-1)',
+                'condition_received' => 'baik',
+                'notes' => 'Lengkap dengan kabel HDMI 15 meter, remote, tas proyektor, dan kartu garansi 3 tahun.'
+            ],
+            [
+                'id' => 'RCV-003',
+                'receipt_code' => 'MASUK/LOG/2026/003',
+                'delivery_order_no' => 'HBH/WALI/2026/012',
+                'receipt_date' => '2026-11-06',
+                'item_id' => 'INV-008', // Bola Futsal
+                'item_name' => 'Bola Futsal Molten F9V-2000 Original',
+                'item_code' => 'BRG/OLG/2026/001',
+                'category' => 'olahraga',
+                'quantity' => 10,
+                'unit' => 'Pcs',
+                'unit_price' => 320000,
+                'total_amount' => 3200000,
+                'source_type' => 'hibah_donatur',
+                'source_label' => 'Hibah Wakaf Orang Tua / Komite',
+                'source_name' => 'H. Bambang Sudiro (Wali Santri SMP)',
+                'officer_name' => 'Irfan Maulana, S.Pd. (Guru PJOK)',
+                'storage_location' => 'Ruang Guru PJOK (Loker Alat C-2)',
+                'condition_received' => 'baik',
+                'notes' => 'Wakaf sarana olahraga untuk mendukung pembinaan ekstrakurikuler santri.'
+            ],
+            [
+                'id' => 'RCV-004',
+                'receipt_code' => 'MASUK/LOG/2026/004',
+                'delivery_order_no' => 'DO/WIPOL/UNILVR/441',
+                'receipt_date' => '2026-11-07',
+                'item_id' => 'INV-007', // Cairan Karbol
+                'item_name' => 'Cairan Pembersih Lantai Karbol Sereh Wipol 4 Liter',
+                'item_code' => 'BRG/KBR/2026/001',
+                'category' => 'kebersihan',
+                'quantity' => 12,
+                'unit' => 'Jerigen',
+                'unit_price' => 78000,
+                'total_amount' => 936000,
+                'source_type' => 'yayasan',
+                'source_label' => 'Anggaran Operasional Asrama Yayasan',
+                'source_name' => 'Distributor Perlengkapan Sanitasi Bersih',
+                'officer_name' => 'Agus Rohman (Koordinator Kebersihan)',
+                'storage_location' => 'Pos Cleaning Service & Janitor Asrama',
+                'condition_received' => 'baik',
+                'notes' => 'Pasokan kebutuhan pembersihan rutin kamar mandi dan asrama santri.'
+            ]
+        ];
     }
 
     // Getters
@@ -7206,6 +7295,35 @@ class DemoDataManager
         foreach ($this->getInventoryItems() as $inv) {
             if ($inv['id'] === $id || ($inv['item_code'] ?? '') === $id || ($inv['barcode'] ?? '') === $id) {
                 return $inv;
+            }
+        }
+        return null;
+    }
+
+    public function getStockReceipts(): array
+    {
+        $sessionAdded = [];
+        $sessionDeleted = [];
+        try {
+            if (function_exists('session') && app()->has('session')) {
+                $sessionAdded = session('demo_stock_receipts_added', []);
+                $sessionDeleted = session('demo_stock_receipts_deleted', []);
+            }
+        } catch (\Throwable $e) {}
+
+        $list = array_merge($this->stockReceipts, $sessionAdded);
+        $filtered = array_filter($list, function($rcv) use ($sessionDeleted) {
+            return !in_array($rcv['id'], $sessionDeleted);
+        });
+
+        return array_values($filtered);
+    }
+
+    public function findStockReceipt(string $id): ?array
+    {
+        foreach ($this->getStockReceipts() as $rcv) {
+            if ($rcv['id'] === $id || ($rcv['receipt_code'] ?? '') === $id) {
+                return $rcv;
             }
         }
         return null;

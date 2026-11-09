@@ -196,4 +196,168 @@ class InventarisController extends Controller
 
         return redirect()->route('inventaris.barang')->with('info', "Barang inventaris ID: {$id} berhasil dihapus dari master data sesi demo.");
     }
+
+    /**
+     * T12.2 - Stock Receipt / Penerimaan Barang Masuk Logistik
+     */
+    public function penerimaan(Request $request)
+    {
+        $demo = DemoDataManager::getInstance();
+        $receipts = $demo->getStockReceipts();
+        $items = $demo->getInventoryItems();
+
+        $activeTab = $request->get('tab', 'daftar'); // daftar, rekap_sumber
+        $sourceFilter = $request->get('source_type', 'all');
+        $dateFilter = $request->get('date');
+        $search = $request->get('search');
+
+        $filteredReceipts = array_filter($receipts, function ($rcv) use ($sourceFilter, $dateFilter, $search) {
+            $matchSource = ($sourceFilter === 'all') || (($rcv['source_type'] ?? '') === $sourceFilter);
+            $matchDate = empty($dateFilter) || (($rcv['receipt_date'] ?? '') === $dateFilter);
+            $matchSearch = true;
+            if ($search) {
+                $matchSearch = stripos($rcv['item_name'] ?? '', $search) !== false ||
+                               stripos($rcv['receipt_code'] ?? '', $search) !== false ||
+                               stripos($rcv['delivery_order_no'] ?? '', $search) !== false ||
+                               stripos($rcv['source_name'] ?? '', $search) !== false ||
+                               stripos($rcv['officer_name'] ?? '', $search) !== false;
+            }
+            return $matchSource && $matchDate && $matchSearch;
+        });
+
+        // Metrik Ringkasan Penerimaan
+        $totalTransactions = count($receipts);
+        $totalItemsReceived = array_sum(array_column($receipts, 'quantity'));
+        $totalReceiptValue = array_sum(array_column($receipts, 'total_amount'));
+        $vendorCount = count(array_filter($receipts, fn($r) => ($r['source_type'] ?? '') === 'pembelian_vendor'));
+
+        // Sebaran Sumber Penerimaan
+        $sourceSummary = [];
+        foreach ($receipts as $r) {
+            $src = $r['source_type'] ?? 'lainnya';
+            if (!isset($sourceSummary[$src])) {
+                $sourceSummary[$src] = [
+                    'label' => $r['source_label'] ?? ucfirst($src),
+                    'count' => 0,
+                    'quantity' => 0,
+                    'amount' => 0
+                ];
+            }
+            $sourceSummary[$src]['count']++;
+            $sourceSummary[$src]['quantity'] += $r['quantity'];
+            $sourceSummary[$src]['amount'] += ($r['total_amount'] ?? 0);
+        }
+
+        return view('inventaris.penerimaan', compact(
+            'filteredReceipts',
+            'receipts',
+            'items',
+            'activeTab',
+            'sourceFilter',
+            'dateFilter',
+            'search',
+            'totalTransactions',
+            'totalItemsReceived',
+            'totalReceiptValue',
+            'vendorCount',
+            'sourceSummary'
+        ));
+    }
+
+    /**
+     * Catat Penerimaan Barang Masuk Baru (Otomatis Tambah Stok Fisik)
+     */
+    public function storePenerimaan(Request $request)
+    {
+        $validated = $request->validate([
+            'item_id' => 'required|string',
+            'delivery_order_no' => 'required|string|max:100',
+            'receipt_date' => 'required|date',
+            'quantity' => 'required|numeric|min:1',
+            'source_type' => 'required|in:pembelian_vendor,dana_bos,hibah_donatur,yayasan',
+            'source_name' => 'required|string|max:150',
+            'officer_name' => 'required|string|max:100',
+            'storage_location' => 'required|string|max:150',
+            'condition_received' => 'required|in:baik,cacat_sebagian,rusak',
+            'notes' => 'nullable|string|max:500',
+        ]);
+
+        $sourceLabels = [
+            'pembelian_vendor' => 'Pembelian Vendor / Rekanan',
+            'dana_bos' => 'Dana Bantuan Operasional Sekolah (BOS)',
+            'hibah_donatur' => 'Hibah / Wakaf Donatur & Komite',
+            'yayasan' => 'Anggaran Yayasan Alia'
+        ];
+
+        $demo = DemoDataManager::getInstance();
+        $item = $demo->findInventoryItem($validated['item_id']);
+
+        $itemName = $item['name'] ?? 'Barang Inventaris';
+        $itemCode = $item['item_code'] ?? 'BRG/INV';
+        $itemCategory = $item['category'] ?? 'atk';
+        $itemUnit = $item['unit'] ?? 'Unit';
+        $unitPrice = $item['unit_price'] ?? 0;
+        $totalAmount = (int)$validated['quantity'] * $unitPrice;
+
+        $allReceipts = $demo->getStockReceipts();
+        $count = count($allReceipts) + 1;
+        $receiptCode = "MASUK/LOG/" . date('Y') . "/" . str_pad($count, 3, '0', STR_PAD_LEFT);
+
+        $newReceipt = [
+            'id' => 'RCV-' . str_pad($count, 3, '0', STR_PAD_LEFT),
+            'receipt_code' => $receiptCode,
+            'delivery_order_no' => $validated['delivery_order_no'],
+            'receipt_date' => $validated['receipt_date'],
+            'item_id' => $validated['item_id'],
+            'item_name' => $itemName,
+            'item_code' => $itemCode,
+            'category' => $itemCategory,
+            'quantity' => (int)$validated['quantity'],
+            'unit' => $itemUnit,
+            'unit_price' => (float)$unitPrice,
+            'total_amount' => (float)$totalAmount,
+            'source_type' => $validated['source_type'],
+            'source_label' => $sourceLabels[$validated['source_type']] ?? 'Logistik',
+            'source_name' => $validated['source_name'],
+            'officer_name' => $validated['officer_name'],
+            'storage_location' => $validated['storage_location'],
+            'condition_received' => $validated['condition_received'],
+            'notes' => $validated['notes'] ?: '-'
+        ];
+
+        // 1. Catat ke demo_stock_receipts_added
+        $sessionAdded = session('demo_stock_receipts_added', []);
+        $sessionAdded[] = $newReceipt;
+        session(['demo_stock_receipts_added' => $sessionAdded]);
+
+        // 2. Tambah stok fisik barang terkait secara otomatis di demo_inventory_items_updated
+        if ($item) {
+            $sessionItemUpdated = session('demo_inventory_items_updated', []);
+            $existingItemUpdate = $sessionItemUpdated[$item['id']] ?? [];
+            $currentStock = $existingItemUpdate['stock'] ?? $item['stock'];
+            $newStock = $currentStock + (int)$validated['quantity'];
+
+            $sessionItemUpdated[$item['id']] = array_merge($existingItemUpdate, [
+                'stock' => $newStock
+            ]);
+            session(['demo_inventory_items_updated' => $sessionItemUpdated]);
+        }
+
+        return redirect()->route('inventaris.penerimaan')->with('success', "Penerimaan barang \"{$itemName}\" ({$validated['quantity']} {$itemUnit}) berhasil dicatat ({$receiptCode}) dan stok fisik telah bertambah otomatis!");
+    }
+
+    /**
+     * Hapus Catatan Penerimaan Barang dari Sesi Demo
+     */
+    public function destroyPenerimaan(string $id)
+    {
+        $sessionDeleted = session('demo_stock_receipts_deleted', []);
+        if (!in_array($id, $sessionDeleted)) {
+            $sessionDeleted[] = $id;
+            session(['demo_stock_receipts_deleted' => $sessionDeleted]);
+        }
+
+        return redirect()->route('inventaris.penerimaan')->with('info', "Catatan penerimaan barang ID: {$id} berhasil dihapus dari sesi demo.");
+    }
 }
+
