@@ -525,5 +525,275 @@ class InventarisController extends Controller
 
         return redirect()->route('inventaris.pengeluaran')->with('info', "Catatan pengeluaran barang ID: {$id} berhasil dihapus dari sesi demo.");
     }
+
+    /**
+     * T12.4 - Procurement Simulation / Simulasi Pengadaan Barang Gudang & PO
+     */
+    public function pengadaan(Request $request)
+    {
+        $demo = DemoDataManager::getInstance();
+        $procurements = $demo->getInventoryProcurements();
+        $items = $demo->getInventoryItems();
+        $units = $demo->getUnits();
+
+        $activeTab = $request->get('tab', 'daftar'); // daftar, persetujuan, po
+        $statusFilter = $request->get('status', 'all');
+        $unitFilter = $request->get('unit', 'all');
+        $search = $request->get('search');
+
+        $filteredProcurements = array_filter($procurements, function ($po) use ($statusFilter, $unitFilter, $search) {
+            $matchStatus = ($statusFilter === 'all') || (($po['status'] ?? '') === $statusFilter);
+            $matchUnit = ($unitFilter === 'all') || (($po['unit_id'] ?? '') === $unitFilter);
+            $matchSearch = true;
+            if ($search) {
+                $matchSearch = stripos($po['title'] ?? '', $search) !== false ||
+                               stripos($po['po_number'] ?? '', $search) !== false ||
+                               stripos($po['request_code'] ?? '', $search) !== false ||
+                               stripos($po['vendor_name'] ?? '', $search) !== false ||
+                               stripos($po['requester_name'] ?? '', $search) !== false;
+            }
+            return $matchStatus && $matchUnit && $matchSearch;
+        });
+
+        // Metrik Ringkasan Pengadaan
+        $totalOrders = count($procurements);
+        $totalBudget = array_sum(array_column($procurements, 'total_amount'));
+        $totalPOIssued = count(array_filter($procurements, fn($p) => in_array($p['status'] ?? '', ['terbit_po', 'diterima'])));
+        $totalPending = count(array_filter($procurements, fn($p) => ($p['status'] ?? '') === 'diajukan'));
+
+        return view('inventaris.pengadaan', compact(
+            'filteredProcurements',
+            'procurements',
+            'items',
+            'units',
+            'activeTab',
+            'statusFilter',
+            'unitFilter',
+            'search',
+            'totalOrders',
+            'totalBudget',
+            'totalPOIssued',
+            'totalPending'
+        ));
+    }
+
+    /**
+     * Buat Usulan Permintaan Pengadaan Barang Baru (Request)
+     */
+    public function storePengadaan(Request $request)
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:150',
+            'requester_name' => 'required|string|max:100',
+            'requester_role' => 'required|string|max:100',
+            'unit_id' => 'required|string',
+            'request_date' => 'required|date',
+            'vendor_name' => 'required|string|max:150',
+            'vendor_contact' => 'nullable|string|max:150',
+            'source_funding' => 'required|string|max:100',
+            'item_names' => 'required|array|min:1',
+            'item_names.*' => 'required|string|max:150',
+            'item_quantities' => 'required|array|min:1',
+            'item_quantities.*' => 'required|numeric|min:1',
+            'item_units' => 'required|array|min:1',
+            'item_units.*' => 'required|string|max:50',
+            'item_prices' => 'required|array|min:1',
+            'item_prices.*' => 'required|numeric|min:0',
+            'item_ids' => 'nullable|array',
+            'notes' => 'nullable|string|max:500',
+        ]);
+
+        $items = [];
+        $totalAmount = 0;
+
+        foreach ($validated['item_names'] as $idx => $name) {
+            $qty = (int)($validated['item_quantities'][$idx] ?? 1);
+            $unit = $validated['item_units'][$idx] ?? 'Unit';
+            $price = (float)($validated['item_prices'][$idx] ?? 0);
+            $subtotal = $qty * $price;
+            $itemId = $validated['item_ids'][$idx] ?? null;
+
+            $items[] = [
+                'item_id' => $itemId ?: null,
+                'item_name' => $name,
+                'quantity' => $qty,
+                'unit' => $unit,
+                'unit_price' => $price,
+                'subtotal' => $subtotal
+            ];
+            $totalAmount += $subtotal;
+        }
+
+        $demo = DemoDataManager::getInstance();
+        $allProcurements = $demo->getInventoryProcurements();
+        $count = count($allProcurements) + 1;
+        $requestCode = "REQ/LOG/" . date('Y') . "/" . str_pad($count, 3, '0', STR_PAD_LEFT);
+
+        $newProcurement = [
+            'id' => 'PO-' . str_pad($count, 3, '0', STR_PAD_LEFT),
+            'po_number' => null,
+            'request_code' => $requestCode,
+            'title' => $validated['title'],
+            'requester_name' => $validated['requester_name'],
+            'requester_role' => $validated['requester_role'],
+            'unit_id' => $validated['unit_id'],
+            'request_date' => $validated['request_date'],
+            'vendor_name' => $validated['vendor_name'],
+            'vendor_contact' => $validated['vendor_contact'] ?: 'Vendor Rekanan Alia',
+            'items' => $items,
+            'total_amount' => $totalAmount,
+            'source_funding' => $validated['source_funding'],
+            'status' => 'diajukan',
+            'approver_name' => null,
+            'approved_at' => null,
+            'po_issued_at' => null,
+            'received_at' => null,
+            'rejection_reason' => null,
+            'notes' => $validated['notes'] ?: '-'
+        ];
+
+        $sessionAdded = session('demo_inventory_procurements_added', []);
+        $sessionAdded[] = $newProcurement;
+        session(['demo_inventory_procurements_added' => $sessionAdded]);
+
+        return redirect()->route('inventaris.pengadaan')->with('success', "Permintaan pengadaan \"{$newProcurement['title']}\" ({$requestCode}) berhasil diajukan!");
+    }
+
+    /**
+     * Approval / Penerbitan Purchase Order (PO)
+     */
+    public function approvePengadaan(Request $request, string $id)
+    {
+        $validated = $request->validate([
+            'status' => 'required|in:disetujui,terbit_po,ditolak',
+            'approver_name' => 'required|string|max:100',
+            'rejection_reason' => 'nullable|string|max:500',
+        ]);
+
+        $sessionUpdated = session('demo_inventory_procurements_updated', []);
+        $existing = $sessionUpdated[$id] ?? [];
+
+        $demo = DemoDataManager::getInstance();
+        $procurement = $demo->findInventoryProcurement($id);
+
+        $updateData = [
+            'status' => $validated['status'],
+            'approver_name' => $validated['approver_name'],
+            'approved_at' => date('Y-m-d H:i:s'),
+            'rejection_reason' => $validated['status'] === 'ditolak' ? ($validated['rejection_reason'] ?: 'Ditolak pimpinan / anggaran tidak tersedia.') : null,
+        ];
+
+        if ($validated['status'] === 'terbit_po') {
+            $poNumber = $procurement['po_number'] ?? ("PO/LOG/" . date('Y') . "/" . substr($id, -3));
+            $updateData['po_number'] = $poNumber;
+            $updateData['po_issued_at'] = date('Y-m-d H:i:s');
+        }
+
+        $sessionUpdated[$id] = array_merge($existing, $updateData);
+        session(['demo_inventory_procurements_updated' => $sessionUpdated]);
+
+        $statusLabels = [
+            'disetujui' => 'DISETUJUI',
+            'terbit_po' => 'TERBIT PURCHASE ORDER (PO)',
+            'ditolak' => 'DITOLAK'
+        ];
+        $label = $statusLabels[$validated['status']] ?? $validated['status'];
+
+        return redirect()->route('inventaris.pengadaan')->with('success', "Status pengadaan {$id} berhasil diperbarui ({$label})!");
+    }
+
+    /**
+     * Konfirmasi Penerimaan Barang dari PO (Receipt -> Otomatis Tambah Stok)
+     */
+    public function receivePengadaan(Request $request, string $id)
+    {
+        $validated = $request->validate([
+            'officer_name' => 'required|string|max:100',
+            'delivery_order_no' => 'required|string|max:100',
+            'notes' => 'nullable|string|max:500',
+        ]);
+
+        $demo = DemoDataManager::getInstance();
+        $procurement = $demo->findInventoryProcurement($id);
+
+        if (!$procurement) {
+            return redirect()->back()->withErrors(['error' => 'Data pengadaan PO tidak ditemukan!']);
+        }
+
+        // 1. Update status PO menjadi diterima
+        $sessionUpdated = session('demo_inventory_procurements_updated', []);
+        $existing = $sessionUpdated[$id] ?? [];
+
+        $sessionUpdated[$id] = array_merge($existing, [
+            'status' => 'diterima',
+            'received_at' => date('Y-m-d H:i:s'),
+            'notes' => "Diterima lengkap oleh {$validated['officer_name']} (DO: {$validated['delivery_order_no']}). " . ($validated['notes'] ?? '')
+        ]);
+        session(['demo_inventory_procurements_updated' => $sessionUpdated]);
+
+        // 2. Tambah stok fisik barang terkait secara otomatis ke katalog master
+        $sessionItemUpdated = session('demo_inventory_items_updated', []);
+        foreach ($procurement['items'] as $item) {
+            if (!empty($item['item_id'])) {
+                $invItem = $demo->findInventoryItem($item['item_id']);
+                if ($invItem) {
+                    $existingItemUpdate = $sessionItemUpdated[$invItem['id']] ?? [];
+                    $currentStock = $existingItemUpdate['stock'] ?? $invItem['stock'];
+                    $newStock = $currentStock + (int)$item['quantity'];
+
+                    $sessionItemUpdated[$invItem['id']] = array_merge($existingItemUpdate, [
+                        'stock' => $newStock
+                    ]);
+                }
+            }
+        }
+        session(['demo_inventory_items_updated' => $sessionItemUpdated]);
+
+        // 3. Catat transaksi log penerimaan masuk (Stock Receipt)
+        $sessionReceiptsAdded = session('demo_stock_receipts_added', []);
+        $firstItem = $procurement['items'][0] ?? null;
+        if ($firstItem) {
+            $count = count($demo->getStockReceipts()) + 1;
+            $receiptCode = "MASUK/LOG/" . date('Y') . "/" . str_pad($count, 3, '0', STR_PAD_LEFT);
+            $sessionReceiptsAdded[] = [
+                'id' => 'RCV-' . str_pad($count, 3, '0', STR_PAD_LEFT),
+                'receipt_code' => $receiptCode,
+                'delivery_order_no' => $validated['delivery_order_no'],
+                'receipt_date' => date('Y-m-d'),
+                'item_id' => $firstItem['item_id'] ?? 'INV-001',
+                'item_name' => $procurement['title'],
+                'item_code' => 'BRG/PO/' . substr($id, -3),
+                'category' => 'atk',
+                'quantity' => array_sum(array_column($procurement['items'], 'quantity')),
+                'unit' => 'Unit/Pcs',
+                'unit_price' => $procurement['total_amount'] / max(1, array_sum(array_column($procurement['items'], 'quantity'))),
+                'total_amount' => $procurement['total_amount'],
+                'source_type' => 'pembelian_vendor',
+                'source_label' => 'Realisasi PO: ' . ($procurement['po_number'] ?? $id),
+                'source_name' => $procurement['vendor_name'],
+                'officer_name' => $validated['officer_name'],
+                'storage_location' => 'Gudang Logistik Utama',
+                'condition_received' => 'baik',
+                'notes' => 'Penerimaan otomatis dari penyelesaian Purchase Order ' . ($procurement['po_number'] ?? $id)
+            ];
+            session(['demo_stock_receipts_added' => $sessionReceiptsAdded]);
+        }
+
+        return redirect()->route('inventaris.pengadaan')->with('success', "Barang dari {$id} (" . ($procurement['po_number'] ?? 'PO') . ") berhasil dikonfirmasi diterima dan stok fisik inventaris otomatis bertambah!");
+    }
+
+    /**
+     * Hapus Pengadaan Barang dari Sesi Demo
+     */
+    public function destroyPengadaan(string $id)
+    {
+        $sessionDeleted = session('demo_inventory_procurements_deleted', []);
+        if (!in_array($id, $sessionDeleted)) {
+            $sessionDeleted[] = $id;
+            session(['demo_inventory_procurements_deleted' => $sessionDeleted]);
+        }
+
+        return redirect()->route('inventaris.pengadaan')->with('info', "Pengadaan logistik ID: {$id} berhasil dihapus dari sesi demo.");
+    }
 }
 

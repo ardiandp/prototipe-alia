@@ -73,6 +73,7 @@ class DemoDataManager
     private array $inventoryItems = [];
     private array $stockReceipts = [];
     private array $stockIssues = [];
+    private array $inventoryProcurements = [];
 
     public function __construct()
     {
@@ -5311,6 +5312,110 @@ class DemoDataManager
                 'notes' => 'Peminjaman operasional sementara untuk kegiatan OSIS, wajib dikembalikan lusa.'
             ]
         ];
+
+        // 30. Simulasi Pengadaan Barang Gudang & PO (Inventory Procurement Simulation)
+        $this->inventoryProcurements = [
+            [
+                'id' => 'PO-001',
+                'po_number' => 'PO/LOG/2026/001',
+                'request_code' => 'REQ/LOG/2026/012',
+                'title' => 'Pengadaan Kertas HVS & Tinta Spidol Ujian Semester',
+                'requester_name' => 'Ahmad Fauzi, S.Pd.',
+                'requester_role' => 'Panitia Asesmen Sumatif SMA',
+                'unit_id' => 'UNIT-SMA',
+                'request_date' => '2026-11-03',
+                'vendor_name' => 'PT Toko Buku & ATK Barokah',
+                'vendor_contact' => 'Jl. Matraman Raya No. 45, Jakarta | 021-85901122',
+                'items' => [
+                    ['item_id' => 'INV-001', 'item_name' => 'Kertas HVS A4 80 GSM PaperOne', 'quantity' => 40, 'unit' => 'Rim', 'unit_price' => 54000, 'subtotal' => 2160000],
+                    ['item_id' => 'INV-002', 'item_name' => 'Spidol Boardmarker Snowman Hitam (BG-12)', 'quantity' => 10, 'unit' => 'Box', 'unit_price' => 108000, 'subtotal' => 1080000],
+                ],
+                'total_amount' => 3240000,
+                'source_funding' => 'BOS Reguler SMA Islam Alia',
+                'status' => 'diterima', // diajukan, disetujui, terbit_po, diterima, ditolak
+                'approver_name' => 'Dr. H. Zulkifli, Lc., M.A. (Yayasan)',
+                'approved_at' => '2026-11-04 11:20:00',
+                'po_issued_at' => '2026-11-04 14:00:00',
+                'received_at' => '2026-11-06 09:30:00',
+                'rejection_reason' => null,
+                'notes' => 'Pesanan telah diantar kurir vendor, diverifikasi staf logistik, dan stok otomatis masuk ke rak ATK.'
+            ],
+            [
+                'id' => 'PO-002',
+                'po_number' => 'PO/LOG/2026/002',
+                'request_code' => 'REQ/LOG/2026/014',
+                'title' => 'Pengadaan Perlengkapan Kebersihan & Sanitasi Kamar Mandi Asrama',
+                'requester_name' => 'Agus Rohman',
+                'requester_role' => 'Koordinator Kebersihan & Janitor',
+                'unit_id' => 'YAYASAN',
+                'request_date' => '2026-11-05',
+                'vendor_name' => 'Distributor Perlengkapan Sanitasi Bersih',
+                'vendor_contact' => 'Kawasan Industri Pulogadung | 021-46823344',
+                'items' => [
+                    ['item_id' => 'INV-007', 'item_name' => 'Cairan Pembersih Lantai Karbol Sereh Wipol 4 Liter', 'quantity' => 15, 'unit' => 'Jerigen', 'unit_price' => 78000, 'subtotal' => 1170000],
+                    ['item_id' => null, 'item_name' => 'Sapu Ijuk Standar Pesantren Gagang Kayu', 'quantity' => 20, 'unit' => 'Pcs', 'unit_price' => 25000, 'subtotal' => 500000],
+                    ['item_id' => null, 'item_name' => 'Pel Lantai Katun Putih + Gagang Aluminium', 'quantity' => 10, 'unit' => 'Set', 'unit_price' => 45000, 'subtotal' => 450000],
+                ],
+                'total_amount' => 2120000,
+                'source_funding' => 'Anggaran Operasional Asrama Yayasan',
+                'status' => 'terbit_po',
+                'approver_name' => 'Dr. H. Zulkifli, Lc., M.A. (Yayasan)',
+                'approved_at' => '2026-11-06 13:00:00',
+                'po_issued_at' => '2026-11-07 10:15:00',
+                'received_at' => null,
+                'rejection_reason' => null,
+                'notes' => 'Surat Purchase Order resmi telah dikirim ke supplier. Estimasi pengiriman hari Rabu besok.'
+            ],
+            [
+                'id' => 'PO-003',
+                'po_number' => null,
+                'request_code' => 'REQ/LOG/2026/015',
+                'title' => 'Pengadaan Bola & Rompi Latihan Santri SMP/SMA',
+                'requester_name' => 'Irfan Maulana, S.Pd.',
+                'requester_role' => 'Guru PJOK & Pembina Olahraga',
+                'unit_id' => 'UNIT-SMP',
+                'request_date' => '2026-11-08',
+                'vendor_name' => 'Toko Alat Olahraga Prima Sport',
+                'vendor_contact' => 'Jl. Pemuda Kav. 12, Rawamangun | 0812-11223344',
+                'items' => [
+                    ['item_id' => 'INV-008', 'item_name' => 'Bola Futsal Molten F9V-2000 Original', 'quantity' => 8, 'unit' => 'Pcs', 'unit_price' => 320000, 'subtotal' => 2560000],
+                    ['item_id' => null, 'item_name' => 'Rompi Latihan Futsal 2 Warna (Set 12 Pcs)', 'quantity' => 2, 'unit' => 'Set', 'unit_price' => 180000, 'subtotal' => 360000],
+                ],
+                'total_amount' => 2920000,
+                'source_funding' => 'BOS Reguler SMP Islam Alia',
+                'status' => 'disetujui',
+                'approver_name' => 'Drs. H. Ahmad Dahlan (Kepala SMP Alia)',
+                'approved_at' => '2026-11-09 09:30:00',
+                'po_issued_at' => null,
+                'received_at' => null,
+                'rejection_reason' => null,
+                'notes' => 'Disetujui kepala sekolah; menunggu penerbitan dokumen Purchase Order (PO) dari bagian logistik.'
+            ],
+            [
+                'id' => 'PO-004',
+                'po_number' => null,
+                'request_code' => 'REQ/LOG/2026/016',
+                'title' => 'Pengadaan Tambahan 10 Unit Proyektor Smart Classroom',
+                'requester_name' => 'Budi Santoso, S.Kom.',
+                'requester_role' => 'Kepala Lab Komputer',
+                'unit_id' => 'UNIT-SMA',
+                'request_date' => '2026-11-09',
+                'vendor_name' => 'CV Multi Media Teknologi',
+                'vendor_contact' => 'Mangga Dua Mall Lt. 3 | 021-62889900',
+                'items' => [
+                    ['item_id' => 'INV-003', 'item_name' => 'Proyektor Epson EB-X500 3600 Lumens', 'quantity' => 10, 'unit' => 'Unit', 'unit_price' => 6250000, 'subtotal' => 62500000],
+                ],
+                'total_amount' => 62500000,
+                'source_funding' => 'Anggaran Investasi Yayasan Alia',
+                'status' => 'diajukan',
+                'approver_name' => null,
+                'approved_at' => null,
+                'po_issued_at' => null,
+                'received_at' => null,
+                'rejection_reason' => null,
+                'notes' => 'Permintaan baru masuk dari unit SMA untuk digitalisasi kelas tahun ajaran baru.'
+            ]
+        ];
     }
 
     // Getters
@@ -7438,6 +7543,43 @@ class DemoDataManager
         foreach ($this->getStockIssues() as $iss) {
             if ($iss['id'] === $id || ($iss['issue_code'] ?? '') === $id) {
                 return $iss;
+            }
+        }
+        return null;
+    }
+
+    public function getInventoryProcurements(): array
+    {
+        $sessionAdded = [];
+        $sessionDeleted = [];
+        $sessionUpdated = [];
+        try {
+            if (function_exists('session') && app()->has('session')) {
+                $sessionAdded = session('demo_inventory_procurements_added', []);
+                $sessionDeleted = session('demo_inventory_procurements_deleted', []);
+                $sessionUpdated = session('demo_inventory_procurements_updated', []);
+            }
+        } catch (\Throwable $e) {}
+
+        $list = array_merge($this->inventoryProcurements, $sessionAdded);
+        $filtered = array_filter($list, function($po) use ($sessionDeleted) {
+            return !in_array($po['id'], $sessionDeleted);
+        });
+
+        foreach ($filtered as &$item) {
+            if (isset($sessionUpdated[$item['id']])) {
+                $item = array_merge($item, $sessionUpdated[$item['id']]);
+            }
+        }
+
+        return array_values($filtered);
+    }
+
+    public function findInventoryProcurement(string $id): ?array
+    {
+        foreach ($this->getInventoryProcurements() as $po) {
+            if ($po['id'] === $id || ($po['po_number'] ?? '') === $id || ($po['request_code'] ?? '') === $id) {
+                return $po;
             }
         }
         return null;

@@ -102,7 +102,7 @@ update `docs/PROGRESS.md`, report changed files and blockers, then stop.
 -   [x] T12.1 Item master.
 -   [x] T12.2 Stock receipt.
 -   [x] T12.3 Stock issue.
--   [ ] T12.4 Procurement simulation.
+-   [x] T12.4 Procurement simulation.
 -   [ ] T12.5 Maintenance.
 -   [ ] T12.6 Inventory reports.
 -   [ ] T13.1 Parent Portal shell.

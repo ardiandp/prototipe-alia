@@ -292,6 +292,11 @@ Route::prefix('inventaris')->name('inventaris.')->group(function () {
     Route::get('/pengeluaran', [InventarisController::class, 'pengeluaran'])->name('pengeluaran');
     Route::post('/pengeluaran', [InventarisController::class, 'storePengeluaran'])->name('pengeluaran.store');
     Route::get('/pengeluaran/{id}/destroy', [InventarisController::class, 'destroyPengeluaran'])->name('pengeluaran.destroy');
+    Route::get('/pengadaan', [InventarisController::class, 'pengadaan'])->name('pengadaan');
+    Route::post('/pengadaan', [InventarisController::class, 'storePengadaan'])->name('pengadaan.store');
+    Route::post('/pengadaan/{id}/approve', [InventarisController::class, 'approvePengadaan'])->name('pengadaan.approve');
+    Route::post('/pengadaan/{id}/receive', [InventarisController::class, 'receivePengadaan'])->name('pengadaan.receive');
+    Route::get('/pengadaan/{id}/destroy', [InventarisController::class, 'destroyPengadaan'])->name('pengadaan.destroy');
     Route::get('/stok', makePlaceholder('Stok & ATK', 'Inventaris Barang Masuk/Keluar', 'fa-boxes'))->name('stok');
 });
 

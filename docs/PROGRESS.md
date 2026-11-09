@@ -10,8 +10,8 @@ Catatan pemantauan progres implementasi prototipe Alia Islamic School.
 - **Batch Aktif**: Batch E (Boarding, Finance, HRIS)
 - **Batch Aktif**: Batch F (Facilities, Inventory, Portals)
 - **Task Terakhir Selesai**:
-  - `T12.3`: Stock issue (Inventaris & Logistik: Jurnal Pengeluaran Barang Outbound, Distribusi Alokasi Unit SMA/SMP/Asrama, Bon Permintaan BPPB Berkop Alia, Validasi Batas Maksimal Stok Fisik, dan Pengurangan Stok Otomatis).
-- **Task Selanjutnya**: `T12.4`: Procurement simulation (Inventaris & Logistik: Alur Simulasi Pengadaan Barang Gudang, Approval, Pratinjau Purchase Order - PO, dan Penerimaan Barang).
+  - `T12.4`: Procurement simulation (Inventaris & Logistik: Siklus Lengkap Pengadaan Barang Gudang, Usulan Request Belanja, Verifikasi Approval Pimpinan, Penerbitan Surat Purchase Order - PO Resmi Berkop Alia, dan Konfirmasi Penerimaan Inbound Otomatis Menambah Stok Master).
+- **Task Selanjutnya**: `T12.5`: Maintenance (Inventaris & Logistik: Pemeliharaan & Kalibrasi Alat Inventaris Berkala, Servis Alat Praktikum/Multimedia, Riwayat Tindakan, Biaya, dan Kondisi Fisik Pasca-Servis).
 
 ---
 
@@ -271,6 +271,12 @@ Catatan pemantauan progres implementasi prototipe Alia Islamic School.
   - Controller: [`InventarisController.php`](file:///c:/laragon/www/prototipe-alia/app/Http/Controllers/InventarisController.php) (`pengeluaran`, `storePengeluaran`, `destroyPengeluaran`) dengan validasi batas ketersediaan stok fisik gudang dan pengurangan stok otomatis secara real-time.
   - View: [`resources/views/inventaris/pengeluaran.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/inventaris/pengeluaran.blade.php) (Dwi-tab Buku Jurnal Pengeluaran Outbound & Distribusi Berdasarkan Unit Pemohon, 4 info box total transaksi/volume keluar/alokasi SMA/alokasi SMP-asrama, modal fisik Bon Permintaan Pengeluaran Barang BPPB resmi berkop Alia Islamic School, form pencatatan pengeluaran baru dengan deteksi stok maksimal otomatis, filter unit/tanggal/search, cetak).
   - Rute aktif `/inventaris/pengeluaran`, `/inventaris/pengeluaran` (POST), `/inventaris/pengeluaran/{id}/destroy`, serta link menu di sidebar AdminLTE.
+- `[x] T12.4`: Procurement Simulation (Simulasi Pengadaan Barang & Penerbitan PO):
+  - Dataset baseline pengadaan logistik di [`DemoDataManager.php`](file:///c:/laragon/www/prototipe-alia/app/Support/DemoData/DemoDataManager.php) (`getInventoryProcurements`, `findInventoryProcurement`) mencakup pengadaan ATK kertas/spidol, perlengkapan sanitasi kebersihan asrama, bola & rompi olahraga, dan smart proyektor lab.
+  - Controller: [`InventarisController.php`](file:///c:/laragon/www/prototipe-alia/app/Http/Controllers/InventarisController.php) (`pengadaan`, `storePengadaan`, `approvePengadaan`, `receivePengadaan`, `destroyPengadaan`) dengan integrasi otomatis penambahan stok master inventaris dan pencatatan BASTB saat barang dari PO dikonfirmasi diterima.
+  - View: [`resources/views/inventaris/pengadaan.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/inventaris/pengadaan.blade.php) (3 Tab: Daftar Pengadaan & Status PO, Antrean Approval Pimpinan, Diagram Alur Siklus Pengadaan Workflow, 4 info box total berkas/menunggu approval/PO terbit/total anggaran, modal fisik pratinjau surat Purchase Order berkop Alia Islamic School, modal konfirmasi penerimaan barang, form permintaan baru dengan multi-item dan fitur auto-fill dari katalog master, filter unit/status/search, cetak).
+  - Rute aktif `/inventaris/pengadaan`, `/inventaris/pengadaan` (POST), `/inventaris/pengadaan/{id}/approve` (POST), `/inventaris/pengadaan/{id}/receive` (POST), `/inventaris/pengadaan/{id}/destroy`, serta link menu di sidebar AdminLTE.
+
 
 
 
