@@ -319,76 +319,6 @@
                       </div>
                     </td>
                   </tr>
-
-                  <!-- Modal Detail Log Presensi -->
-                  <div class="modal fade" id="modal-view-att-{{ $att['id'] }}" tabindex="-1" role="dialog">
-                    <div class="modal-dialog modal-md" role="document">
-                      <div class="modal-content">
-                        <div class="modal-header" style="background-color: #1a365d; color: #fff;">
-                          <button type="button" class="close" data-dismiss="modal" style="color: #fff; opacity: 0.9;">&times;</button>
-                          <h4 class="modal-title"><i class="fa fa-id-card"></i> Lembar Verifikasi Log Presensi</h4>
-                        </div>
-                        <div class="modal-body">
-                          <div class="text-center" style="margin-bottom: 15px;">
-                            <h3 style="margin: 0; color: #1a365d; font-weight: bold;">{{ $att['name'] }}</h3>
-                            <p class="text-muted">NIP: {{ $att['nip'] ?? '-' }} &bull; {{ $uName }}</p>
-                          </div>
-
-                          <table class="table table-bordered table-striped">
-                            <tr>
-                              <th style="width: 40%; background: #f9f9f9;">ID Transaksi Presensi</th>
-                              <td><code>{{ $att['id'] }}</code></td>
-                            </tr>
-                            <tr>
-                              <th style="background: #f9f9f9;">Tanggal Presensi</th>
-                              <td><b>{{ date('d F Y', strtotime($att['date'])) }}</b></td>
-                            </tr>
-                            <tr>
-                              <th style="background: #f9f9f9;">Jam Masuk Kerja</th>
-                              <td>{{ $att['check_in'] ? $att['check_in'] . ' WIB' : '-' }}</td>
-                            </tr>
-                            <tr>
-                              <th style="background: #f9f9f9;">Jam Pulang Kerja</th>
-                              <td>{{ $att['check_out'] ? $att['check_out'] . ' WIB' : 'Belum Melakukan Check-out' }}</td>
-                            </tr>
-                            <tr>
-                              <th style="background: #f9f9f9;">Status Kehadiran</th>
-                              <td>
-                                @if(($att['status'] ?? '') === 'hadir')
-                                  <span class="label label-success">Hadir Tepat Waktu</span>
-                                @elseif(($att['status'] ?? '') === 'terlambat')
-                                  <span class="label label-warning">Terlambat ({{ $att['late_minutes'] }} Menit)</span>
-                                @elseif(($att['status'] ?? '') === 'izin')
-                                  <span class="label label-primary">Izin Dinas</span>
-                                @elseif(($att['status'] ?? '') === 'sakit')
-                                  <span class="label label-purple" style="background-color: #6b46c1;">Sakit</span>
-                                @else
-                                  <span class="label label-danger">Alpa</span>
-                                @endif
-                              </td>
-                            </tr>
-                            <tr>
-                              <th style="background: #f9f9f9;">Terminal Perangkat</th>
-                              <td><i class="fa fa-microchip text-muted"></i> {{ $att['device'] ?? 'Biometrik' }}</td>
-                            </tr>
-                            <tr>
-                              <th style="background: #f9f9f9;">Lokasi GPS / Gedung</th>
-                              <td><i class="fa fa-map-marker text-red"></i> {{ $att['location'] ?? 'Kampus Alia' }}</td>
-                            </tr>
-                            <tr>
-                              <th style="background: #f9f9f9;">Catatan Tambahan</th>
-                              <td>{{ $att['notes'] ?? '-' }}</td>
-                            </tr>
-                          </table>
-                        </div>
-                        <div class="modal-footer">
-                          <button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
-                          <button type="button" class="btn btn-primary" onclick="window.print()"><i class="fa fa-print"></i> Cetak Bukti</button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
                 @empty
                   <tr>
                     <td colspan="10" class="text-center" style="padding: 30px;">
@@ -610,5 +540,86 @@
     </div>
   </div>
 </div>
+
+<!-- Modal Detail Log Presensi (Diluar Tabel) -->
+@foreach($filteredAttendance as $att)
+  @php
+    $uNameModal = 'Yayasan';
+    foreach($units as $u) {
+      if ($u['id'] === ($att['unit_id'] ?? '')) {
+        $uNameModal = $u['name'];
+        break;
+      }
+    }
+  @endphp
+  <div class="modal fade" id="modal-view-att-{{ $att['id'] }}" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-md" role="document">
+      <div class="modal-content">
+        <div class="modal-header" style="background-color: #1a365d; color: #fff;">
+          <button type="button" class="close" data-dismiss="modal" style="color: #fff; opacity: 0.9;">&times;</button>
+          <h4 class="modal-title"><i class="fa fa-id-card"></i> Lembar Verifikasi Log Presensi</h4>
+        </div>
+        <div class="modal-body">
+          <div class="text-center" style="margin-bottom: 15px;">
+            <h3 style="margin: 0; color: #1a365d; font-weight: bold;">{{ $att['name'] }}</h3>
+            <p class="text-muted">NIP: {{ $att['nip'] ?? '-' }} &bull; {{ $uNameModal }}</p>
+          </div>
+
+          <table class="table table-bordered table-striped">
+            <tr>
+              <th style="width: 40%; background: #f9f9f9;">ID Transaksi Presensi</th>
+              <td><code>{{ $att['id'] }}</code></td>
+            </tr>
+            <tr>
+              <th style="background: #f9f9f9;">Tanggal Presensi</th>
+              <td><b>{{ date('d F Y', strtotime($att['date'])) }}</b></td>
+            </tr>
+            <tr>
+              <th style="background: #f9f9f9;">Jam Masuk Kerja</th>
+              <td>{{ $att['check_in'] ? $att['check_in'] . ' WIB' : '-' }}</td>
+            </tr>
+            <tr>
+              <th style="background: #f9f9f9;">Jam Pulang Kerja</th>
+              <td>{{ $att['check_out'] ? $att['check_out'] . ' WIB' : 'Belum Melakukan Check-out' }}</td>
+            </tr>
+            <tr>
+              <th style="background: #f9f9f9;">Status Kehadiran</th>
+              <td>
+                @if(($att['status'] ?? '') === 'hadir')
+                  <span class="label label-success">Hadir Tepat Waktu</span>
+                @elseif(($att['status'] ?? '') === 'terlambat')
+                  <span class="label label-warning">Terlambat ({{ $att['late_minutes'] }} Menit)</span>
+                @elseif(($att['status'] ?? '') === 'izin')
+                  <span class="label label-primary">Izin Dinas</span>
+                @elseif(($att['status'] ?? '') === 'sakit')
+                  <span class="label label-purple" style="background-color: #6b46c1;">Sakit</span>
+                @else
+                  <span class="label label-danger">Alpa</span>
+                @endif
+              </td>
+            </tr>
+            <tr>
+              <th style="background: #f9f9f9;">Terminal Perangkat</th>
+              <td><i class="fa fa-microchip text-muted"></i> {{ $att['device'] ?? 'Biometrik' }}</td>
+            </tr>
+            <tr>
+              <th style="background: #f9f9f9;">Lokasi GPS / Gedung</th>
+              <td><i class="fa fa-map-marker text-red"></i> {{ $att['location'] ?? 'Kampus Alia' }}</td>
+            </tr>
+            <tr>
+              <th style="background: #f9f9f9;">Catatan Tambahan</th>
+              <td>{{ $att['notes'] ?? '-' }}</td>
+            </tr>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
+          <button type="button" class="btn btn-primary" onclick="window.print()"><i class="fa fa-print"></i> Cetak Bukti</button>
+        </div>
+      </div>
+    </div>
+  </div>
+@endforeach
+
 @endsection
 
