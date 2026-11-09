@@ -16,6 +16,7 @@ use App\Http\Controllers\SarprasController;
 use App\Http\Controllers\InventarisController;
 use App\Http\Controllers\PortalController;
 use App\Http\Controllers\AiAssistantController;
+use App\Http\Controllers\ReportCenterController;
 
 // Helper untuk route placeholder view
 function makePlaceholder($title, $subtitle, $icon = 'fa-cube') {
@@ -322,7 +323,11 @@ Route::prefix('ai-assistant')->name('ai.')->group(function () {
     Route::post('/send', [AiAssistantController::class, 'send'])->name('assistant.send');
     Route::get('/reset', [AiAssistantController::class, 'resetChat'])->name('assistant.reset');
 });
-Route::get('/laporan', makePlaceholder('Pusat Laporan & Ekspor', 'Ekspor Data Rekapitulasi Sekolah', 'fa-file-pdf-o'))->name('laporan.index');
+// Laporan & Ekspor Terpadu
+Route::prefix('laporan')->name('laporan.')->group(function () {
+    Route::get('/', [ReportCenterController::class, 'index'])->name('index');
+    Route::get('/cetak/{module}', [ReportCenterController::class, 'printReport'])->name('cetak');
+});
 
 Route::prefix('settings')->name('settings.')->group(function () {
     Route::get('/', makePlaceholder('Pengaturan Sistem', 'Identitas Sekolah & Konfigurasi Prototype', 'fa-cogs'))->name('index');

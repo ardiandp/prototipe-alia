@@ -10,9 +10,9 @@ Catatan pemantauan progres implementasi prototipe Alia Islamic School.
 - **Batch Aktif**: Batch E (Boarding, Finance, HRIS)
 - **Batch Aktif**: Batch F (Facilities, Inventory, Portals)
 - **Task Terakhir Selesai**:
-  - `T14.1 - T14.3`: AI School Assistant Demo (Antarmuka Chat Cerdas Modern, Persona AI Islami Alia Intelligent School Agent, 7 Tombol Quick Prompts, Analisis Berbasis Data Sekolah Terpadu: Kesiswaan, Capaian Tahfidz Quran, Keuangan SPP, Kepegawaian HRIS, Fasilitas Asrama, Logistik Gudang, Prestasi Kejuaraan Santri, dan Data Card Terstruktur).
-  - **Fase 14 (AI School Assistant) RESMI 100% SELESAI.**
-- **Task Selanjutnya**: `T15.1 - T15.8`: Report Center & Ekspor Laporan (Pusat Laporan Eksekutif Terpadu, Rapor Akademik, Laporan PPDB, Laporan Keuangan, Laporan SDM, Laporan Tahfidz & Asrama, Laporan Sarpras & Inventaris, serta Format Pratinjau & Cetak PDF).
+  - `T15.1 - T15.8`: Report Center & Ekspor Laporan (Executive Report Center: Banner Eksekutif, 4 Stat Card Metrik Konsolidasi, 6 Tab Laporan Terpadu: Akademik Santri, Seleksi PPDB, Keuangan SPP & Kas, SDM Guru HRIS, Tahfidz Al-Quran & Asrama, Sarpras & Aset Logistik, Simulasi Ekspor Excel/Spreadsheet, serta Halaman Cetak Dokumen Eksekutif Berkop Yayasan Airis).
+  - **Fase 15 (Report Center & Ekspor Laporan) RESMI 100% SELESAI.**
+- **Task Selanjutnya**: `T16.1 - T16.5`: Settings & Demo Management (Profil Institusi Sekolah, Pengaturan Unit & Tahun Ajaran, Switcher Role Pengguna Demo, Preferensi Notifikasi, & Aksi Reset Data Sesi Demo).
 
 ---
 
@@ -303,6 +303,13 @@ Catatan pemantauan progres implementasi prototipe Alia Islamic School.
   - View: [`resources/views/ai/assistant.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/ai/assistant.blade.php) (Antarmuka chat modern dengan gelembung pesan pengguna vs AI, indikator online, badge sumber data, 7 tombol pill saran pertanyaan cepat / quick prompts, box ringkasan kapabilitas AI pimpinan, dan form input responsif).
   - Rute aktif `/ai-assistant`, `/ai-assistant/send` (POST), `/ai-assistant/reset`, serta link menu di sidebar AdminLTE.
   - **Fase 14 (AI School Assistant Demo) RESMI 100% SELESAI.**
+- `[x] T15.1 - T15.8`: Report Center & Ekspor Laporan:
+  - Controller baru: [`ReportCenterController.php`](file:///c:/laragon/www/prototipe-alia/app/Http/Controllers/ReportCenterController.php) (`index`, `printReport`) yang mengintegrasikan data konsolidasi 6 pilar sekolah (akademik, PPDB, keuangan, HRIS, tahfidz & asrama, sarpras & logistik).
+  - Views:
+    - [`resources/views/laporan/index.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/laporan/index.blade.php) (Executive Report Center: banner pimpinan yayasan, 4 stat card metrik konsolidasi, 6 tab laporan lengkap dengan tabel rekap data interaktif, tombol cetak lembar eksekutif, serta fitur simulasi ekspor file spreadsheet/Excel).
+    - [`resources/views/laporan/print.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/laporan/print.blade.php) (Format cetak dokumen resmi berkop Yayasan Airis dan Alia Islamic School lengkap dengan tabel data dan lembar tanda tangan Ketua Yayasan & Direktur Pendidikan).
+  - Rute aktif `/laporan`, `/laporan/cetak/{module}`, serta update menu navigasi di sidebar AdminLTE.
+  - **Fase 15 (Report Center & Ekspor Laporan) RESMI 100% SELESAI.**
 
 
 

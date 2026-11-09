@@ -119,14 +119,14 @@ update `docs/PROGRESS.md`, report changed files and blockers, then stop.
 -   [x] T14.1 Chat interface.
 -   [x] T14.2 Predefined demo responses.
 -   [x] T14.3 Shared-data responses.
--   [ ] T15.1 Report center.
--   [ ] T15.2 Academic reports.
--   [ ] T15.3 PPDB reports.
--   [ ] T15.4 Finance reports.
--   [ ] T15.5 HRIS reports.
--   [ ] T15.6 Tahfidz/boarding reports.
--   [ ] T15.7 Inventory/facility reports.
--   [ ] T15.8 Export/print.
+-   [x] T15.1 Report center.
+-   [x] T15.2 Academic reports.
+-   [x] T15.3 PPDB reports.
+-   [x] T15.4 Finance reports.
+-   [x] T15.5 HRIS reports.
+-   [x] T15.6 Tahfidz/boarding reports.
+-   [x] T15.7 Inventory/facility reports.
+-   [x] T15.8 Export/print.
 -   [ ] T16.1 Institution profile.
 -   [ ] T16.2 Unit/year settings.
 -   [ ] T16.3 Demo role switcher.
