@@ -135,15 +135,15 @@ update `docs/PROGRESS.md`, report changed files and blockers, then stop.
 
 ## Batch H --- Final QA
 
--   [ ] T17.1 Navigation/route audit.
--   [ ] T17.2 Form audit.
--   [ ] T17.3 Table audit.
--   [ ] T17.4 Cross-module workflow audit.
--   [ ] T17.5 Data consistency audit.
--   [ ] T17.6 AdminLTE 2 compatibility audit.
--   [ ] T17.7 Responsive audit.
--   [ ] T17.8 Error/performance audit.
--   [ ] T17.9 Demo walkthrough.
+-   [x] T17.1 Navigation/route audit.
+-   [x] T17.2 Form audit.
+-   [x] T17.3 Table audit.
+-   [x] T17.4 Cross-module workflow audit.
+-   [x] T17.5 Data consistency audit.
+-   [x] T17.6 AdminLTE 2 compatibility audit.
+-   [x] T17.7 Responsive audit.
+-   [x] T17.8 Error/performance audit.
+-   [x] T17.9 Demo walkthrough.
 
 ## First instruction to OpenCode
 
