@@ -68,6 +68,7 @@ class DemoDataManager
     private array $staffTrainings = [];
     private array $facilityAssets = [];
     private array $roomBookings = [];
+    private array $maintenanceReports = [];
 
     public function __construct()
     {
@@ -4689,6 +4690,166 @@ class DemoDataManager
                 'notes' => 'Kegiatan telah selesai dilaksanakan dengan tertib.'
             ]
         ];
+
+        // 25. Laporan Kerusakan & Pemeliharaan Sarpras (Maintenance and Damage Reports)
+        $this->maintenanceReports = [
+            [
+                'id' => 'MNT-001',
+                'ticket_code' => 'TIKET/MNT/2026/001',
+                'title' => 'Genset 100 kVA Macet Starter & Perlu Ganti Aki',
+                'asset_id' => 'FCL-008', // Instalasi Gardu & Genset
+                'asset_name' => 'Instalasi Gardu Listrik PLN & Genset Cadangan 100 kVA',
+                'location' => 'Area Belakang Asrama Putra',
+                'category' => 'kelistrikan', // kelistrikan, sipil_bangunan, ac_pendingin, sanitasi_plumbing, elektronik_it, mebelair
+                'category_label' => 'Kelistrikan & Genset',
+                'priority' => 'tinggi', // darurat, tinggi, sedang, rendah
+                'report_date' => '2026-11-06',
+                'reporter_name' => 'Ust. Fauzan Azhim, S.T.',
+                'reporter_role' => 'Pembina Asrama Putra',
+                'unit_id' => 'UNIT-SMA',
+                'description' => 'Genset utama tidak mau menyala saat pemadaman uji coba bulanan. Tegangan aki drop di bawah 10V dan filter solar keruh.',
+                'assigned_to' => 'Pak Joko Sutrisno (Teknisi Listrik)',
+                'assigned_type' => 'internal', // internal, vendor_eksternal
+                'vendor_name' => 'PT Daya Genset Nusantara',
+                'estimated_cost' => 3800000,
+                'actual_cost' => 3750000,
+                'progress' => 85, // 0 - 100%
+                'status' => 'dalam_pengerjaan', // dilaporkan, disetujui, dalam_pengerjaan, selesai, ditunda
+                'started_at' => '2026-11-07 09:00:00',
+                'completed_at' => null,
+                'resolution_notes' => 'Aki starter 120 Ah baru telah dipasang. Saat ini sedang proses penggantian filter oli dan uji beban (running test).'
+            ],
+            [
+                'id' => 'MNT-002',
+                'ticket_code' => 'TIKET/MNT/2026/002',
+                'title' => 'AC Split 2 PK Ruang Lab Komputer Bocor Air & Kurang Dingin',
+                'asset_id' => 'RNG-201', // Lab Komputer
+                'asset_name' => 'Laboratorium Komputer & Robotika (Unit AC-02)',
+                'location' => 'Gedung Ali bin Abi Thalib Lt 2',
+                'category' => 'ac_pendingin',
+                'category_label' => 'Tata Udara & AC',
+                'priority' => 'sedang',
+                'report_date' => '2026-11-05',
+                'reporter_name' => 'Budi Santoso, S.Kom.',
+                'reporter_role' => 'Kepala Lab Komputer',
+                'unit_id' => 'UNIT-SMA',
+                'description' => 'Air kondensasi menetes ke atas meja komputer santri baris kedua. Suhu ruangan tidak bisa turun di bawah 26°C.',
+                'assigned_to' => 'Dwi Wahyudi (Teknisi Pendingin)',
+                'assigned_type' => 'internal',
+                'vendor_name' => null,
+                'estimated_cost' => 450000,
+                'actual_cost' => 400000,
+                'progress' => 100,
+                'status' => 'selesai',
+                'started_at' => '2026-11-06 10:00:00',
+                'completed_at' => '2026-11-06 14:30:00',
+                'resolution_notes' => 'Pipa drainase tersumbat lumut telah dibersihkan (flushing) dan freon R32 ditambah 30 psi. Suhu kembali normal 20°C.'
+            ],
+            [
+                'id' => 'MNT-003',
+                'ticket_code' => 'TIKET/MNT/2026/003',
+                'title' => 'Plafon Bocor & Rembes Air Hujan Selasar Gedung Umar',
+                'asset_id' => 'FCL-002', // Gedung Umar
+                'asset_name' => 'Gedung Utama Umar bin Khattab',
+                'location' => 'Lantai 2 Koridor Menuju Ruang Guru SMA',
+                'category' => 'sipil_bangunan',
+                'category_label' => 'Sipil & Konstruksi Gedung',
+                'priority' => 'tinggi',
+                'report_date' => '2026-11-08',
+                'reporter_name' => 'Ahmad Fauzi, S.Pd.',
+                'reporter_role' => 'Wakasek Kurikulum SMA',
+                'unit_id' => 'UNIT-SMA',
+                'description' => 'Hujan lebat kemarin sore menyebabkan rembesan air di plafon gypsum koridor. Rangka gypsum mulai melengkung dan berbahaya jika runtuh.',
+                'assigned_to' => 'CV Karya Cipta Mandiri',
+                'assigned_type' => 'vendor_eksternal',
+                'vendor_name' => 'CV Karya Cipta Mandiri',
+                'estimated_cost' => 2500000,
+                'actual_cost' => 0,
+                'progress' => 20,
+                'status' => 'disetujui',
+                'started_at' => '2026-11-09 08:30:00',
+                'completed_at' => null,
+                'resolution_notes' => 'Survei lokasi telah dilakukan. Vendor menyiapkan waterproofing dak atap dan penggantian 4 lembar papan gypsum.'
+            ],
+            [
+                'id' => 'MNT-004',
+                'ticket_code' => 'TIKET/MNT/2026/004',
+                'title' => 'Kran Otomatis Tempat Wudhu Masjid Patah & Air Meluap',
+                'asset_id' => 'FCL-006', // Masjid Jami'
+                'asset_name' => 'Masjid Jami\' Kampus Alia Islamic School',
+                'location' => 'Area Tempat Wudhu Ikhwan Lantai 1',
+                'category' => 'sanitasi_plumbing',
+                'category_label' => 'Sanitasi & Plumbing',
+                'priority' => 'darurat',
+                'report_date' => '2026-11-09',
+                'reporter_name' => 'Ust. Salman Al-Farisi, M.Pd.',
+                'reporter_role' => 'Musyrif Masjid Kampus',
+                'unit_id' => 'UNIT-SMA',
+                'description' => 'Kran air nomor 4 dan 5 patah pada drat pipa PVC akibat tarikan santri. Air mengucur deras tanpa henti.',
+                'assigned_to' => 'Pak Joko Sutrisno (Teknisi Sarpras)',
+                'assigned_type' => 'internal',
+                'vendor_name' => null,
+                'estimated_cost' => 350000,
+                'actual_cost' => 320000,
+                'progress' => 100,
+                'status' => 'selesai',
+                'started_at' => '2026-11-09 07:15:00',
+                'completed_at' => '2026-11-09 08:45:00',
+                'resolution_notes' => 'Stop kran utama ditutup sementara, penggantian 2 unit kran kuningan tebal 1/2 inch dan soket drat luar selesai dikerjakan.'
+            ],
+            [
+                'id' => 'MNT-005',
+                'ticket_code' => 'TIKET/MNT/2026/005',
+                'title' => 'Jaring Pengaman & Papan Ring Basket Lapangan Rusak',
+                'asset_id' => 'FCL-005', // Lapangan Olahraga
+                'asset_name' => 'Lapangan Olahraga Multifungsi (Futsal, Basket, Voli)',
+                'location' => 'Area Terbuka Tengah Kampus',
+                'category' => 'mebelair',
+                'category_label' => 'Sarana Olahraga & Lapangan',
+                'priority' => 'sedang',
+                'report_date' => '2026-11-04',
+                'reporter_name' => 'Irfan Maulana, S.Pd.',
+                'reporter_role' => 'Guru PJOK SMA',
+                'unit_id' => 'UNIT-SMA',
+                'description' => 'Jaring pengaman sisi utara sobek sepanjang 4 meter terkena tendangan bola, dan pegas ring basket sisi timur kendor.',
+                'assigned_to' => 'Bengkel Las Sportindo Jaya',
+                'assigned_type' => 'vendor_eksternal',
+                'vendor_name' => 'Bengkel Las Sportindo Jaya',
+                'estimated_cost' => 1800000,
+                'actual_cost' => 0,
+                'progress' => 40,
+                'status' => 'dalam_pengerjaan',
+                'started_at' => '2026-11-07 13:00:00',
+                'completed_at' => null,
+                'resolution_notes' => 'Penyambungan jaring tambang PE nylon baru dan penggantian per ring basket hidrolik dalam proses pengelasan.'
+            ],
+            [
+                'id' => 'MNT-006',
+                'ticket_code' => 'TIKET/MNT/2026/006',
+                'title' => 'Lampu Sorot LED Halaman Depan Mati Total',
+                'asset_id' => 'FCL-001', // Lahan & Halaman
+                'asset_name' => 'Lahan Kampus Asrama & Pendidikan Terpadu',
+                'location' => 'Pintu Gerbang Utama & Pos Satpam',
+                'category' => 'kelistrikan',
+                'category_label' => 'Kelistrikan & Penerangan',
+                'priority' => 'rendah',
+                'report_date' => '2026-11-08',
+                'reporter_name' => 'Komandan Regu Satpam Alia',
+                'reporter_role' => 'Koordinator Keamanan Kampus',
+                'unit_id' => 'UNIT-SD',
+                'description' => 'Dua unit lampu tembak LED 100 watt di atas pos satpam padam sehingga area parkir depan gelap saat malam.',
+                'assigned_to' => null,
+                'assigned_type' => 'internal',
+                'vendor_name' => null,
+                'estimated_cost' => 600000,
+                'actual_cost' => 0,
+                'progress' => 0,
+                'status' => 'dilaporkan',
+                'started_at' => null,
+                'completed_at' => null,
+                'resolution_notes' => 'Menunggu verifikasi ketersediaan stok lampu LED pengganti di gudang sarpras.'
+            ]
+        ];
     }
 
     // Getters
@@ -6647,6 +6808,43 @@ class DemoDataManager
         foreach ($this->getRoomBookings() as $bkg) {
             if ($bkg['id'] === $id || ($bkg['booking_code'] ?? '') === $id) {
                 return $bkg;
+            }
+        }
+        return null;
+    }
+
+    public function getMaintenanceReports(): array
+    {
+        $sessionAdded = [];
+        $sessionDeleted = [];
+        $sessionUpdated = [];
+        try {
+            if (function_exists('session') && app()->has('session')) {
+                $sessionAdded = session('demo_maintenance_reports_added', []);
+                $sessionDeleted = session('demo_maintenance_reports_deleted', []);
+                $sessionUpdated = session('demo_maintenance_reports_updated', []);
+            }
+        } catch (\Throwable $e) {}
+
+        $list = array_merge($this->maintenanceReports, $sessionAdded);
+        $filtered = array_filter($list, function($mnt) use ($sessionDeleted) {
+            return !in_array($mnt['id'], $sessionDeleted);
+        });
+
+        foreach ($filtered as &$item) {
+            if (isset($sessionUpdated[$item['id']])) {
+                $item = array_merge($item, $sessionUpdated[$item['id']]);
+            }
+        }
+
+        return array_values($filtered);
+    }
+
+    public function findMaintenanceReport(string $id): ?array
+    {
+        foreach ($this->getMaintenanceReports() as $mnt) {
+            if ($mnt['id'] === $id || ($mnt['ticket_code'] ?? '') === $id) {
+                return $mnt;
             }
         }
         return null;

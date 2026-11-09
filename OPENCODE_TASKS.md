@@ -97,7 +97,7 @@ update `docs/PROGRESS.md`, report changed files and blockers, then stop.
 
 -   [x] T11.1 Facility registry.
 -   [x] T11.2 Room usage/booking.
--   [ ] T11.3 Maintenance/damage reports.
+-   [x] T11.3 Maintenance/damage reports.
 -   [ ] T11.4 Procurement requests.
 -   [ ] T12.1 Item master.
 -   [ ] T12.2 Stock receipt.

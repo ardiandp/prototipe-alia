@@ -270,7 +270,10 @@ Route::prefix('sarpras')->name('sarpras.')->group(function () {
     Route::post('/peminjaman', [SarprasController::class, 'storePeminjaman'])->name('peminjaman.store');
     Route::post('/peminjaman/{id}/approve', [SarprasController::class, 'approvePeminjaman'])->name('peminjaman.approve');
     Route::get('/peminjaman/{id}/destroy', [SarprasController::class, 'destroyPeminjaman'])->name('peminjaman.destroy');
-    Route::get('/pemeliharaan', makePlaceholder('Pemeliharaan Sarpras', 'Log Perbaikan & Servis Alat', 'fa-wrench'))->name('pemeliharaan');
+    Route::get('/pemeliharaan', [SarprasController::class, 'pemeliharaan'])->name('pemeliharaan');
+    Route::post('/pemeliharaan', [SarprasController::class, 'storePemeliharaan'])->name('pemeliharaan.store');
+    Route::post('/pemeliharaan/{id}/progress', [SarprasController::class, 'updateProgressPemeliharaan'])->name('pemeliharaan.progress');
+    Route::get('/pemeliharaan/{id}/destroy', [SarprasController::class, 'destroyPemeliharaan'])->name('pemeliharaan.destroy');
 });
 
 Route::prefix('inventaris')->name('inventaris.')->group(function () {

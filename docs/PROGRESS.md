@@ -10,8 +10,8 @@ Catatan pemantauan progres implementasi prototipe Alia Islamic School.
 - **Batch Aktif**: Batch E (Boarding, Finance, HRIS)
 - **Batch Aktif**: Batch F (Facilities, Inventory, Portals)
 - **Task Terakhir Selesai**:
-  - `T11.2`: Room usage/booking (Sarpras & Fasilitas: Manajemen Peminjaman Ruangan Khusus, Lab Komputer/Sains/Bahasa, Aula Serbaguna, Lapangan Olahraga, Deteksi Bentrok Jadwal, Linimasa Timeline Pemakaian Mingguan, Surat Izin Berkop Alia, dan Alur Persetujuan Sarpras).
-- **Task Selanjutnya**: `T11.3`: Maintenance/damage reports (Sarpras & Fasilitas: Laporan Kerusakan, Tingkat Prioritas, Penugasan Teknisi, dan Progres Perbaikan).
+  - `T11.3`: Maintenance/damage reports (Sarpras & Fasilitas: Manajemen Tiket Laporan Kerusakan Fasilitas, Klasifikasi 4 Tingkat Prioritas Darurat/Tinggi/Sedang/Rendah, Alokasi Teknisi Internal & Vendor Rekanan, Formulir SPK Servis Berkop Alia, Update Progres Log Servis & Realisasi Biaya).
+- **Task Selanjutnya**: `T11.4`: Procurement requests (Sarpras & Fasilitas: Pengajuan Pengadaan Sarpras Baru, Daftar Kebutuhan Barang/Fasilitas, Estimasi Anggaran, dan Alur Persetujuan Yayasan — Penutup Phase 11 Sarpras).
 
 ---
 
@@ -244,6 +244,12 @@ Catatan pemantauan progres implementasi prototipe Alia Islamic School.
   - Controller: [`SarprasController.php`](file:///c:/laragon/www/prototipe-alia/app/Http/Controllers/SarprasController.php) (`peminjaman`, `storePeminjaman`, `approvePeminjaman`, `destroyPeminjaman`) dengan sistem auto-conflict detection jadwal jika ada jam yang bertabrakan.
   - View: [`resources/views/sarpras/peminjaman.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/sarpras/peminjaman.blade.php) (3 Tab: Daftar Peminjaman & Status, Jadwal Pemakaian Ruangan Linimasa Timeline, Antrean Persetujuan Sarpras, 4 info box total/pending/disetujui/selesai, modal surat izin pemakaian resmi berkop Alia Islamic School, modal keputusan persetujuan & alasan penolakan, form permohonan baru, filter ruangan/status/tanggal/search, cetak).
   - Rute aktif `/sarpras/peminjaman`, `/sarpras/peminjaman` (POST), `/sarpras/peminjaman/{id}/approve` (POST), `/sarpras/peminjaman/{id}/destroy`, serta link menu di sidebar AdminLTE.
+- `[x] T11.3`: Maintenance & Damage Reports (Pemeliharaan & Laporan Kerusakan Sarpras):
+  - Dataset baseline tiket kerusakan dan log servis di [`DemoDataManager.php`](file:///c:/laragon/www/prototipe-alia/app/Support/DemoData/DemoDataManager.php) (`getMaintenanceReports`, `findMaintenanceReport`) mencakup kelistrikan genset, AC split bocor, rembesan plafon gypsum, kran wudhu masjid patah, perbaikan jaring lapangan, lampu sorot LED gerbang.
+  - Controller: [`SarprasController.php`](file:///c:/laragon/www/prototipe-alia/app/Http/Controllers/SarprasController.php) (`pemeliharaan`, `storePemeliharaan`, `updateProgressPemeliharaan`, `destroyPemeliharaan`).
+  - View: [`resources/views/sarpras/pemeliharaan.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/sarpras/pemeliharaan.blade.php) (3 Tab: Buku Tiket Kerusakan & Servis, Tim Teknisi & Vendor Rekanan, Rekapitulasi Biaya & Kategori Servis, 4 info box total tiket/kasus darurat/dalam pengerjaan/selesai, modal lembar kerja SPK servis resmi berkop Alia Islamic School, modal update progres pengerjaan teknisi & realisasi biaya, form laporan kerusakan baru, filter status/prioritas/kategori/search, cetak).
+  - Rute aktif `/sarpras/pemeliharaan`, `/sarpras/pemeliharaan` (POST), `/sarpras/pemeliharaan/{id}/progress` (POST), `/sarpras/pemeliharaan/{id}/destroy`, serta submenu aktif di sidebar.
+
 
 
 

@@ -414,4 +414,228 @@ class SarprasController extends Controller
 
         return redirect()->route('sarpras.peminjaman')->with('info', "Data peminjaman ruangan ID: {$id} berhasil dihapus dari sesi demo.");
     }
+
+    /**
+     * T11.3 - Maintenance & Damage Reports / Pemeliharaan, Laporan Kerusakan & Servis Sarpras
+     */
+    public function pemeliharaan(Request $request)
+    {
+        $demo = DemoDataManager::getInstance();
+        $reports = $demo->getMaintenanceReports();
+        $assets = $demo->getFacilityAssets();
+        $rooms = $demo->getFacilityRooms();
+        $units = $demo->getUnits();
+
+        // Gabungkan seluruh target aset/ruangan yang bisa dilaporkan kerusakannya
+        $reportableAssets = [];
+        foreach ($assets as $a) {
+            $reportableAssets[] = [
+                'id' => $a['id'],
+                'name' => $a['name'],
+                'location' => $a['location'] ?? 'Kampus Alia',
+                'category' => $a['category'] ?? 'umum',
+                'category_label' => $a['category_label'] ?? 'Aset Fisik'
+            ];
+        }
+        foreach ($rooms as $r) {
+            $reportableAssets[] = [
+                'id' => $r['id'],
+                'name' => $r['name'],
+                'location' => $r['location'] ?? 'Kampus Alia',
+                'category' => 'ruangan',
+                'category_label' => 'Ruangan Belajar / Khusus'
+            ];
+        }
+
+        $activeTab = $request->get('tab', 'daftar'); // daftar, teknisi, rekap
+        $statusFilter = $request->get('status', 'all');
+        $priorityFilter = $request->get('priority', 'all');
+        $categoryFilter = $request->get('category', 'all');
+        $search = $request->get('search');
+
+        $filteredReports = array_filter($reports, function ($r) use ($statusFilter, $priorityFilter, $categoryFilter, $search) {
+            $matchStatus = ($statusFilter === 'all') || (($r['status'] ?? '') === $statusFilter);
+            $matchPriority = ($priorityFilter === 'all') || (($r['priority'] ?? '') === $priorityFilter);
+            $matchCategory = ($categoryFilter === 'all') || (($r['category'] ?? '') === $categoryFilter);
+            $matchSearch = true;
+            if ($search) {
+                $matchSearch = stripos($r['title'] ?? '', $search) !== false ||
+                               stripos($r['ticket_code'] ?? '', $search) !== false ||
+                               stripos($r['asset_name'] ?? '', $search) !== false ||
+                               stripos($r['reporter_name'] ?? '', $search) !== false ||
+                               stripos($r['assigned_to'] ?? '', $search) !== false;
+            }
+            return $matchStatus && $matchPriority && $matchCategory && $matchSearch;
+        });
+
+        // Metrik Ringkasan Pemeliharaan
+        $totalReports = count($reports);
+        $totalEmergency = count(array_filter($reports, fn($r) => in_array($r['priority'] ?? '', ['darurat', 'tinggi'])));
+        $totalInProgress = count(array_filter($reports, fn($r) => in_array($r['status'] ?? '', ['disetujui', 'dalam_pengerjaan'])));
+        $totalCompleted = count(array_filter($reports, fn($r) => ($r['status'] ?? '') === 'selesai'));
+        $totalEstimatedCost = array_sum(array_column($reports, 'estimated_cost'));
+        $totalActualCost = array_sum(array_column($reports, 'actual_cost'));
+
+        return view('sarpras.pemeliharaan', compact(
+            'filteredReports',
+            'reports',
+            'reportableAssets',
+            'units',
+            'activeTab',
+            'statusFilter',
+            'priorityFilter',
+            'categoryFilter',
+            'search',
+            'totalReports',
+            'totalEmergency',
+            'totalInProgress',
+            'totalCompleted',
+            'totalEstimatedCost',
+            'totalActualCost'
+        ));
+    }
+
+    /**
+     * Lapor Kerusakan Fasilitas / Buat Tiket Servis Baru
+     */
+    public function storePemeliharaan(Request $request)
+    {
+        $validated = $request->validate([
+            'asset_id' => 'required|string',
+            'title' => 'required|string|max:150',
+            'category' => 'required|in:kelistrikan,sipil_bangunan,ac_pendingin,sanitasi_plumbing,elektronik_it,mebelair',
+            'priority' => 'required|in:darurat,tinggi,sedang,rendah',
+            'report_date' => 'required|date',
+            'reporter_name' => 'required|string|max:100',
+            'reporter_role' => 'required|string|max:100',
+            'unit_id' => 'required|string',
+            'location' => 'required|string|max:150',
+            'description' => 'required|string|max:500',
+            'assigned_to' => 'nullable|string|max:100',
+            'estimated_cost' => 'nullable|numeric|min:0',
+        ]);
+
+        $categoryLabels = [
+            'kelistrikan' => 'Kelistrikan & Penerangan',
+            'sipil_bangunan' => 'Sipil & Konstruksi Gedung',
+            'ac_pendingin' => 'Tata Udara & AC',
+            'sanitasi_plumbing' => 'Sanitasi & Plumbing',
+            'elektronik_it' => 'Elektronik & Perangkat IT',
+            'mebelair' => 'Mebelair & Sarana Kampus'
+        ];
+
+        $demo = DemoDataManager::getInstance();
+        $assets = $demo->getFacilityAssets();
+        $rooms = $demo->getFacilityRooms();
+
+        $assetName = 'Aset Fasilitas';
+        foreach ($assets as $a) {
+            if ($a['id'] === $validated['asset_id']) {
+                $assetName = $a['name'];
+                break;
+            }
+        }
+        if ($assetName === 'Aset Fasilitas') {
+            foreach ($rooms as $r) {
+                if ($r['id'] === $validated['asset_id']) {
+                    $assetName = $r['name'];
+                    break;
+                }
+            }
+        }
+
+        $allReports = $demo->getMaintenanceReports();
+        $count = count($allReports) + 1;
+        $ticketCode = "TIKET/MNT/" . date('Y') . "/" . str_pad($count, 3, '0', STR_PAD_LEFT);
+
+        $hasAssigned = !empty($validated['assigned_to']);
+
+        $newReport = [
+            'id' => 'MNT-' . str_pad($count, 3, '0', STR_PAD_LEFT),
+            'ticket_code' => $ticketCode,
+            'title' => $validated['title'],
+            'asset_id' => $validated['asset_id'],
+            'asset_name' => $assetName,
+            'location' => $validated['location'],
+            'category' => $validated['category'],
+            'category_label' => $categoryLabels[$validated['category']] ?? 'Pemeliharaan',
+            'priority' => $validated['priority'],
+            'report_date' => $validated['report_date'],
+            'reporter_name' => $validated['reporter_name'],
+            'reporter_role' => $validated['reporter_role'],
+            'unit_id' => $validated['unit_id'],
+            'description' => $validated['description'],
+            'assigned_to' => $validated['assigned_to'] ?: null,
+            'assigned_type' => 'internal',
+            'vendor_name' => null,
+            'estimated_cost' => (float)($validated['estimated_cost'] ?? 0),
+            'actual_cost' => 0,
+            'progress' => $hasAssigned ? 20 : 0,
+            'status' => $hasAssigned ? 'disetujui' : 'dilaporkan',
+            'started_at' => $hasAssigned ? date('Y-m-d H:i:s') : null,
+            'completed_at' => null,
+            'resolution_notes' => $hasAssigned ? 'Laporan diterima dan teknisi telah ditugaskan untuk investigasi lapangan.' : 'Laporan baru menunggu verifikasi koordinator sarpras.'
+        ];
+
+        $sessionAdded = session('demo_maintenance_reports_added', []);
+        $sessionAdded[] = $newReport;
+        session(['demo_maintenance_reports_added' => $sessionAdded]);
+
+        return redirect()->route('sarpras.pemeliharaan')->with('success', "Tiket laporan kerusakan \"{$newReport['title']}\" ({$ticketCode}) berhasil dibuat!");
+    }
+
+    /**
+     * Update Status Progres Pengerjaan / Tindakan Servis
+     */
+    public function updateProgressPemeliharaan(Request $request, string $id)
+    {
+        $validated = $request->validate([
+            'status' => 'required|in:disetujui,dalam_pengerjaan,selesai,ditunda',
+            'progress' => 'required|numeric|min:0|max:100',
+            'assigned_to' => 'nullable|string|max:100',
+            'actual_cost' => 'nullable|numeric|min:0',
+            'resolution_notes' => 'required|string|max:500',
+        ]);
+
+        $sessionUpdated = session('demo_maintenance_reports_updated', []);
+        $existing = $sessionUpdated[$id] ?? [];
+
+        $updateData = [
+            'status' => $validated['status'],
+            'progress' => (int)$validated['progress'],
+            'resolution_notes' => $validated['resolution_notes'],
+        ];
+
+        if (!empty($validated['assigned_to'])) {
+            $updateData['assigned_to'] = $validated['assigned_to'];
+        }
+        if (isset($validated['actual_cost'])) {
+            $updateData['actual_cost'] = (float)$validated['actual_cost'];
+        }
+        if ($validated['status'] === 'selesai') {
+            $updateData['progress'] = 100;
+            $updateData['completed_at'] = date('Y-m-d H:i:s');
+        } elseif ($validated['status'] === 'dalam_pengerjaan' && empty($existing['started_at'])) {
+            $updateData['started_at'] = date('Y-m-d H:i:s');
+        }
+
+        $sessionUpdated[$id] = array_merge($existing, $updateData);
+        session(['demo_maintenance_reports_updated' => $sessionUpdated]);
+
+        return redirect()->route('sarpras.pemeliharaan')->with('success', "Progres perbaikan tiket {$id} berhasil diperbarui (Status: " . strtoupper($validated['status']) . ")!");
+    }
+
+    /**
+     * Hapus Laporan Pemeliharaan dari Sesi Demo
+     */
+    public function destroyPemeliharaan(string $id)
+    {
+        $sessionDeleted = session('demo_maintenance_reports_deleted', []);
+        if (!in_array($id, $sessionDeleted)) {
+            $sessionDeleted[] = $id;
+            session(['demo_maintenance_reports_deleted' => $sessionDeleted]);
+        }
+
+        return redirect()->route('sarpras.pemeliharaan')->with('info', "Tiket laporan perbaikan ID: {$id} berhasil dihapus dari sesi demo.");
+    }
 }
