@@ -10,9 +10,9 @@ Catatan pemantauan progres implementasi prototipe Alia Islamic School.
 - **Batch Aktif**: Batch E (Boarding, Finance, HRIS)
 - **Batch Aktif**: Batch F (Facilities, Inventory, Portals)
 - **Task Terakhir Selesai**:
-  - `T15.1 - T15.8`: Report Center & Ekspor Laporan (Executive Report Center: Banner Eksekutif, 4 Stat Card Metrik Konsolidasi, 6 Tab Laporan Terpadu: Akademik Santri, Seleksi PPDB, Keuangan SPP & Kas, SDM Guru HRIS, Tahfidz Al-Quran & Asrama, Sarpras & Aset Logistik, Simulasi Ekspor Excel/Spreadsheet, serta Halaman Cetak Dokumen Eksekutif Berkop Yayasan Airis).
-  - **Fase 15 (Report Center & Ekspor Laporan) RESMI 100% SELESAI.**
-- **Task Selanjutnya**: `T16.1 - T16.5`: Settings & Demo Management (Profil Institusi Sekolah, Pengaturan Unit & Tahun Ajaran, Switcher Role Pengguna Demo, Preferensi Notifikasi, & Aksi Reset Data Sesi Demo).
+  - `T16.1 - T16.5`: Settings & Demo Management (Profil Institusi Yayasan Airis & Alia Islamic School, Struktur Unit SD/SMP/SMA & Kalender Tahun Ajaran Aktif, Multi-role Switcher 6 Peran Demo, Konfigurasi Notifikasi WhatsApp/Email Gateway, & Aksi Reset Data Bersih).
+  - **Batch G (Fase 14 AI Assistant, Fase 15 Report Center, & Fase 16 Settings) RESMI 100% SELESAI.**
+- **Task Selanjutnya**: `T17.1 - T17.9`: Batch H — Final Quality Assurance (Audit Rute & Navigasi, Form Audit, Tabel & Filter, Alur Cross-Module Terpadu, Konsistensi AdminLTE 2 Bootstrap 3, & Uji Kelayakan Demo Pimpinan).
 
 ---
 
@@ -310,6 +310,12 @@ Catatan pemantauan progres implementasi prototipe Alia Islamic School.
     - [`resources/views/laporan/print.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/laporan/print.blade.php) (Format cetak dokumen resmi berkop Yayasan Airis dan Alia Islamic School lengkap dengan tabel data dan lembar tanda tangan Ketua Yayasan & Direktur Pendidikan).
   - Rute aktif `/laporan`, `/laporan/cetak/{module}`, serta update menu navigasi di sidebar AdminLTE.
   - **Fase 15 (Report Center & Ekspor Laporan) RESMI 100% SELESAI.**
+- `[x] T16.1 - T16.5`: Settings & Demo Management:
+  - Controller baru: [`SettingsController.php`](file:///c:/laragon/www/prototipe-alia/app/Http/Controllers/SettingsController.php) (`index`, `updateInstitution`, `updateNotifications`, `profile`) yang mengelola legalitas profil yayasan, konfigurasi multi-unit, tahun ajaran aktif, dan gateway notifikasi.
+  - Pembaruan [`DemoController.php`](file:///c:/laragon/www/prototipe-alia/app/Http/Controllers/DemoController.php) (`switchRole`, `resetDemo`) dengan dukungan 6 peran demo interaktif dan pembersihan menyeluruh ke dataset baseline.
+  - View: [`resources/views/settings/index.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/settings/index.blade.php) (5 Tab: Profil & Visi Legalitas Lembaga, Struktur Unit & Kalender TA, Multi-role Switcher kartu 6 peran pengguna demo, Checklist preferensi WhatsApp/Email, serta tombol aksi Reset Demo Bersih).
+  - Rute aktif `/settings`, `/settings/institution` (POST), `/settings/notifications` (POST), `/settings/profile`, `/demo/switch-role/{role}`, `/demo/reset`.
+  - **Batch G (Fase 14, 15, dan 16) RESMI 100% SELESAI.**
 
 
 

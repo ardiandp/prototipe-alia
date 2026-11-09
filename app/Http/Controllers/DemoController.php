@@ -68,7 +68,15 @@ class DemoController extends Controller
             'demo_invoices_paid',
             'demo_leave_requests',
             'demo_grades',
-            'demo_attendance'
+            'demo_attendance',
+            'demo_stock_receipts_added',
+            'demo_stock_issues_added',
+            'demo_inventory_items_updated',
+            'demo_inventory_procurements_added',
+            'demo_inventory_maintenances_added',
+            'demo_ai_chat_messages',
+            'demo_settings_institution',
+            'demo_settings_notifications'
         ]);
 
         // Re-set default identity

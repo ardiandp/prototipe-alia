@@ -127,11 +127,11 @@ update `docs/PROGRESS.md`, report changed files and blockers, then stop.
 -   [x] T15.6 Tahfidz/boarding reports.
 -   [x] T15.7 Inventory/facility reports.
 -   [x] T15.8 Export/print.
--   [ ] T16.1 Institution profile.
--   [ ] T16.2 Unit/year settings.
--   [ ] T16.3 Demo role switcher.
--   [ ] T16.4 Notification preferences.
--   [ ] T16.5 Demo data reset.
+-   [x] T16.1 Institution profile.
+-   [x] T16.2 Unit/year settings.
+-   [x] T16.3 Demo role switcher.
+-   [x] T16.4 Notification preferences.
+-   [x] T16.5 Demo data reset.
 
 ## Batch H --- Final QA
 

@@ -17,6 +17,7 @@ use App\Http\Controllers\InventarisController;
 use App\Http\Controllers\PortalController;
 use App\Http\Controllers\AiAssistantController;
 use App\Http\Controllers\ReportCenterController;
+use App\Http\Controllers\SettingsController;
 
 // Helper untuk route placeholder view
 function makePlaceholder($title, $subtitle, $icon = 'fa-cube') {
@@ -330,6 +331,8 @@ Route::prefix('laporan')->name('laporan.')->group(function () {
 });
 
 Route::prefix('settings')->name('settings.')->group(function () {
-    Route::get('/', makePlaceholder('Pengaturan Sistem', 'Identitas Sekolah & Konfigurasi Prototype', 'fa-cogs'))->name('index');
-    Route::get('/profile', makePlaceholder('Profil Akun', 'Informasi Pengguna Demo', 'fa-user'))->name('profile');
+    Route::get('/', [SettingsController::class, 'index'])->name('index');
+    Route::post('/institution', [SettingsController::class, 'updateInstitution'])->name('institution.update');
+    Route::post('/notifications', [SettingsController::class, 'updateNotifications'])->name('notifications.update');
+    Route::get('/profile', [SettingsController::class, 'profile'])->name('profile');
 });
