@@ -208,6 +208,15 @@
               </thead>
               <tbody>
                 @forelse($filteredStaff as $index => $staff)
+                  @php
+                    $uName = 'Yayasan / Lintas Unit';
+                    foreach($units as $u) {
+                      if ($u['id'] === ($staff['unit_id'] ?? '')) {
+                        $uName = $u['name'];
+                        break;
+                      }
+                    }
+                  @endphp
                   <tr>
                     <td class="text-center" style="vertical-align: middle;">{{ $loop->iteration }}</td>
                     <td style="vertical-align: middle;">
@@ -236,15 +245,6 @@
                       <b>{{ $staff['subject'] }}</b>
                     </td>
                     <td style="vertical-align: middle;">
-                      @php
-                        $uName = 'Yayasan / Lintas Unit';
-                        foreach($units as $u) {
-                          if ($u['id'] === ($staff['unit_id'] ?? '')) {
-                            $uName = $u['name'];
-                            break;
-                          }
-                        }
-                      @endphp
                       <span class="label label-default" style="font-size: 11px;">
                         <i class="fa fa-building"></i> {{ $uName }}
                       </span>
@@ -276,153 +276,6 @@
                       </div>
                     </td>
                   </tr>
-
-                  <!-- Modal View Detail Pegawai -->
-                  <div class="modal fade" id="modal-view-{{ $staff['id'] }}" tabindex="-1" role="dialog">
-                    <div class="modal-dialog modal-md" role="document">
-                      <div class="modal-content">
-                        <div class="modal-header" style="background-color: #1a365d; color: #fff;">
-                          <button type="button" class="close" data-dismiss="modal" style="color: #fff; opacity: 0.9;">&times;</button>
-                          <h4 class="modal-title"><i class="fa fa-user"></i> Kartu Profil Pegawai</h4>
-                        </div>
-                        <div class="modal-body">
-                          <div class="text-center" style="margin-bottom: 20px;">
-                            <img src="{{ asset('adminlte/dist/img/' . ($staff['avatar'] ?? ($staff['gender'] === 'L' ? 'avatar5.png' : 'avatar3.png'))) }}" class="img-circle" style="width: 80px; height: 80px; object-fit: cover; border: 3px solid #2b6cb0;" alt="{{ $staff['name'] }}">
-                            <h3 style="margin-top: 10px; margin-bottom: 2px; color: #1a365d;"><b>{{ $staff['name'] }}</b></h3>
-                            <p class="text-muted"><i class="fa fa-id-badge"></i> {{ $staff['position'] }} &bull; {{ $staff['employment_status'] }}</p>
-                          </div>
-
-                          <table class="table table-bordered table-striped">
-                            <tr>
-                              <th style="width: 35%; background: #f9f9f9;">Nomor Induk Pegawai (NIP)</th>
-                              <td><b>{{ $staff['nip'] ?? '-' }}</b></td>
-                            </tr>
-                            <tr>
-                              <th style="background: #f9f9f9;">ID Sistem</th>
-                              <td><code>{{ $staff['id'] }}</code></td>
-                            </tr>
-                            <tr>
-                              <th style="background: #f9f9f9;">Jenis Kelamin</th>
-                              <td>{{ ($staff['gender'] ?? 'L') === 'L' ? 'Laki-laki (Ikhwan)' : 'Perempuan (Akhwat)' }}</td>
-                            </tr>
-                            <tr>
-                              <th style="background: #f9f9f9;">Bidang / Mata Pelajaran</th>
-                              <td>{{ $staff['subject'] }}</td>
-                            </tr>
-                            <tr>
-                              <th style="background: #f9f9f9;">Pendidikan Terakhir</th>
-                              <td>{{ $staff['education'] ?? 'S1 / S2 Pendidikan' }}</td>
-                            </tr>
-                            <tr>
-                              <th style="background: #f9f9f9;">Penempatan Unit</th>
-                              <td>{{ $uName }}</td>
-                            </tr>
-                            <tr>
-                              <th style="background: #f9f9f9;">Nomor Telepon / WhatsApp</th>
-                              <td><i class="fa fa-whatsapp text-green"></i> {{ $staff['phone'] ?? '-' }}</td>
-                            </tr>
-                            <tr>
-                              <th style="background: #f9f9f9;">Email Resmi</th>
-                              <td><i class="fa fa-envelope text-blue"></i> {{ $staff['email'] ?? '-' }}</td>
-                            </tr>
-                            <tr>
-                              <th style="background: #f9f9f9;">Status Keaktifan</th>
-                              <td><span class="label label-success"><i class="fa fa-check"></i> Aktif Bertugas</span></td>
-                            </tr>
-                          </table>
-                        </div>
-                        <div class="modal-footer">
-                          <button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
-                          <button type="button" class="btn btn-primary" onclick="window.print()"><i class="fa fa-print"></i> Cetak Kartu Profil</button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Modal Edit Pegawai -->
-                  <div class="modal fade" id="modal-edit-{{ $staff['id'] }}" tabindex="-1" role="dialog">
-                    <div class="modal-dialog modal-lg" role="document">
-                      <div class="modal-content">
-                        <form action="{{ route('hris.pegawai.update', $staff['id']) }}" method="POST">
-                          @csrf
-                          <div class="modal-header" style="background-color: #2b6cb0; color: #fff;">
-                            <button type="button" class="close" data-dismiss="modal" style="color: #fff; opacity: 0.9;">&times;</button>
-                            <h4 class="modal-title"><i class="fa fa-pencil-square-o"></i> Edit Profil Pegawai - {{ $staff['name'] }}</h4>
-                          </div>
-                          <div class="modal-body">
-                            <div class="row">
-                              <div class="col-md-6">
-                                <div class="form-group">
-                                  <label>Nama Lengkap & Gelar <span class="text-danger">*</span></label>
-                                  <input type="text" name="name" class="form-control" value="{{ $staff['name'] }}" required>
-                                </div>
-                                <div class="form-group">
-                                  <label>NIP (Nomor Induk Pegawai) <span class="text-danger">*</span></label>
-                                  <input type="text" name="nip" class="form-control" value="{{ $staff['nip'] ?? '' }}" required>
-                                </div>
-                                <div class="form-group">
-                                  <label>Jenis Kelamin <span class="text-danger">*</span></label>
-                                  <select name="gender" class="form-control" required>
-                                    <option value="L" {{ ($staff['gender'] ?? '') === 'L' ? 'selected' : '' }}>Laki-laki (Ikhwan)</option>
-                                    <option value="P" {{ ($staff['gender'] ?? '') === 'P' ? 'selected' : '' }}>Perempuan (Akhwat)</option>
-                                  </select>
-                                </div>
-                                <div class="form-group">
-                                  <label>Jabatan Organisasi <span class="text-danger">*</span></label>
-                                  <input type="text" name="position" class="form-control" value="{{ $staff['position'] }}" required>
-                                </div>
-                              </div>
-                              <div class="col-md-6">
-                                <div class="form-group">
-                                  <label>Bidang Studi / Mata Pelajaran / Tugas <span class="text-danger">*</span></label>
-                                  <input type="text" name="subject" class="form-control" value="{{ $staff['subject'] }}" required>
-                                </div>
-                                <div class="form-group">
-                                  <label>Status Kepegawaian <span class="text-danger">*</span></label>
-                                  <select name="employment_status" class="form-control" required>
-                                    <option value="Guru Tetap Yayasan (GTY)" {{ ($staff['employment_status'] ?? '') === 'Guru Tetap Yayasan (GTY)' ? 'selected' : '' }}>Guru Tetap Yayasan (GTY)</option>
-                                    <option value="Guru Kontrak" {{ ($staff['employment_status'] ?? '') === 'Guru Kontrak' ? 'selected' : '' }}>Guru Kontrak</option>
-                                    <option value="Tenaga Kependidikan" {{ ($staff['employment_status'] ?? '') === 'Tenaga Kependidikan' ? 'selected' : '' }}>Tenaga Kependidikan</option>
-                                  </select>
-                                </div>
-                                <div class="form-group">
-                                  <label>Penempatan Unit Sekolah <span class="text-danger">*</span></label>
-                                  <select name="unit_id" class="form-control" required>
-                                    @foreach($units as $u)
-                                      <option value="{{ $u['id'] }}" {{ ($staff['unit_id'] ?? '') === $u['id'] ? 'selected' : '' }}>{{ $u['name'] }}</option>
-                                    @endforeach
-                                  </select>
-                                </div>
-                                <div class="row">
-                                  <div class="col-md-6">
-                                    <div class="form-group">
-                                      <label>Nomor Telepon / WA <span class="text-danger">*</span></label>
-                                      <input type="text" name="phone" class="form-control" value="{{ $staff['phone'] ?? '' }}" required>
-                                    </div>
-                                  </div>
-                                  <div class="col-md-6">
-                                    <div class="form-group">
-                                      <label>Pendidikan Terakhir</label>
-                                      <input type="text" name="education" class="form-control" value="{{ $staff['education'] ?? 'S1 Pendidikan' }}">
-                                    </div>
-                                  </div>
-                                </div>
-                                <div class="form-group">
-                                  <label>Email Resmi</label>
-                                  <input type="email" name="email" class="form-control" value="{{ $staff['email'] ?? '' }}">
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Batal</button>
-                            <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Simpan Perubahan</button>
-                          </div>
-                        </form>
-                      </div>
-                    </div>
-                  </div>
-
                 @empty
                   <tr>
                     <td colspan="8" class="text-center" style="padding: 30px;">
@@ -640,6 +493,164 @@
       </div>
     </div>
 
+<!-- Modals Section Placed Outside of Table Structure -->
+@foreach($filteredStaff as $staff)
+  @php
+    $uName = 'Yayasan / Lintas Unit';
+    foreach($units as $u) {
+      if ($u['id'] === ($staff['unit_id'] ?? '')) {
+        $uName = $u['name'];
+        break;
+      }
+    }
+  @endphp
+  <!-- Modal View Detail Pegawai -->
+  <div class="modal fade" id="modal-view-{{ $staff['id'] }}" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-md" role="document">
+      <div class="modal-content">
+        <div class="modal-header" style="background-color: #1a365d; color: #fff;">
+          <button type="button" class="close" data-dismiss="modal" style="color: #fff; opacity: 0.9;">&times;</button>
+          <h4 class="modal-title"><i class="fa fa-user"></i> Kartu Profil Pegawai</h4>
+        </div>
+        <div class="modal-body">
+          <div class="text-center" style="margin-bottom: 20px;">
+            <img src="{{ asset('adminlte/dist/img/' . ($staff['avatar'] ?? ($staff['gender'] === 'L' ? 'avatar5.png' : 'avatar3.png'))) }}" class="img-circle" style="width: 80px; height: 80px; object-fit: cover; border: 3px solid #2b6cb0;" alt="{{ $staff['name'] }}">
+            <h3 style="margin-top: 10px; margin-bottom: 2px; color: #1a365d;"><b>{{ $staff['name'] }}</b></h3>
+            <p class="text-muted"><i class="fa fa-id-badge"></i> {{ $staff['position'] }} &bull; {{ $staff['employment_status'] }}</p>
+          </div>
+
+          <table class="table table-bordered table-striped">
+            <tr>
+              <th style="width: 35%; background: #f9f9f9;">Nomor Induk Pegawai (NIP)</th>
+              <td><b>{{ $staff['nip'] ?? '-' }}</b></td>
+            </tr>
+            <tr>
+              <th style="background: #f9f9f9;">ID Sistem</th>
+              <td><code>{{ $staff['id'] }}</code></td>
+            </tr>
+            <tr>
+              <th style="background: #f9f9f9;">Jenis Kelamin</th>
+              <td>{{ ($staff['gender'] ?? 'L') === 'L' ? 'Laki-laki (Ikhwan)' : 'Perempuan (Akhwat)' }}</td>
+            </tr>
+            <tr>
+              <th style="background: #f9f9f9;">Bidang / Mata Pelajaran</th>
+              <td>{{ $staff['subject'] }}</td>
+            </tr>
+            <tr>
+              <th style="background: #f9f9f9;">Pendidikan Terakhir</th>
+              <td>{{ $staff['education'] ?? 'S1 / S2 Pendidikan' }}</td>
+            </tr>
+            <tr>
+              <th style="background: #f9f9f9;">Penempatan Unit</th>
+              <td>{{ $uName }}</td>
+            </tr>
+            <tr>
+              <th style="background: #f9f9f9;">Nomor Telepon / WhatsApp</th>
+              <td><i class="fa fa-whatsapp text-green"></i> {{ $staff['phone'] ?? '-' }}</td>
+            </tr>
+            <tr>
+              <th style="background: #f9f9f9;">Email Resmi</th>
+              <td><i class="fa fa-envelope text-blue"></i> {{ $staff['email'] ?? '-' }}</td>
+            </tr>
+            <tr>
+              <th style="background: #f9f9f9;">Status Keaktifan</th>
+              <td><span class="label label-success"><i class="fa fa-check"></i> Aktif Bertugas</span></td>
+            </tr>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
+          <button type="button" class="btn btn-primary" onclick="window.print()"><i class="fa fa-print"></i> Cetak Kartu Profil</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Edit Pegawai -->
+  <div class="modal fade" id="modal-edit-{{ $staff['id'] }}" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form action="{{ route('hris.pegawai.update', $staff['id']) }}" method="POST">
+          @csrf
+          <div class="modal-header" style="background-color: #2b6cb0; color: #fff;">
+            <button type="button" class="close" data-dismiss="modal" style="color: #fff; opacity: 0.9;">&times;</button>
+            <h4 class="modal-title"><i class="fa fa-pencil-square-o"></i> Edit Profil Pegawai - {{ $staff['name'] }}</h4>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>Nama Lengkap & Gelar <span class="text-danger">*</span></label>
+                  <input type="text" name="name" class="form-control" value="{{ $staff['name'] }}" required>
+                </div>
+                <div class="form-group">
+                  <label>NIP (Nomor Induk Pegawai) <span class="text-danger">*</span></label>
+                  <input type="text" name="nip" class="form-control" value="{{ $staff['nip'] ?? '' }}" required>
+                </div>
+                <div class="form-group">
+                  <label>Jenis Kelamin <span class="text-danger">*</span></label>
+                  <select name="gender" class="form-control" required>
+                    <option value="L" {{ ($staff['gender'] ?? '') === 'L' ? 'selected' : '' }}>Laki-laki (Ikhwan)</option>
+                    <option value="P" {{ ($staff['gender'] ?? '') === 'P' ? 'selected' : '' }}>Perempuan (Akhwat)</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Jabatan Organisasi <span class="text-danger">*</span></label>
+                  <input type="text" name="position" class="form-control" value="{{ $staff['position'] }}" required>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>Bidang Studi / Mata Pelajaran / Tugas <span class="text-danger">*</span></label>
+                  <input type="text" name="subject" class="form-control" value="{{ $staff['subject'] }}" required>
+                </div>
+                <div class="form-group">
+                  <label>Status Kepegawaian <span class="text-danger">*</span></label>
+                  <select name="employment_status" class="form-control" required>
+                    <option value="Guru Tetap Yayasan (GTY)" {{ ($staff['employment_status'] ?? '') === 'Guru Tetap Yayasan (GTY)' ? 'selected' : '' }}>Guru Tetap Yayasan (GTY)</option>
+                    <option value="Guru Kontrak" {{ ($staff['employment_status'] ?? '') === 'Guru Kontrak' ? 'selected' : '' }}>Guru Kontrak</option>
+                    <option value="Tenaga Kependidikan" {{ ($staff['employment_status'] ?? '') === 'Tenaga Kependidikan' ? 'selected' : '' }}>Tenaga Kependidikan</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Penempatan Unit Sekolah <span class="text-danger">*</span></label>
+                  <select name="unit_id" class="form-control" required>
+                    @foreach($units as $u)
+                      <option value="{{ $u['id'] }}" {{ ($staff['unit_id'] ?? '') === $u['id'] ? 'selected' : '' }}>{{ $u['name'] }}</option>
+                    @endforeach
+                  </select>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Nomor Telepon / WA <span class="text-danger">*</span></label>
+                      <input type="text" name="phone" class="form-control" value="{{ $staff['phone'] ?? '' }}" required>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Pendidikan Terakhir</label>
+                      <input type="text" name="education" class="form-control" value="{{ $staff['education'] ?? 'S1 Pendidikan' }}">
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Email Resmi</label>
+                  <input type="email" name="email" class="form-control" value="{{ $staff['email'] ?? '' }}">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Batal</button>
+            <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Simpan Perubahan</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+@endforeach
+
 <!-- Modal Tambah Pegawai Baru -->
 <div class="modal fade" id="modal-add-staff" tabindex="-1" role="dialog">
   <div class="modal-dialog modal-lg" role="document">
@@ -725,4 +736,3 @@
   </div>
 </div>
 @endsection
-
