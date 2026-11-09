@@ -116,9 +116,9 @@ update `docs/PROGRESS.md`, report changed files and blockers, then stop.
 
 ## Batch G --- AI demo, reports, settings
 
--   [ ] T14.1 Chat interface.
--   [ ] T14.2 Predefined demo responses.
--   [ ] T14.3 Shared-data responses.
+-   [x] T14.1 Chat interface.
+-   [x] T14.2 Predefined demo responses.
+-   [x] T14.3 Shared-data responses.
 -   [ ] T15.1 Report center.
 -   [ ] T15.2 Academic reports.
 -   [ ] T15.3 PPDB reports.

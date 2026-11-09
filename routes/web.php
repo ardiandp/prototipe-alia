@@ -15,6 +15,7 @@ use App\Http\Controllers\HrisController;
 use App\Http\Controllers\SarprasController;
 use App\Http\Controllers\InventarisController;
 use App\Http\Controllers\PortalController;
+use App\Http\Controllers\AiAssistantController;
 
 // Helper untuk route placeholder view
 function makePlaceholder($title, $subtitle, $icon = 'fa-cube') {
@@ -316,7 +317,11 @@ Route::prefix('portal')->name('portal.')->group(function () {
 });
 
 // AI Assistant & Laporan & Pengaturan
-Route::get('/ai-assistant', makePlaceholder('AI School Assistant Demo', 'Asisten Cerdas Analisis Data Sekolah', 'fa-magic'))->name('ai.assistant');
+Route::prefix('ai-assistant')->name('ai.')->group(function () {
+    Route::get('/', [AiAssistantController::class, 'index'])->name('assistant');
+    Route::post('/send', [AiAssistantController::class, 'send'])->name('assistant.send');
+    Route::get('/reset', [AiAssistantController::class, 'resetChat'])->name('assistant.reset');
+});
 Route::get('/laporan', makePlaceholder('Pusat Laporan & Ekspor', 'Ekspor Data Rekapitulasi Sekolah', 'fa-file-pdf-o'))->name('laporan.index');
 
 Route::prefix('settings')->name('settings.')->group(function () {
