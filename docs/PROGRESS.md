@@ -9,8 +9,8 @@ Catatan pemantauan progres implementasi prototipe Alia Islamic School.
 - **Batch Aktif**: Batch D (Learning, Islamic Programs, Student Affairs)
 - **Batch Aktif**: Batch E (Boarding, Finance, HRIS)
 - **Task Terakhir Selesai**:
-  - `T09.7`: Cash in/out (Keuangan: Manajemen Arus Kas Masuk & Kas Keluar Operasional, Buku Kas Umum / Jurnal Mutasi Kas Terintegrasi, Pos Belanja Dapur/Listrik/ATK/Honorarium, Modal Bukti Voucher Kas Masuk BKM & Kas Keluar BKK, Form Input Kas Keluar Baru, dan Format Cetak Buku Kas).
-- **Task Selanjutnya**: `T09.8`: Finance reports (Keuangan: Laporan Keuangan Komprehensif, Laporan Penerimaan SPP & Piutang, Laporan Realisasi Anggaran Operasional, Neraca Kas, dan Ekspor Laporan).
+  - `T09.8`: Finance reports (Keuangan: Laporan Keuangan Komprehensif, Rekap Penerimaan SPP & Pos Biaya, Laporan Piutang & Aging Tunggakan, Arus Kas Masuk/Keluar, Ringkasan Kinerja Keuangan per Unit Pendidikan, Metrik KPI Finansial, dan Format Cetak Laporan).
+- **Task Selanjutnya**: `T10.1`: Employee profiles/organization (SDM/HRIS: Profil Pegawai, Struktur Organisasi, Departemen/Unit, Jabatan, Status Kepegawaian, dan Form Tambah/Edit Pegawai).
 
 ---
 
@@ -192,6 +192,11 @@ Catatan pemantauan progres implementasi prototipe Alia Islamic School.
   - Controller: [`KeuanganController.php`](file:///c:/laragon/www/prototipe-alia/app/Http/Controllers/KeuanganController.php) (`arusKas`, `storeArusKas`, `destroyArusKas`).
   - View: [`resources/views/keuangan/arus-kas.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/keuangan/arus-kas.blade.php) (Tabel jurnal buku kas umum integrasi debit/kredit, 4 info box total kas masuk/keluar/saldo/mutasi, modal pencatatan pengeluaran baru berbasis sesi, modal cetak bukti voucher kas masuk BKM & keluar BKK, filter aliran kas/kategori/bulan/search, cetak buku kas).
   - Rute aktif `/keuangan/arus-kas`, `/keuangan/arus-kas` (POST), `/keuangan/arus-kas/{id}/destroy`, serta penambahan sub-menu di sidebar.
+- `[x] T09.8`: Finance Reports (Laporan Keuangan Komprehensif):
+  - Controller: [`KeuanganController.php`](file:///c:/laragon/www/prototipe-alia/app/Http/Controllers/KeuanganController.php) (`laporan`).
+  - View: [`resources/views/keuangan/laporan.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/keuangan/laporan.blade.php) (4 Tab: Rekap Penerimaan SPP & Pos Biaya, Laporan Piutang & Aging Tunggakan, Arus Kas / Cash Flow In/Out, Ringkasan Kinerja per Unit Pendidikan, 4 KPI info box Finansial, filter unit pendidikan & periode bulan, tombol ekspor cetak/PDF/Excel simulasi).
+  - Rute aktif `/keuangan/laporan` dan sub-menu di sidebar AdminLTE.
+
 
 
 

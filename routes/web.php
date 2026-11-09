@@ -224,7 +224,7 @@ Route::prefix('keuangan')->name('keuangan.')->group(function () {
     Route::get('/arus-kas', [KeuanganController::class, 'arusKas'])->name('arus-kas');
     Route::post('/arus-kas', [KeuanganController::class, 'storeArusKas'])->name('arus-kas.store');
     Route::get('/arus-kas/{id}/destroy', [KeuanganController::class, 'destroyArusKas'])->name('arus-kas.destroy');
-    Route::get('/laporan', makePlaceholder('Laporan Keuangan', 'Laporan Penerimaan & Tunggakan', 'fa-balance-scale'))->name('laporan');
+    Route::get('/laporan', [KeuanganController::class, 'laporan'])->name('laporan');
 });
 
 // SDM / HRIS

@@ -84,7 +84,7 @@ update `docs/PROGRESS.md`, report changed files and blockers, then stop.
 -   [x] T09.5 Scholarship/discount.
 -   [x] T09.6 Arrears.
 -   [x] T09.7 Cash in/out.
--   [ ] T09.8 Finance reports.
+-   [x] T09.8 Finance reports.
 -   [ ] T10.1 Employee profiles/organization.
 -   [ ] T10.2 Staff attendance.
 -   [ ] T10.3 Leave/permission.

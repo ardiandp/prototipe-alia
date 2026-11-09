@@ -1243,4 +1243,185 @@ class KeuanganController extends Controller
         return redirect()->route('keuangan.arus-kas')
             ->with('success', "Catatan pengeluaran [{$exp['title']}] berhasil dibatalkan dari buku kas.");
     }
+
+    /**
+     * T09.8 — Finance Reports (Laporan Keuangan Komprehensif)
+     */
+    public function laporan(Request $request)
+    {
+        $demo = DemoDataManager::getInstance();
+
+        $units = $demo->getUnits();
+        $classes = $demo->getClasses();
+        $students = $demo->getStudents();
+        $invoices = $demo->getStudentInvoices();
+        $transactions = $demo->getPaymentTransactions();
+        $expenses = $demo->getFinanceExpenses();
+        $feeCategories = $demo->getFeeCategories();
+        $scholarships = $demo->getScholarships();
+
+        // Active tab: 'penerimaan', 'tunggakan', 'arus_kas', 'unit'
+        $activeTab = $request->query('tab', 'penerimaan');
+        $unitFilter = $request->query('unit_id');
+        $periodFilter = $request->query('period', '2026-11'); // YYYY-MM
+
+        // Maps
+        $studentMap = [];
+        foreach ($students as $s) {
+            $studentMap[$s['id']] = $s;
+        }
+
+        $classMap = [];
+        foreach ($classes as $c) {
+            $classMap[$c['id']] = $c;
+        }
+
+        $unitMap = [];
+        foreach ($units as $u) {
+            $unitMap[$u['id']] = $u;
+        }
+
+        // 1. Rekap Penerimaan SPP & Pembayaran (Collections)
+        $collectionsReport = [];
+        foreach ($transactions as $trx) {
+            $st = $studentMap[$trx['student_id']] ?? null;
+            if ($unitFilter && ($st['unit_id'] ?? '') !== $unitFilter) {
+                continue;
+            }
+            if ($periodFilter && !str_starts_with($trx['payment_date'], $periodFilter)) {
+                continue;
+            }
+            $collectionsReport[] = array_merge($trx, [
+                'student_name' => $st['name'] ?? 'Santri',
+                'nisn' => $st['nisn'] ?? ($st['nis'] ?? '-'),
+                'class_name' => $st ? ($classMap[$st['class_id']]['name'] ?? '-') : '-',
+                'unit_id' => $st['unit_id'] ?? '-'
+            ]);
+        }
+
+        // 2. Rekap Piutang & Tunggakan (Arrears Summary)
+        $arrearsReport = [];
+        foreach ($invoices as $inv) {
+            if (!in_array($inv['status'], ['belum_lunas', 'jatuh_tempo', 'sebagian'])) {
+                continue;
+            }
+            $st = $studentMap[$inv['student_id']] ?? null;
+            if ($unitFilter && ($inv['unit_id'] ?? '') !== $unitFilter) {
+                continue;
+            }
+            if ($periodFilter && ($inv['period_month'] ?? '') !== $periodFilter) {
+                continue;
+            }
+            $sisa = $inv['amount'] - ($inv['paid_amount'] ?? 0);
+            $arrearsReport[] = array_merge($inv, [
+                'student_name' => $st['name'] ?? 'Santri',
+                'nisn' => $st['nisn'] ?? ($st['nis'] ?? '-'),
+                'class_name' => $st ? ($classMap[$st['class_id']]['name'] ?? '-') : '-',
+                'unpaid_amount' => $sisa,
+                'guardian_name' => $st['guardian_name'] ?? '-',
+                'guardian_phone' => $st['guardian_phone'] ?? '-'
+            ]);
+        }
+
+        // 3. Rekap Arus Kas (Cash Flow In/Out)
+        $cashFlowReport = [];
+        $totalDebit = 0;
+        $totalKredit = 0;
+
+        foreach ($transactions as $trx) {
+            if ($periodFilter && !str_starts_with($trx['payment_date'], $periodFilter)) {
+                continue;
+            }
+            $st = $studentMap[$trx['student_id']] ?? null;
+            if ($unitFilter && ($st['unit_id'] ?? '') !== $unitFilter) {
+                continue;
+            }
+            $totalDebit += (int)$trx['amount'];
+            $cashFlowReport[] = [
+                'date' => substr($trx['payment_date'], 0, 10),
+                'ref' => $trx['receipt_number'],
+                'type' => 'in',
+                'title' => 'Penerimaan Kasir — ' . ($st['name'] ?? 'Santri'),
+                'category' => 'Penerimaan Siswa',
+                'debit' => (int)$trx['amount'],
+                'kredit' => 0
+            ];
+        }
+
+        foreach ($expenses as $exp) {
+            if ($periodFilter && !str_starts_with($exp['date'], $periodFilter)) {
+                continue;
+            }
+            if ($unitFilter && ($exp['unit_id'] ?? '') !== $unitFilter && ($exp['unit_id'] ?? '') !== 'ALL') {
+                continue;
+            }
+            $totalKredit += (int)$exp['amount'];
+            $cashFlowReport[] = [
+                'date' => $exp['date'],
+                'ref' => $exp['id'],
+                'type' => 'out',
+                'title' => $exp['title'],
+                'category' => $exp['category'],
+                'debit' => 0,
+                'kredit' => (int)$exp['amount']
+            ];
+        }
+
+        usort($cashFlowReport, function ($a, $b) {
+            return strcmp($b['date'], $a['date']);
+        });
+
+        // 4. Rekapitulasi per Unit Pendidikan (Unit Summaries)
+        $unitSummaries = [];
+        foreach ($units as $u) {
+            $uId = $u['id'];
+            $uInvoices = array_filter($invoices, fn($i) => ($i['unit_id'] ?? '') === $uId);
+            $uTarget = array_sum(array_column($uInvoices, 'amount'));
+
+            $uCollections = 0;
+            foreach ($transactions as $trx) {
+                $st = $studentMap[$trx['student_id']] ?? null;
+                if (($st['unit_id'] ?? '') === $uId) {
+                    $uCollections += (int)$trx['amount'];
+                }
+            }
+
+            $uArrears = 0;
+            foreach ($uInvoices as $ui) {
+                if (in_array($ui['status'], ['belum_lunas', 'jatuh_tempo', 'sebagian'])) {
+                    $uArrears += ($ui['amount'] - ($ui['paid_amount'] ?? 0));
+                }
+            }
+
+            $unitSummaries[] = [
+                'unit_id' => $uId,
+                'unit_name' => $u['name'],
+                'target' => $uTarget,
+                'collected' => $uCollections,
+                'arrears' => $uArrears,
+                'rate' => $uTarget > 0 ? round(($uCollections / $uTarget) * 100, 1) : 0
+            ];
+        }
+
+        // Global KPI Metrik
+        $totalRevenue = array_sum(array_column($collectionsReport, 'amount'));
+        $totalOutstanding = array_sum(array_column($arrearsReport, 'unpaid_amount'));
+        $netOperatingCash = $totalDebit - $totalKredit;
+
+        return view('keuangan.laporan', compact(
+            'units',
+            'activeTab',
+            'unitFilter',
+            'periodFilter',
+            'collectionsReport',
+            'arrearsReport',
+            'cashFlowReport',
+            'unitSummaries',
+            'totalRevenue',
+            'totalOutstanding',
+            'totalDebit',
+            'totalKredit',
+            'netOperatingCash'
+        ));
+    }
 }
