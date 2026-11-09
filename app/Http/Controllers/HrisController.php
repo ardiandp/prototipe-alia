@@ -355,5 +355,194 @@ class HrisController extends Controller
 
         return redirect()->route('hris.presensi')->with('info', "Catatan presensi ID: {$id} berhasil dihapus dari sesi demo.");
     }
+
+    /**
+     * T10.3 - Leave & Permission Workflow (Pengajuan & Persetujuan Cuti Pegawai)
+     */
+    public function cuti(Request $request)
+    {
+        $demo = DemoDataManager::getInstance();
+        $teachers = $demo->getTeachers();
+        $leaves = $demo->getStaffLeaves();
+        $units = $demo->getUnits();
+
+        $activeTab = $request->get('tab', 'daftar'); // daftar, ajukan, saldo
+        $statusFilter = $request->get('status', 'all');
+        $typeFilter = $request->get('type', 'all');
+        $unitFilter = $request->get('unit', 'all');
+        $search = $request->get('search');
+
+        // Filter pengajuan cuti
+        $filteredLeaves = array_filter($leaves, function ($l) use ($statusFilter, $typeFilter, $unitFilter, $search) {
+            $matchStatus = ($statusFilter === 'all') || (($l['status'] ?? '') === $statusFilter);
+            $matchType = ($typeFilter === 'all') || (($l['type'] ?? '') === $typeFilter);
+            $matchUnit = ($unitFilter === 'all') || (($l['unit_id'] ?? '') === $unitFilter);
+            $matchSearch = true;
+            if ($search) {
+                $matchSearch = stripos($l['name'], $search) !== false ||
+                               stripos($l['nip'] ?? '', $search) !== false ||
+                               stripos($l['leave_number'] ?? '', $search) !== false ||
+                               stripos($l['type_label'] ?? '', $search) !== false ||
+                               stripos($l['reason'] ?? '', $search) !== false;
+            }
+            return $matchStatus && $matchType && $matchUnit && $matchSearch;
+        });
+
+        // Metrik Ringkasan Cuti
+        $totalPengajuan = count($leaves);
+        $totalDiajukan = count(array_filter($leaves, fn($l) => ($l['status'] ?? '') === 'diajukan'));
+        $totalDisetujui = count(array_filter($leaves, fn($l) => ($l['status'] ?? '') === 'disetujui'));
+        $totalDitolak = count(array_filter($leaves, fn($l) => ($l['status'] ?? '') === 'ditolak'));
+
+        // Saldo Cuti Pegawai (Standar 12 hari/tahun)
+        $leaveBalances = [];
+        foreach ($teachers as $t) {
+            $usedDays = 0;
+            $tApprovedLeaves = array_filter($leaves, fn($l) => ($l['teacher_id'] ?? '') === $t['id'] && in_array($l['status'] ?? '', ['disetujui', 'selesai']));
+            foreach ($tApprovedLeaves as $al) {
+                if (($al['type'] ?? '') === 'tahunan') {
+                    $usedDays += ($al['duration_days'] ?? 0);
+                }
+            }
+            $remaining = max(0, 12 - $usedDays);
+            $leaveBalances[] = [
+                'teacher' => $t,
+                'quota' => 12,
+                'used' => $usedDays,
+                'remaining' => $remaining
+            ];
+        }
+
+        return view('hris.cuti', compact(
+            'filteredLeaves',
+            'leaves',
+            'teachers',
+            'units',
+            'activeTab',
+            'statusFilter',
+            'typeFilter',
+            'unitFilter',
+            'search',
+            'totalPengajuan',
+            'totalDiajukan',
+            'totalDisetujui',
+            'totalDitolak',
+            'leaveBalances'
+        ));
+    }
+
+    /**
+     * Simpan Pengajuan Cuti Baru (Session-based)
+     */
+    public function storeCuti(Request $request)
+    {
+        $validated = $request->validate([
+            'teacher_id' => 'required|string',
+            'type' => 'required|in:tahunan,sakit,melahirkan,umroh_haji,dinas,penting',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+            'reason' => 'required|string|max:500',
+            'substitute_teacher_id' => 'nullable|string',
+            'attachment' => 'nullable|string|max:100',
+        ]);
+
+        $demo = DemoDataManager::getInstance();
+        $teacher = $demo->findTeacher($validated['teacher_id']);
+        if (!$teacher) {
+            return redirect()->back()->withErrors(['teacher_id' => 'Pegawai tidak ditemukan.']);
+        }
+
+        // Hitung durasi hari
+        $start = strtotime($validated['start_date']);
+        $end = strtotime($validated['end_date']);
+        $durationDays = max(1, round(($end - $start) / (60 * 60 * 24)) + 1);
+
+        $substituteName = '-';
+        if (!empty($validated['substitute_teacher_id'])) {
+            $sub = $demo->findTeacher($validated['substitute_teacher_id']);
+            if ($sub) {
+                $substituteName = $sub['name'];
+            }
+        }
+
+        $typeLabels = [
+            'tahunan' => 'Cuti Tahunan',
+            'sakit' => 'Cuti Sakit',
+            'melahirkan' => 'Cuti Bersalin / Melahirkan',
+            'umroh_haji' => 'Cuti Ibadah Umroh / Haji',
+            'dinas' => 'Izin Tugas Kedinasan',
+            'penting' => 'Cuti Alasan Penting'
+        ];
+
+        $count = count($demo->getStaffLeaves()) + 1;
+        $leaveNumber = 'CT/ALIA/2026/XI/' . str_pad($count, 3, '0', STR_PAD_LEFT);
+
+        $newLeave = [
+            'id' => 'CUTI-' . str_pad($count, 3, '0', STR_PAD_LEFT),
+            'leave_number' => $leaveNumber,
+            'teacher_id' => $teacher['id'],
+            'name' => $teacher['name'],
+            'nip' => $teacher['nip'] ?? '-',
+            'unit_id' => $teacher['unit_id'] ?? 'UNIT-SMA',
+            'type' => $validated['type'],
+            'type_label' => $typeLabels[$validated['type']] ?? 'Cuti Kerja',
+            'start_date' => $validated['start_date'],
+            'end_date' => $validated['end_date'],
+            'duration_days' => $durationDays,
+            'reason' => $validated['reason'],
+            'substitute_teacher_id' => $validated['substitute_teacher_id'] ?: null,
+            'substitute_teacher_name' => $substituteName,
+            'attachment' => $validated['attachment'] ?: 'berkas_pengajuan_cuti_' . strtolower($validated['type']) . '.pdf',
+            'status' => 'diajukan',
+            'approver_role' => 'Kepala Sekolah & HRD',
+            'approved_by' => null,
+            'approved_at' => null,
+            'approver_notes' => 'Menunggu review atasan langsung.',
+            'remaining_quota' => 12
+        ];
+
+        $sessionAdded = session('demo_staff_leaves_added', []);
+        $sessionAdded[] = $newLeave;
+        session(['demo_staff_leaves_added' => $sessionAdded]);
+
+        return redirect()->route('hris.cuti')->with('success', "Permohonan cuti no. {$leaveNumber} atas nama {$teacher['name']} berhasil diajukan!");
+    }
+
+    /**
+     * Persetujuan / Penolakan Cuti (Workflow Approval)
+     */
+    public function approveCuti(Request $request, string $id)
+    {
+        $validated = $request->validate([
+            'status' => 'required|in:disetujui,ditolak',
+            'approver_notes' => 'nullable|string|max:255',
+        ]);
+
+        $sessionUpdated = session('demo_staff_leaves_updated', []);
+        $sessionUpdated[$id] = [
+            'status' => $validated['status'],
+            'approved_by' => 'Dr. H. Zulkifli, Lc., M.A. / Kepala Unit',
+            'approved_at' => date('Y-m-d H:i:s'),
+            'approver_notes' => $validated['approver_notes'] ?: ($validated['status'] === 'disetujui' ? 'Permohonan cuti disetujui penuh.' : 'Permohonan cuti belum dapat disetujui.')
+        ];
+        session(['demo_staff_leaves_updated' => $sessionUpdated]);
+
+        $statusText = $validated['status'] === 'disetujui' ? 'disetujui' : 'ditolak';
+        return redirect()->route('hris.cuti')->with('success', "Permohonan cuti (ID: {$id}) telah berhasil {$statusText}!");
+    }
+
+    /**
+     * Hapus Pengajuan Cuti dari Sesi Demo
+     */
+    public function destroyCuti(string $id)
+    {
+        $sessionDeleted = session('demo_staff_leaves_deleted', []);
+        if (!in_array($id, $sessionDeleted)) {
+            $sessionDeleted[] = $id;
+            session(['demo_staff_leaves_deleted' => $sessionDeleted]);
+        }
+
+        return redirect()->route('hris.cuti')->with('info', "Pengajuan cuti ID: {$id} berhasil dibatalkan/dihapus dari sesi demo.");
+    }
 }
 

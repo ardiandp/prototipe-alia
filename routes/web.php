@@ -238,7 +238,10 @@ Route::prefix('hris')->name('hris.')->group(function () {
     Route::post('/presensi', [HrisController::class, 'storePresensi'])->name('presensi.store');
     Route::post('/presensi/quick-present', [HrisController::class, 'markAllPresent'])->name('presensi.quick');
     Route::get('/presensi/{id}/destroy', [HrisController::class, 'destroyPresensi'])->name('presensi.destroy');
-    Route::get('/cuti', makePlaceholder('Pengajuan Cuti / Izin', 'Persetujuan & Riwayat Izin Cuti', 'fa-envelope-open-o'))->name('cuti');
+    Route::get('/cuti', [HrisController::class, 'cuti'])->name('cuti');
+    Route::post('/cuti', [HrisController::class, 'storeCuti'])->name('cuti.store');
+    Route::post('/cuti/{id}/approve', [HrisController::class, 'approveCuti'])->name('cuti.approve');
+    Route::get('/cuti/{id}/destroy', [HrisController::class, 'destroyCuti'])->name('cuti.destroy');
     Route::get('/penggajian', makePlaceholder('Penggajian (Payroll)', 'Slip Gaji & Tunjangan Bulanan', 'fa-money'))->name('penggajian');
 });
 

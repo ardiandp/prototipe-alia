@@ -61,6 +61,7 @@ class DemoDataManager
     private array $financeExpenses = [];
     private array $scholarships = [];
     private array $staffAttendance = [];
+    private array $staffLeaves = [];
 
     public function __construct()
     {
@@ -3752,6 +3753,125 @@ class DemoDataManager
                 'notes' => 'Sakit demam & flu (surat istirahat dokter klinik).'
             ]
         ];
+
+        // 18. Pengajuan Cuti & Izin Pegawai (Staff Leaves & Permissions)
+        $this->staffLeaves = [
+            [
+                'id' => 'CUTI-001',
+                'leave_number' => 'CT/ALIA/2026/XI/001',
+                'teacher_id' => 'GUR-007', // Nurul Hasanah, M.Pd.
+                'name' => 'Nurul Hasanah, M.Pd.',
+                'nip' => '1985162010011007',
+                'unit_id' => 'UNIT-SMA',
+                'type' => 'dinas', // tahunan, sakit, melahirkan, umroh_haji, dinas, penting
+                'type_label' => 'Izin Tugas Kedinasan (PPG Kemdikbud)',
+                'start_date' => '2026-11-09',
+                'end_date' => '2026-11-10',
+                'duration_days' => 2,
+                'reason' => 'Menghadiri Lokakarya Orientasi Program Pendidikan Profesi Guru (PPG) di Balai Diklat Kemdikbudristek.',
+                'substitute_teacher_id' => 'GUR-006', // Budi Santoso
+                'substitute_teacher_name' => 'Budi Santoso, S.Kom.',
+                'attachment' => 'surat_tugas_kemdikbud_ppg.pdf',
+                'status' => 'disetujui', // diajukan, disetujui, ditolak, selesai
+                'approver_role' => 'Kepala Sekolah SMA',
+                'approved_by' => 'Drs. H. Mulyadi, M.Pd.',
+                'approved_at' => '2026-11-08 14:20:00',
+                'approver_notes' => 'Disetujui. Tugas mengajar Fisika kelas XI MIPA dititipkan modul terstruktur.',
+                'remaining_quota' => 12
+            ],
+            [
+                'id' => 'CUTI-002',
+                'leave_number' => 'CT/ALIA/2026/XI/002',
+                'teacher_id' => 'GUR-012', // Siti Aminah
+                'name' => 'Ustazah Siti Aminah, M.Pd.',
+                'nip' => '1985212010011012',
+                'unit_id' => 'UNIT-SMP',
+                'type' => 'sakit',
+                'type_label' => 'Cuti Sakit Rawat Jalan',
+                'start_date' => '2026-11-09',
+                'end_date' => '2026-11-11',
+                'duration_days' => 3,
+                'reason' => 'Gejala demam berdarah dan flu berat, dianjurkan dokter klinik beristirahat total.',
+                'substitute_teacher_id' => 'GUR-002', // Aisyah Salsabila
+                'substitute_teacher_name' => 'Aisyah Salsabila, S.Pd.I.',
+                'attachment' => 'surat_keterangan_sakit_klinik.pdf',
+                'status' => 'disetujui',
+                'approver_role' => 'Ketua Yayasan',
+                'approved_by' => 'Dr. H. Zulkifli, Lc., M.A.',
+                'approved_at' => '2026-11-09 07:30:00',
+                'approver_notes' => 'Syafakillah, semoga lekas pulih dan sehat wal afiat.',
+                'remaining_quota' => 12
+            ],
+            [
+                'id' => 'CUTI-003',
+                'leave_number' => 'CT/ALIA/2026/XI/003',
+                'teacher_id' => 'GUR-004', // Rahmat Hidayat
+                'name' => 'Rahmat Hidayat, M.Sc.',
+                'nip' => '1985132010011004',
+                'unit_id' => 'UNIT-SMA',
+                'type' => 'umroh_haji',
+                'type_label' => 'Cuti Ibadah Umroh',
+                'start_date' => '2026-11-20',
+                'end_date' => '2026-12-04',
+                'duration_days' => 14,
+                'reason' => 'Menunaikan ibadah Umroh ke Tanah Suci Makkah dan Madinah bersama keluarga.',
+                'substitute_teacher_id' => 'GUR-006',
+                'substitute_teacher_name' => 'Budi Santoso, S.Kom.',
+                'attachment' => 'tiket_dan_visa_umroh_2026.pdf',
+                'status' => 'diajukan',
+                'approver_role' => 'Kepala Sekolah SMA & Yayasan',
+                'approved_by' => null,
+                'approved_at' => null,
+                'approver_notes' => 'Menunggu verifikasi jadwal ujian akhir semester ganjil.',
+                'remaining_quota' => 12
+            ],
+            [
+                'id' => 'CUTI-004',
+                'leave_number' => 'CT/ALIA/2026/XI/004',
+                'teacher_id' => 'GUR-008', // Irfan Maulana
+                'name' => 'Irfan Maulana, S.Pd.',
+                'nip' => '1985172010011008',
+                'unit_id' => 'UNIT-SMP',
+                'type' => 'tahunan',
+                'type_label' => 'Cuti Tahunan',
+                'start_date' => '2026-11-16',
+                'end_date' => '2026-11-18',
+                'duration_days' => 3,
+                'reason' => 'Acara pernikahan adik kandung di Klaten, Jawa Tengah.',
+                'substitute_teacher_id' => 'GUR-003',
+                'substitute_teacher_name' => 'Salman Al-Farisi, S.Sos.',
+                'attachment' => 'undangan_pernikahan.pdf',
+                'status' => 'diajukan',
+                'approver_role' => 'Kepala Sekolah SMP',
+                'approved_by' => null,
+                'approved_at' => null,
+                'approver_notes' => 'Sedang dalam review beban ajar guru pengganti.',
+                'remaining_quota' => 9
+            ],
+            [
+                'id' => 'CUTI-005',
+                'leave_number' => 'CT/ALIA/2026/XI/005',
+                'teacher_id' => 'GUR-005', // Khadijah Nurul Fikri
+                'name' => 'Khadijah Nurul Fikri, S.Pd.',
+                'nip' => '1985142010011005',
+                'unit_id' => 'UNIT-SD',
+                'type' => 'melahirkan',
+                'type_label' => 'Cuti Bersalin / Melahirkan',
+                'start_date' => '2026-12-01',
+                'end_date' => '2027-02-28',
+                'duration_days' => 90,
+                'reason' => 'Masa persiapan persalinan anak kedua (HPL awal Desember 2026) dan pemulihan pasca melahirkan.',
+                'substitute_teacher_id' => 'GUR-011',
+                'substitute_teacher_name' => 'Ust. Muhammad Ihsan, S.Pd.I.',
+                'attachment' => 'surat_keterangan_hpl_spog.pdf',
+                'status' => 'disetujui',
+                'approver_role' => 'Kepala SD & Yayasan',
+                'approved_by' => 'Ust. Muhammad Ihsan, S.Pd.I.',
+                'approved_at' => '2026-11-05 10:15:00',
+                'approver_notes' => 'Hak cuti melahirkan 3 bulan disetujui penuh dengan tunjangan pokok tetap.',
+                'remaining_quota' => 12
+            ]
+        ];
     }
 
     // Getters
@@ -5451,6 +5571,43 @@ class DemoDataManager
         foreach ($this->getStaffAttendance() as $att) {
             if ($att['id'] === $id) {
                 return $att;
+            }
+        }
+        return null;
+    }
+
+    public function getStaffLeaves(): array
+    {
+        $sessionAdded = [];
+        $sessionDeleted = [];
+        $sessionUpdated = [];
+        try {
+            if (function_exists('session') && app()->has('session')) {
+                $sessionAdded = session('demo_staff_leaves_added', []);
+                $sessionDeleted = session('demo_staff_leaves_deleted', []);
+                $sessionUpdated = session('demo_staff_leaves_updated', []);
+            }
+        } catch (\Throwable $e) {}
+
+        $list = array_merge($this->staffLeaves, $sessionAdded);
+        $filtered = array_filter($list, function($leave) use ($sessionDeleted) {
+            return !in_array($leave['id'], $sessionDeleted);
+        });
+
+        foreach ($filtered as &$item) {
+            if (isset($sessionUpdated[$item['id']])) {
+                $item = array_merge($item, $sessionUpdated[$item['id']]);
+            }
+        }
+
+        return array_values($filtered);
+    }
+
+    public function findStaffLeave(string $id): ?array
+    {
+        foreach ($this->getStaffLeaves() as $leave) {
+            if ($leave['id'] === $id || ($leave['leave_number'] ?? '') === $id) {
+                return $leave;
             }
         }
         return null;

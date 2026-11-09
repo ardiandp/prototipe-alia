@@ -87,7 +87,7 @@ update `docs/PROGRESS.md`, report changed files and blockers, then stop.
 -   [x] T09.8 Finance reports.
 -   [x] T10.1 Employee profiles/organization.
 -   [x] T10.2 Staff attendance.
--   [ ] T10.3 Leave/permission.
+-   [x] T10.3 Leave/permission.
 -   [ ] T10.4 Overtime.
 -   [ ] T10.5 Performance evaluation.
 -   [ ] T10.6 Payroll simulation.

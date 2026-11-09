@@ -9,8 +9,8 @@ Catatan pemantauan progres implementasi prototipe Alia Islamic School.
 - **Batch Aktif**: Batch D (Learning, Islamic Programs, Student Affairs)
 - **Batch Aktif**: Batch E (Boarding, Finance, HRIS)
 - **Task Terakhir Selesai**:
-  - `T10.2`: Staff attendance (SDM/HRIS: Presensi Harian Pegawai & Guru, Jam Masuk/Pulang, Perhitungan Keterlambatan, Status Hadir/Terlambat/Izin/Sakit/Alpa, Rekapitulasi Indeks Kedisiplinan, Status Mesin Terminal Biometrik Online, Quick Attendance Hadirkan Semua, Modal Input Presensi Manual Berbasis Sesi, dan Ekspor Lembar Verifikasi).
-- **Task Selanjutnya**: `T10.3`: Leave/permission (SDM/HRIS: Pengajuan Cuti & Izin Kerja Pegawai, Jenis Cuti Tahunan/Melahirkan/Umroh/Sakit, Alur Persetujuan Kepala Sekolah/HRD, dan Kuota Cuti Tahunan).
+  - `T10.3`: Leave/permission (SDM/HRIS: Pengajuan Cuti & Izin Pegawai, 6 Kategori Cuti Tahunan/Sakit/Melahirkan/Umroh-Haji/Dinas/Penting, Alur Persetujuan Pimpinan/Kepala Sekolah, Surat Izin Cuti Resmi Berkop Alia, Pendelegasian Guru Badal Pengganti, Monitoring Saldo Hak Cuti 12 Hari/Tahun, dan Form Pengajuan Berbasis Sesi).
+- **Task Selanjutnya**: `T10.4`: Overtime (SDM/HRIS: Surat Perintah Lembur / SPL Pegawai, Jam Lembur Kegiatan Asrama/Ujian/PPDB, Kompensasi Lembur, dan Persetujuan).
 
 ---
 
@@ -206,6 +206,12 @@ Catatan pemantauan progres implementasi prototipe Alia Islamic School.
   - Controller: [`HrisController.php`](file:///c:/laragon/www/prototipe-alia/app/Http/Controllers/HrisController.php) (`presensi`, `storePresensi`, `markAllPresent`, `destroyPresensi`).
   - View: [`resources/views/hris/presensi.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/hris/presensi.blade.php) (3 Tab: Buku Presensi Harian, Rekapitulasi Kehadiran & Kedisiplinan, Status Mesin Biometrik Online, 5 info box kehadiran harian hadir/terlambat/izin/sakit/alpa, aksi Quick Attendance Hadirkan Semua, modal input presensi manual, modal lembar verifikasi presensi, filter tanggal/unit/status/search, cetak).
   - Rute aktif `/hris/presensi`, `/hris/presensi` (POST), `/hris/presensi/quick-present` (POST), `/hris/presensi/{id}/destroy`, serta update link di sidebar.
+- `[x] T10.3`: Leave / Permission Workflow (Pengajuan & Persetujuan Cuti Pegawai):
+  - Dataset baseline permohonan cuti, kategori cuti, durasi, dan guru pengganti di [`DemoDataManager.php`](file:///c:/laragon/www/prototipe-alia/app/Support/DemoData/DemoDataManager.php) (`getStaffLeaves`, `findStaffLeave`).
+  - Controller: [`HrisController.php`](file:///c:/laragon/www/prototipe-alia/app/Http/Controllers/HrisController.php) (`cuti`, `storeCuti`, `approveCuti`, `destroyCuti`).
+  - View: [`resources/views/hris/cuti.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/hris/cuti.blade.php) (Dwi-tab Daftar Permohonan Cuti & Monitoring Saldo Hak Cuti 12 Hari, 4 info box status cuti diajukan/disetujui/ditolak, modal surat izin cuti resmi berkop Alia Islamic School, modal keputusan persetujuan atasan/pimpinan, form pengajuan cuti baru dengan penugasan guru badal, filter status/kategori/unit/search, cetak).
+  - Rute aktif `/hris/cuti`, `/hris/cuti` (POST), `/hris/cuti/{id}/approve` (POST), `/hris/cuti/{id}/destroy`, serta link menu di sidebar.
+
 
 
 
