@@ -10,8 +10,8 @@ Catatan pemantauan progres implementasi prototipe Alia Islamic School.
 - **Batch Aktif**: Batch E (Boarding, Finance, HRIS)
 - **Batch Aktif**: Batch F (Facilities, Inventory, Portals)
 - **Task Terakhir Selesai**:
-  - `T12.6`: Inventory reports (Inventaris & Logistik: Kartu Stok Bin Card Per Barang, Jurnal Mutasi Keluar-Masuk, Rekapitulasi Valuasi Aset Logistik, Evaluasi Kondisi Fisik Alat, & Format Cetak Kartu Fisik Berkop Alia).
-- **Task Selanjutnya**: `T13.1`: Parent Portal shell (Portal Wali Santri: Layout Khusus Mobile-friendly Orang Tua Santri, Navigasi Pintasan, Switcher Anak/Santri, & Profil Wali).
+  - `T13.1 - T13.5`: Parent Portal (Portal Mobile-Friendly Terpadu Wali Santri & Orang Tua: Header Card Profil Wali & Switcher Multi-Anak, 6 Tombol Akses Pintasan Cepat, Tab Ringkasan Perkembangan Santri, Rapor Transkrip Nilai & Presensi Belajar, Log Setoran Ziyadah & Murojaah Tahfidz, Tagihan SPP & Virtual Account Bank Syariah Indonesia, Pengajuan Izin Keluar/Pesiar Asrama, serta Papan Pengumuman Sekolah).
+- **Task Selanjutnya**: `T13.6 - T13.8`: Student Portal (Portal Mandiri Santri: Shell Portal Santri, Dashboard & Jadwal Pelajaran Harian, Akses Kelas Digital LMS, Materi & Pengumpulan Tugas Online).
 
 ---
 
@@ -286,6 +286,10 @@ Catatan pemantauan progres implementasi prototipe Alia Islamic School.
   - View: [`resources/views/inventaris/laporan.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/inventaris/laporan.blade.php) (4 Tab: Kartu Stok Per Barang / Bin Card dengan perhitungan saldo berjalan otomatis, Jurnal Mutasi Arus Logistik Keseluruhan, Rekapitulasi Valuasi Aset & Komposisi Kategori dengan standar FIFO, Rekap Kondisi Fisik Alat & deteksi dini unit rusak ringan/berat, modal pratinjau fisik kartu stok gudang berkop Alia lengkap dengan tanda tangan Kabag Sarpras & Petugas Gudang, cetak).
   - Rute aktif `/inventaris/laporan` dan `/inventaris/stok` (alias), serta update menu navigasi di sidebar AdminLTE.
   - **Fase 12 (Inventaris & Logistik) RESMI 100% SELESAI.**
+- `[x] T13.1 - T13.5`: Parent Portal (Portal Terpadu Orang Tua & Wali Santri):
+  - Controller baru: [`PortalController.php`](file:///c:/laragon/www/prototipe-alia/app/Http/Controllers/PortalController.php) (`parentDashboard`) yang menghubungkan entitas wali santri dengan santri terdaftar serta data lintas modul (akademik, tahfidz, keuangan, dan asrama).
+  - View: [`resources/views/portal/parent.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/portal/parent.blade.php) (Header Card gradien modern Deep Navy - Purple dengan Profil Wali Santri, pill selector switcher multi-anak santri, 6 tombol akses cepat mobile-friendly, 6 tab komprehensif: Ringkasan 4 Pilar Santri & Biodata, Nilai Rapor & Presensi Belajar, Capaian Tahfidz & Rekam Setoran Surah, Tagihan SPP & Nomor Virtual Account BSI otomatis, Form Pengajuan Izin Keluar/Pesiar ke Musyrif Asrama, serta Papan Pengumuman Sekolah terpadu).
+  - Rute aktif `/portal/dashboard` dan `/portal/wali`.
 
 
 

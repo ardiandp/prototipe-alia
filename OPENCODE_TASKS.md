@@ -105,11 +105,11 @@ update `docs/PROGRESS.md`, report changed files and blockers, then stop.
 -   [x] T12.4 Procurement simulation.
 -   [x] T12.5 Maintenance.
 -   [x] T12.6 Inventory reports.
--   [ ] T13.1 Parent Portal shell.
--   [ ] T13.2 Parent dashboard.
--   [ ] T13.3 Parent academic/attendance.
--   [ ] T13.4 Parent tahfidz/finance.
--   [ ] T13.5 Parent permission/announcements.
+-   [x] T13.1 Parent Portal shell.
+-   [x] T13.2 Parent dashboard.
+-   [x] T13.3 Parent academic/attendance.
+-   [x] T13.4 Parent tahfidz/finance.
+-   [x] T13.5 Parent permission/announcements.
 -   [ ] T13.6 Student Portal shell.
 -   [ ] T13.7 Student dashboard/schedule.
 -   [ ] T13.8 Student LMS pages.

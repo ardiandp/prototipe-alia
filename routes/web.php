@@ -14,6 +14,7 @@ use App\Http\Controllers\KeuanganController;
 use App\Http\Controllers\HrisController;
 use App\Http\Controllers\SarprasController;
 use App\Http\Controllers\InventarisController;
+use App\Http\Controllers\PortalController;
 
 // Helper untuk route placeholder view
 function makePlaceholder($title, $subtitle, $icon = 'fa-cube') {
@@ -307,7 +308,8 @@ Route::prefix('inventaris')->name('inventaris.')->group(function () {
 
 // Portal Wali / Santri
 Route::prefix('portal')->name('portal.')->group(function () {
-    Route::get('/dashboard', makePlaceholder('Portal Orang Tua & Santri', 'Ringkasan Rapor, Tahfidz, SPP, & Izin Asrama', 'fa-mobile-phone'))->name('dashboard');
+    Route::get('/dashboard', [PortalController::class, 'parentDashboard'])->name('dashboard');
+    Route::get('/wali', [PortalController::class, 'parentDashboard'])->name('parent');
 });
 
 // AI Assistant & Laporan & Pengaturan
