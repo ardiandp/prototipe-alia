@@ -9,8 +9,8 @@ Catatan pemantauan progres implementasi prototipe Alia Islamic School.
 - **Batch Aktif**: Batch D (Learning, Islamic Programs, Student Affairs)
 - **Batch Aktif**: Batch E (Boarding, Finance, HRIS)
 - **Task Terakhir Selesai**:
-  - `T09.5`: Scholarship and discount (Keuangan: Manajemen Beasiswa Santri & Diskon Pembiayaan, Kategori Tahfidz/Prestasi/Yatim/Sibling, Persetujuan Pimpinan Yayasan, Pemotongan Otomatis Tagihan Invoice Santri, Modal SK Beasiswa Resmi Berkop Alia, Form Pendaftaran Beasiswa, dan Format Cetak).
-- **Task Selanjutnya**: `T09.6`: Arrears (Keuangan: Manajemen Piutang & Surat Peringatan Tunggakan Santri, Penuaan Piutang / Aging Report, Notifikasi Surat Tagihan Wali Santri, dan Rekapitulasi).
+  - `T09.6`: Arrears (Keuangan: Manajemen Piutang & Surat Peringatan Tunggakan SPP Santri, Laporan Penuaan Piutang / Aging Report 1-30/31-60/>60 Hari Kritis, Penerbitan Surat Peringatan SP-1/SP-2 Berkop Resmi Alia, Form Kirim Pengingat, dan Filter Unit/Aging/Kelas/Search).
+- **Task Selanjutnya**: `T09.7`: Cash in/out (Keuangan: Manajemen Kas Masuk & Kas Keluar Operasional, Buku Kas Umum / Jurnal Pengeluaran, Pos Belanja Dapur/Listrik/Honorarium, dan Saldo Buku Kas).
 
 ---
 
@@ -184,6 +184,10 @@ Catatan pemantauan progres implementasi prototipe Alia Islamic School.
   - Controller: [`KeuanganController.php`](file:///c:/laragon/www/prototipe-alia/app/Http/Controllers/KeuanganController.php) (`beasiswa`, `storeBeasiswa`, `approveBeasiswa`, `destroyBeasiswa`).
   - View: [`resources/views/keuangan/beasiswa.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/keuangan/beasiswa.blade.php) (Tabel penerima beasiswa, 4 info box total santri/disetujui/menunggu/subsidi ZISWAF, aksi persetujuan cepat pimpinan, modal SK Beasiswa Resmi Berkop Alia, modal form pendaftaran baru, filter kategori beasiswa, format cetak).
   - Rute aktif `/keuangan/beasiswa`, `/keuangan/beasiswa` (POST), `/keuangan/beasiswa/{id}/approve`, `/keuangan/beasiswa/{id}/destroy`, serta penambahan navigasi menu di [`resources/views/layouts/sidebar.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/layouts/sidebar.blade.php).
+- `[x] T09.6`: Arrears (Manajemen Piutang & Surat Peringatan Tunggakan):
+  - Controller: [`KeuanganController.php`](file:///c:/laragon/www/prototipe-alia/app/Http/Controllers/KeuanganController.php) (`tunggakan`, `sendTunggakanNotice`).
+  - View: [`resources/views/keuangan/tunggakan.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/keuangan/tunggakan.blade.php) (Tabel aging report piutang santri, 4 kartu info box aging 1-30/31-60/>60 hari kritis, modal penerbitan SP-1/SP-2/SP-3 WhatsApp, modal surat pemberitahuan tunggakan resmi berkop sekolah, filter unit/aging/kelas/search).
+  - Rute aktif `/keuangan/tunggakan`, `/keuangan/tunggakan/send-notice` (POST), dan penambahan sub-menu di sidebar.
 
 
 

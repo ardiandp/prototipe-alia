@@ -864,4 +864,196 @@ class KeuanganController extends Controller
         return redirect()->route('keuangan.beasiswa')
             ->with('success', "Data beasiswa [{$sch['name']}] berhasil dihapus.");
     }
+
+    /**
+     * T09.6 — Arrears & Aging (Manajemen Piutang & Surat Peringatan Tunggakan)
+     */
+    public function tunggakan(Request $request)
+    {
+        $demo = DemoDataManager::getInstance();
+
+        $invoices = $demo->getStudentInvoices();
+        $students = $demo->getStudents();
+        $classes = $demo->getClasses();
+        $units = $demo->getUnits();
+
+        // Maps
+        $studentMap = [];
+        foreach ($students as $s) {
+            $studentMap[$s['id']] = $s;
+        }
+
+        $classMap = [];
+        foreach ($classes as $c) {
+            $classMap[$c['id']] = $c;
+        }
+
+        $unitMap = [];
+        foreach ($units as $u) {
+            $unitMap[$u['id']] = $u;
+        }
+
+        // Filters
+        $unitFilter = $request->query('unit_id');
+        $agingFilter = $request->query('aging'); // current, 30_days, 60_days, 90_days
+        $classFilter = $request->query('class_id');
+        $search = strtolower(trim($request->query('q', '')));
+
+        // Reference current date for demo: 2026-11-09
+        $currentDate = strtotime('2026-11-09');
+
+        // Only take unpaid or partially paid invoices
+        $arrearsInvoices = array_filter($invoices, function ($inv) {
+            return in_array($inv['status'], ['belum_lunas', 'jatuh_tempo', 'sebagian']);
+        });
+
+        $enrichedArrears = [];
+        $agingSummary = [
+            'current' => ['count' => 0, 'amount' => 0], // Belum jatuh tempo / < 0 hari
+            '1_30' => ['count' => 0, 'amount' => 0],    // 1 - 30 hari jatuh tempo
+            '31_60' => ['count' => 0, 'amount' => 0],   // 31 - 60 hari jatuh tempo
+            'over_60' => ['count' => 0, 'amount' => 0], // > 60 hari jatuh tempo
+        ];
+
+        foreach ($arrearsInvoices as $inv) {
+            $st = $studentMap[$inv['student_id']] ?? null;
+            $unpaidAmount = $inv['amount'] - ($inv['paid_amount'] ?? 0);
+
+            // Calculate overdue days
+            $dueTimestamp = strtotime($inv['due_date']);
+            $diffDays = (int)floor(($currentDate - $dueTimestamp) / (60 * 60 * 24));
+
+            // Aging bucket
+            $agingBucket = 'current';
+            $agingLabel = 'Belum Jatuh Tempo';
+            if ($diffDays > 60) {
+                $agingBucket = 'over_60';
+                $agingLabel = '> 60 Hari (Kritis)';
+                $agingSummary['over_60']['count']++;
+                $agingSummary['over_60']['amount'] += $unpaidAmount;
+            } elseif ($diffDays > 30) {
+                $agingBucket = '31_60';
+                $agingLabel = '31 - 60 Hari';
+                $agingSummary['31_60']['count']++;
+                $agingSummary['31_60']['amount'] += $unpaidAmount;
+            } elseif ($diffDays > 0) {
+                $agingBucket = '1_30';
+                $agingLabel = '1 - 30 Hari';
+                $agingSummary['1_30']['count']++;
+                $agingSummary['1_30']['amount'] += $unpaidAmount;
+            } else {
+                $agingBucket = 'current';
+                $agingLabel = 'Jatuh Tempo Mendatang';
+                $agingSummary['current']['count']++;
+                $agingSummary['current']['amount'] += $unpaidAmount;
+            }
+
+            // Surat Peringatan Terakhir yang tersimpan di sesi
+            $sentNotices = session('demo_tunggakan_notices', []);
+            $noticeHistory = $sentNotices[$inv['id']] ?? null;
+
+            $item = array_merge($inv, [
+                'student_name' => $st['name'] ?? 'Santri ID: ' . $inv['student_id'],
+                'nisn' => $st['nisn'] ?? ($st['nis'] ?? '-'),
+                'class_name' => $st ? ($classMap[$st['class_id']]['name'] ?? '-') : '-',
+                'class_id' => $st['class_id'] ?? null,
+                'guardian_name' => $st['guardian_name'] ?? '-',
+                'guardian_phone' => $st['guardian_phone'] ?? '-',
+                'unpaid_amount' => $unpaidAmount,
+                'overdue_days' => max(0, $diffDays),
+                'aging_bucket' => $agingBucket,
+                'aging_label' => $agingLabel,
+                'unit_name' => $unitMap[$inv['unit_id']]['name'] ?? ($inv['unit_id'] ?? '-'),
+                'notice_sent' => $noticeHistory
+            ]);
+
+            // Filter Application
+            if ($unitFilter && ($inv['unit_id'] ?? '') !== $unitFilter) {
+                continue;
+            }
+
+            if ($agingFilter && $agingBucket !== $agingFilter) {
+                continue;
+            }
+
+            if ($classFilter && ($st['class_id'] ?? '') !== $classFilter) {
+                continue;
+            }
+
+            if ($search) {
+                $haystack = strtolower(
+                    ($inv['invoice_number'] ?? '') . ' ' .
+                    ($item['student_name'] ?? '') . ' ' .
+                    ($item['nisn'] ?? '') . ' ' .
+                    ($item['guardian_name'] ?? '') . ' ' .
+                    ($inv['fee_title'] ?? '')
+                );
+                if (strpos($haystack, $search) === false) {
+                    continue;
+                }
+            }
+
+            $enrichedArrears[] = $item;
+        }
+
+        // Urutkan berdasarkan hari keterlambatan tertinggi (aging terbanyak)
+        usort($enrichedArrears, function ($a, $b) {
+            return $b['overdue_days'] - $a['overdue_days'];
+        });
+
+        // Metrik Ringkasan
+        $totalArrearsCount = count($arrearsInvoices);
+        $totalArrearsAmount = array_sum(array_column($arrearsInvoices, 'amount')) - array_sum(array_column($arrearsInvoices, 'paid_amount'));
+        $totalCriticalCount = $agingSummary['31_60']['count'] + $agingSummary['over_60']['count'];
+        $totalCriticalAmount = $agingSummary['31_60']['amount'] + $agingSummary['over_60']['amount'];
+
+        return view('keuangan.tunggakan', compact(
+            'units',
+            'classes',
+            'enrichedArrears',
+            'agingSummary',
+            'unitFilter',
+            'agingFilter',
+            'classFilter',
+            'search',
+            'totalArrearsCount',
+            'totalArrearsAmount',
+            'totalCriticalCount',
+            'totalCriticalAmount'
+        ));
+    }
+
+    /**
+     * Send warning letter / notice to student guardian (Session-backed)
+     */
+    public function sendTunggakanNotice(Request $request)
+    {
+        $validated = $request->validate([
+            'invoice_id' => 'required|string',
+            'notice_type' => 'required|string|in:Surat Peringatan I (SP-1),Surat Peringatan II (SP-2),Surat Peringatan III (SP-3),Pemberitahuan Tagihan WhatsApp',
+            'message' => 'nullable|string|max:500'
+        ]);
+
+        $demo = DemoDataManager::getInstance();
+        $inv = $demo->findStudentInvoice($validated['invoice_id']);
+
+        if (!$inv) {
+            return redirect()->route('keuangan.tunggakan')->with('error', 'Tagihan tidak ditemukan.');
+        }
+
+        $sentNotices = session('demo_tunggakan_notices', []);
+        $sentNotices[$inv['id']] = [
+            'type' => $validated['notice_type'],
+            'sent_at' => date('Y-m-d H:i:s'),
+            'sender' => 'Tata Usaha Keuangan Alia Islamic School',
+            'message' => $validated['message'] ?: 'Mengingatkan batas waktu pelunasan tagihan SPP santri.'
+        ];
+        session(['demo_tunggakan_notices' => $sentNotices]);
+
+        $st = $demo->findStudent($inv['student_id']);
+        $studentName = $st['name'] ?? 'Santri';
+
+        return redirect()->route('keuangan.tunggakan')
+            ->with('success', "Notifikasi [{$validated['notice_type']}] untuk wali santri {$studentName} ({$inv['invoice_number']}) BERHASIL diterbitkan & dikirim!");
+    }
 }

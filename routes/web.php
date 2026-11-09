@@ -219,6 +219,8 @@ Route::prefix('keuangan')->name('keuangan.')->group(function () {
     Route::post('/beasiswa', [KeuanganController::class, 'storeBeasiswa'])->name('beasiswa.store');
     Route::get('/beasiswa/{id}/approve', [KeuanganController::class, 'approveBeasiswa'])->name('beasiswa.approve');
     Route::get('/beasiswa/{id}/destroy', [KeuanganController::class, 'destroyBeasiswa'])->name('beasiswa.destroy');
+    Route::get('/tunggakan', [KeuanganController::class, 'tunggakan'])->name('tunggakan');
+    Route::post('/tunggakan/send-notice', [KeuanganController::class, 'sendTunggakanNotice'])->name('tunggakan.notice');
     Route::get('/laporan', makePlaceholder('Laporan Keuangan', 'Laporan Penerimaan & Tunggakan', 'fa-balance-scale'))->name('laporan');
 });
 
