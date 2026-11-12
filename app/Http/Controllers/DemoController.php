@@ -83,7 +83,8 @@ class DemoController extends Controller
         session([
             'current_role' => 'Yayasan / Administrator',
             'user_name' => 'Ust. Dr. H. Zulkifli, Lc., M.A.',
-            'user_title' => 'Ketua Yayasan'
+            'user_title' => 'Ketua Yayasan',
+            'active_role_key' => 'yayasan'
         ]);
 
         return redirect()->route('dashboard')->with('info', 'Seluruh data mutasi sesi demo telah direset ke baseline awal.');
