@@ -163,54 +163,6 @@
                       </button>
                     </td>
                   </tr>
-
-                  <!-- Modal Detail Mapel -->
-                  <div class="modal fade" id="modal-detail-mp-{{ $s['id'] }}" tabindex="-1" role="dialog">
-                    <div class="modal-dialog" role="document">
-                      <div class="modal-content">
-                        <div class="modal-header bg-primary" style="background:#2b6cb0; color:#fff;">
-                          <button type="button" class="close" data-dismiss="modal" style="color:#fff;">&times;</button>
-                          <h4 class="modal-title"><i class="fa fa-book"></i> Detail Mata Pelajaran: {{ $s['name'] }}</h4>
-                        </div>
-                        <div class="modal-body">
-                          <table class="table table-bordered table-striped">
-                            <tr>
-                              <th style="width: 35%;">Kode Mapel</th>
-                              <td><code>{{ $s['id'] }}</code></td>
-                            </tr>
-                            <tr>
-                              <th>Nama Mata Pelajaran</th>
-                              <td><strong>{{ $s['name'] }}</strong> ({{ $s['short_name'] }})</td>
-                            </tr>
-                            <tr>
-                              <th>Kelompok Kurikulum</th>
-                              <td><span class="label label-info">{{ $s['group'] }}</span></td>
-                            </tr>
-                            <tr>
-                              <th>Alokasi Jam Mengajar</th>
-                              <td><b>{{ $s['hours_per_week'] }}</b> Jam Pelajaran (JP) per Pekan</td>
-                            </tr>
-                            <tr>
-                              <th>Kriteria Ketuntasan Minimal (KKM)</th>
-                              <td><span class="badge bg-green">{{ $s['kkm'] }}</span></td>
-                            </tr>
-                            <tr>
-                              <th>Sasaran Jenjang Unit</th>
-                              <td>{{ $s['unit_target'] }}</td>
-                            </tr>
-                            <tr>
-                              <th>Status Mata Pelajaran</th>
-                              <td><x-badge :status="$s['status'] ?? 'aktif'" /></td>
-                            </tr>
-                          </table>
-                        </div>
-                        <div class="modal-footer">
-                          <a href="{{ route('akademik.jadwal') }}" class="btn btn-info btn-flat pull-left"><i class="fa fa-calendar"></i> Lihat di Jadwal Pelajaran</a>
-                          <button type="button" class="btn btn-default btn-flat" data-dismiss="modal">Tutup</button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
                 @endforeach
               </tbody>
             </table>
@@ -219,6 +171,56 @@
       </x-card>
     </div>
   </div>
+
+  <!-- Detail Mapel Modals (Moved outside table) -->
+  @foreach($subjects as $s)
+    <div class="modal fade" id="modal-detail-mp-{{ $s['id'] }}" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header bg-primary" style="background:#2b6cb0; color:#fff;">
+            <button type="button" class="close" data-dismiss="modal" style="color:#fff;">&times;</button>
+            <h4 class="modal-title"><i class="fa fa-book"></i> Detail Mata Pelajaran: {{ $s['name'] }}</h4>
+          </div>
+          <div class="modal-body">
+            <table class="table table-bordered table-striped">
+              <tr>
+                <th style="width: 35%;">Kode Mapel</th>
+                <td><code>{{ $s['id'] }}</code></td>
+              </tr>
+              <tr>
+                <th>Nama Mata Pelajaran</th>
+                <td><strong>{{ $s['name'] }}</strong> ({{ $s['short_name'] }})</td>
+              </tr>
+              <tr>
+                <th>Kelompok Kurikulum</th>
+                <td><span class="label label-info">{{ $s['group'] }}</span></td>
+              </tr>
+              <tr>
+                <th>Alokasi Jam Mengajar</th>
+                <td><b>{{ $s['hours_per_week'] }}</b> Jam Pelajaran (JP) per Pekan</td>
+              </tr>
+              <tr>
+                <th>Kriteria Ketuntasan Minimal (KKM)</th>
+                <td><span class="badge bg-green">{{ $s['kkm'] }}</span></td>
+              </tr>
+              <tr>
+                <th>Sasaran Jenjang Unit</th>
+                <td>{{ $s['unit_target'] }}</td>
+              </tr>
+              <tr>
+                <th>Status Mata Pelajaran</th>
+                <td><x-badge :status="$s['status'] ?? 'aktif'" /></td>
+              </tr>
+            </table>
+          </div>
+          <div class="modal-footer">
+            <a href="{{ route('akademik.jadwal') }}" class="btn btn-info btn-flat pull-left"><i class="fa fa-calendar"></i> Lihat di Jadwal Pelajaran</a>
+            <button type="button" class="btn btn-default btn-flat" data-dismiss="modal">Tutup</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  @endforeach
 
   <!-- Modal Tambah Mata Pelajaran Baru (Bootstrap 3) -->
   <div class="modal fade" id="modal-add-mapel" tabindex="-1" role="dialog">
@@ -292,4 +294,3 @@
   </div>
 
 @endsection
-
