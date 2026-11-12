@@ -183,111 +183,6 @@
                       </button>
                     </td>
                   </tr>
-
-                  <!-- Modal Multi-Tab Detail Profil Santri -->
-                  <div class="modal fade" id="modal-profile-{{ $s['id'] }}" tabindex="-1" role="dialog">
-                    <div class="modal-dialog modal-lg" role="document">
-                      <div class="modal-content">
-                        <div class="modal-header bg-primary" style="background:#1a365d; color:#fff;">
-                          <button type="button" class="close" data-dismiss="modal" style="color:#fff;">&times;</button>
-                          <h4 class="modal-title"><i class="fa fa-id-card-o"></i> Buku Induk Santri: {{ $s['name'] }} (NIS: {{ $s['nis'] }})</h4>
-                        </div>
-                        <div class="modal-body" style="padding: 10px;">
-                          
-                          <!-- Header Mini Profile -->
-                          <div class="well well-sm" style="background:#f4f6f9; margin-bottom: 15px;">
-                            <div class="row">
-                              <div class="col-sm-2 text-center">
-                                <img src="{{ asset('AdminLTE/dist/img/' . ($s['avatar'] ?? 'avatar5.png')) }}" class="img-thumbnail img-circle" style="width: 85px; height: 85px;" alt="Avatar">
-                              </div>
-                              <div class="col-sm-6">
-                                <h4 style="margin-top: 5px; color:#2b6cb0; font-weight: bold;">{{ $s['name'] }}</h4>
-                                <p style="margin-bottom: 3px;">
-                                  NIS: <b>{{ $s['nis'] }}</b> | NISN: <b>{{ $s['nisn'] }}</b><br>
-                                  Kelas: <b>{{ $clsObj['name'] ?? $s['class_id'] }}</b> | Jenjang: <b>{{ $s['unit_level'] }}</b>
-                                </p>
-                              </div>
-                              <div class="col-sm-4 text-right">
-                                <span class="label label-success" style="font-size:12px;">Status: {{ ucfirst($s['status']) }}</span><br>
-                                <span class="label label-purple" style="background:#6b46c1; margin-top:5px; display:inline-block;">{{ $s['residence_type'] }}</span>
-                              </div>
-                            </div>
-                          </div>
-
-                          <!-- Multi-Tab Details -->
-                          <div class="nav-tabs-custom" style="box-shadow: none; border: 1px solid #ddd;">
-                            <ul class="nav nav-tabs">
-                              <li class="active"><a href="#tab-bio-{{ $s['id'] }}" data-toggle="tab"><i class="fa fa-user"></i> Biodata</a></li>
-                              <li><a href="#tab-wali-{{ $s['id'] }}" data-toggle="tab"><i class="fa fa-users"></i> Orang Tua / Wali</a></li>
-                              <li><a href="#tab-akademik-{{ $s['id'] }}" data-toggle="tab"><i class="fa fa-graduation-cap"></i> Akademik</a></li>
-                              <li><a href="#tab-tahfidz-{{ $s['id'] }}" data-toggle="tab"><i class="fa fa-book"></i> Tahfidz ({{ $s['tahfidz_juz'] }} Juz)</a></li>
-                              <li><a href="#tab-keuangan-{{ $s['id'] }}" data-toggle="tab"><i class="fa fa-money"></i> Keuangan SPP</a></li>
-                              <li><a href="#tab-asrama-{{ $s['id'] }}" data-toggle="tab"><i class="fa fa-bed"></i> Asrama</a></li>
-                            </ul>
-                            <div class="tab-content" style="padding: 15px;">
-                              <!-- Tab 1: Biodata -->
-                              <div class="tab-pane active" id="tab-bio-{{ $s['id'] }}">
-                                <table class="table table-bordered table-striped">
-                                  <tr><th style="width: 30%;">Nama Lengkap</th><td>{{ $s['name'] }}</td></tr>
-                                  <tr><th>Jenis Kelamin</th><td>{{ $s['gender'] == 'L' ? 'Laki-Laki (Ikhwan)' : 'Perempuan (Akhwat)' }}</td></tr>
-                                  <tr><th>Tempat, Tanggal Lahir</th><td>{{ $s['pob'] ?? 'Jakarta' }}, {{ date('d F Y', strtotime($s['dob'] ?? '2010-01-01')) }}</td></tr>
-                                  <tr><th>Agama & Kewarganegaraan</th><td>Islam / WNI</td></tr>
-                                  <tr><th>Status Santri</th><td><x-badge :status="$s['status']" /></td></tr>
-                                </table>
-                              </div>
-
-                              <!-- Tab 2: Wali -->
-                              <div class="tab-pane" id="tab-wali-{{ $s['id'] }}">
-                                <table class="table table-bordered table-striped">
-                                  <tr><th style="width: 30%;">Nama Orang Tua/Wali</th><td><strong>{{ $s['guardian_name'] }}</strong></td></tr>
-                                  <tr><th>Nomor Telepon / WhatsApp</th><td><i class="fa fa-whatsapp text-green"></i> {{ $s['guardian_phone'] }}</td></tr>
-                                  <tr><th>Pekerjaan</th><td>Wiraswasta / Profesional Swasta</td></tr>
-                                  <tr><th>Alamat Tempat Tinggal</th><td>Jl. Alia Raya No. 12, Duren Sawit, Jakarta Timur</td></tr>
-                                </table>
-                              </div>
-
-                              <!-- Tab 3: Akademik -->
-                              <div class="tab-pane" id="tab-akademik-{{ $s['id'] }}">
-                                <p><strong>Rerata Nilai Rapor Semester Berjalan:</strong> <span class="badge bg-green" style="font-size:14px;">{{ $s['gpa'] ?? 88.5 }}</span></p>
-                                <p><strong>Tingkat Kehadiran Kelas:</strong> <span class="badge bg-blue" style="font-size:14px;">{{ $s['attendance_pct'] ?? 98 }}%</span></p>
-                                <a href="{{ route('akademik.rapor') }}" class="btn btn-sm btn-default"><i class="fa fa-file-text-o"></i> Lihat E-Rapor Lengkap</a>
-                              </div>
-
-                              <!-- Tab 4: Tahfidz -->
-                              <div class="tab-pane" id="tab-tahfidz-{{ $s['id'] }}">
-                                <h4>Capaian Hafalan: <span class="text-green">{{ $s['tahfidz_juz'] }} Juz Mutqin</span></h4>
-                                <p>Setoran Terakhir: <b>{{ $s['tahfidz_last_surah'] ?? 'Juz ' . $s['tahfidz_juz'] }}</b></p>
-                                <p>Predikat Kelancaran: <span class="label label-primary">{{ $s['tahfidz_predicate'] ?? 'Mumtaz' }}</span></p>
-                                <a href="{{ route('tahfidz.setoran') }}" class="btn btn-sm btn-primary btn-flat" style="background:#2b6cb0;"><i class="fa fa-microphone"></i> Catat Ziyadah Santri</a>
-                              </div>
-
-                              <!-- Tab 5: Keuangan -->
-                              <div class="tab-pane" id="tab-keuangan-{{ $s['id'] }}">
-                                <p>Tagihan SPP & Asrama Bulanan: <b>Rp {{ number_format($s['spp_nominal'] ?? 1850000, 0, ',', '.') }}</b></p>
-                                <p>Status Pembayaran Bulan Ini: <x-badge :status="$s['spp_status'] ?? 'lunas'" /></p>
-                                <a href="{{ route('keuangan.tagihan') }}" class="btn btn-sm btn-success btn-flat"><i class="fa fa-credit-card"></i> Riwayat Transaksi & Kwitansi</a>
-                              </div>
-
-                              <!-- Tab 6: Asrama -->
-                              <div class="tab-pane" id="tab-asrama-{{ $s['id'] }}">
-                                @if($s['is_boarding'])
-                                  <p>Alokasi Kamar Asrama: <b>{{ $s['boarding_room_id'] }}</b></p>
-                                  <p>Status Santri: <span class="label label-success">Mukim di Asrama</span></p>
-                                  <a href="{{ route('asrama.perizinan') }}" class="btn btn-sm btn-warning btn-flat"><i class="fa fa-ticket"></i> Izin Keluar / Pulang</a>
-                                @else
-                                  <div class="alert alert-info">Santri terdaftar pada program Non-Boarding (Full Day School).</div>
-                                @endif
-                              </div>
-                            </div>
-                          </div>
-
-                        </div>
-                        <div class="modal-footer">
-                          <button type="button" class="btn btn-default btn-flat" data-dismiss="modal">Tutup</button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
                 @endforeach
               </tbody>
             </table>
@@ -296,6 +191,116 @@
       </x-card>
     </div>
   </div>
+
+  <!-- Detail Profil Santri Modals (Moved outside table) -->
+  @foreach($students as $s)
+    @php
+      $clsObj = collect($classes)->firstWhere('id', $s['class_id'] ?? '');
+    @endphp
+    <div class="modal fade" id="modal-profile-{{ $s['id'] }}" tabindex="-1" role="dialog">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header bg-primary" style="background:#1a365d; color:#fff;">
+            <button type="button" class="close" data-dismiss="modal" style="color:#fff;">&times;</button>
+            <h4 class="modal-title"><i class="fa fa-id-card-o"></i> Buku Induk Santri: {{ $s['name'] }} (NIS: {{ $s['nis'] }})</h4>
+          </div>
+          <div class="modal-body" style="padding: 10px;">
+            
+            <!-- Header Mini Profile -->
+            <div class="well well-sm" style="background:#f4f6f9; margin-bottom: 15px;">
+              <div class="row">
+                <div class="col-sm-2 text-center">
+                  <img src="{{ asset('AdminLTE/dist/img/' . ($s['avatar'] ?? 'avatar5.png')) }}" class="img-thumbnail img-circle" style="width: 85px; height: 85px;" alt="Avatar">
+                </div>
+                <div class="col-sm-6">
+                  <h4 style="margin-top: 5px; color:#2b6cb0; font-weight: bold;">{{ $s['name'] }}</h4>
+                  <p style="margin-bottom: 3px;">
+                    NIS: <b>{{ $s['nis'] }}</b> | NISN: <b>{{ $s['nisn'] }}</b><br>
+                    Kelas: <b>{{ $clsObj['name'] ?? $s['class_id'] }}</b> | Jenjang: <b>{{ $s['unit_level'] }}</b>
+                  </p>
+                </div>
+                <div class="col-sm-4 text-right">
+                  <span class="label label-success" style="font-size:12px;">Status: {{ ucfirst($s['status']) }}</span><br>
+                  <span class="label label-purple" style="background:#6b46c1; margin-top:5px; display:inline-block;">{{ $s['residence_type'] }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Multi-Tab Details -->
+            <div class="nav-tabs-custom" style="box-shadow: none; border: 1px solid #ddd;">
+              <ul class="nav nav-tabs">
+                <li class="active"><a href="#tab-bio-{{ $s['id'] }}" data-toggle="tab"><i class="fa fa-user"></i> Biodata</a></li>
+                <li><a href="#tab-wali-{{ $s['id'] }}" data-toggle="tab"><i class="fa fa-users"></i> Orang Tua / Wali</a></li>
+                <li><a href="#tab-akademik-{{ $s['id'] }}" data-toggle="tab"><i class="fa fa-graduation-cap"></i> Akademik</a></li>
+                <li><a href="#tab-tahfidz-{{ $s['id'] }}" data-toggle="tab"><i class="fa fa-book"></i> Tahfidz ({{ $s['tahfidz_juz'] }} Juz)</a></li>
+                <li><a href="#tab-keuangan-{{ $s['id'] }}" data-toggle="tab"><i class="fa fa-money"></i> Keuangan SPP</a></li>
+                <li><a href="#tab-asrama-{{ $s['id'] }}" data-toggle="tab"><i class="fa fa-bed"></i> Asrama</a></li>
+              </ul>
+              <div class="tab-content" style="padding: 15px;">
+                <!-- Tab 1: Biodata -->
+                <div class="tab-pane active" id="tab-bio-{{ $s['id'] }}">
+                  <table class="table table-bordered table-striped">
+                    <tr><th style="width: 30%;">Nama Lengkap</th><td>{{ $s['name'] }}</td></tr>
+                    <tr><th>Jenis Kelamin</th><td>{{ $s['gender'] == 'L' ? 'Laki-Laki (Ikhwan)' : 'Perempuan (Akhwat)' }}</td></tr>
+                    <tr><th>Tempat, Tanggal Lahir</th><td>{{ $s['pob'] ?? 'Jakarta' }}, {{ date('d F Y', strtotime($s['dob'] ?? '2010-01-01')) }}</td></tr>
+                    <tr><th>Agama & Kewarganegaraan</th><td>Islam / WNI</td></tr>
+                    <tr><th>Status Santri</th><td><x-badge :status="$s['status']" /></td></tr>
+                  </table>
+                </div>
+
+                <!-- Tab 2: Wali -->
+                <div class="tab-pane" id="tab-wali-{{ $s['id'] }}">
+                  <table class="table table-bordered table-striped">
+                    <tr><th style="width: 30%;">Nama Orang Tua/Wali</th><td><strong>{{ $s['guardian_name'] }}</strong></td></tr>
+                    <tr><th>Nomor Telepon / WhatsApp</th><td><i class="fa fa-whatsapp text-green"></i> {{ $s['guardian_phone'] }}</td></tr>
+                    <tr><th>Pekerjaan</th><td>Wiraswasta / Profesional Swasta</td></tr>
+                    <tr><th>Alamat Tempat Tinggal</th><td>Jl. Alia Raya No. 12, Duren Sawit, Jakarta Timur</td></tr>
+                  </table>
+                </div>
+
+                <!-- Tab 3: Akademik -->
+                <div class="tab-pane" id="tab-akademik-{{ $s['id'] }}">
+                  <p><strong>Rerata Nilai Rapor Semester Berjalan:</strong> <span class="badge bg-green" style="font-size:14px;">{{ $s['gpa'] ?? 88.5 }}</span></p>
+                  <p><strong>Tingkat Kehadiran Kelas:</strong> <span class="badge bg-blue" style="font-size:14px;">{{ $s['attendance_pct'] ?? 98 }}%</span></p>
+                  <a href="{{ route('akademik.rapor') }}" class="btn btn-sm btn-default"><i class="fa fa-file-text-o"></i> Lihat E-Rapor Lengkap</a>
+                </div>
+
+                <!-- Tab 4: Tahfidz -->
+                <div class="tab-pane" id="tab-tahfidz-{{ $s['id'] }}">
+                  <h4>Capaian Hafalan: <span class="text-green">{{ $s['tahfidz_juz'] }} Juz Mutqin</span></h4>
+                  <p>Setoran Terakhir: <b>{{ $s['tahfidz_last_surah'] ?? 'Juz ' . $s['tahfidz_juz'] }}</b></p>
+                  <p>Predikat Kelancaran: <span class="label label-primary">{{ $s['tahfidz_predicate'] ?? 'Mumtaz' }}</span></p>
+                  <a href="{{ route('tahfidz.setoran') }}" class="btn btn-sm btn-primary btn-flat" style="background:#2b6cb0;"><i class="fa fa-microphone"></i> Catat Ziyadah Santri</a>
+                </div>
+
+                <!-- Tab 5: Keuangan -->
+                <div class="tab-pane" id="tab-keuangan-{{ $s['id'] }}">
+                  <p>Tagihan SPP & Asrama Bulanan: <b>Rp {{ number_format($s['spp_nominal'] ?? 1850000, 0, ',', '.') }}</b></p>
+                  <p>Status Pembayaran Bulan Ini: <x-badge :status="$s['spp_status'] ?? 'lunas'" /></p>
+                  <a href="{{ route('keuangan.tagihan') }}" class="btn btn-sm btn-success btn-flat"><i class="fa fa-credit-card"></i> Riwayat Transaksi & Kwitansi</a>
+                </div>
+
+                <!-- Tab 6: Asrama -->
+                <div class="tab-pane" id="tab-asrama-{{ $s['id'] }}">
+                  @if($s['is_boarding'])
+                    <p>Alokasi Kamar Asrama: <b>{{ $s['boarding_room_id'] }}</b></p>
+                    <p>Status Santri: <span class="label label-success">Mukim di Asrama</span></p>
+                    <a href="{{ route('asrama.perizinan') }}" class="btn btn-sm btn-warning btn-flat"><i class="fa fa-ticket"></i> Izin Keluar / Pulang</a>
+                  @else
+                    <div class="alert alert-info">Santri terdaftar pada program Non-Boarding (Full Day School).</div>
+                  @endif
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default btn-flat" data-dismiss="modal">Tutup</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  @endforeach
 
   <!-- Modal Pendaftaran Santri Baru (Bootstrap 3) -->
   <div class="modal fade" id="modal-add-siswa" tabindex="-1" role="dialog">
@@ -411,4 +416,3 @@
   </div>
 
 @endsection
-
