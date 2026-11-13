@@ -284,7 +284,7 @@
               <button type="button" class="close" data-dismiss="modal" style="color:#fff;">&times;</button>
               <h4 class="modal-title"><i class="fa fa-credit-card"></i> Kasir Pembayaran Daftar Ulang: {{ $ap['name'] }}</h4>
             </div>
-            <form action="{{ route('ppdb.daftar-ulang.bayar', ['id' => $ap['id']]) }}" method="POST">
+            <form action="{{ route('ppdb.daftar-ulang.pay', ['id' => $ap['id']]) }}" method="POST">
               @csrf
               <div class="modal-body">
                 <div class="well well-sm" style="background:#f4f6f9;">

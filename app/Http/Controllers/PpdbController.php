@@ -335,7 +335,9 @@ class PpdbController extends Controller
             });
         }
 
-        return view('ppdb.daftar-ulang', compact('acceptedApplicants', 'unitFilter', 'paymentFilter', 'search'));
+        $applicants = $acceptedApplicants;
+
+        return view('ppdb.daftar-ulang', compact('applicants', 'acceptedApplicants', 'unitFilter', 'paymentFilter', 'search'));
     }
 
     /**
