@@ -138,34 +138,6 @@
                       </button>
                     </td>
                   </tr>
-
-                  <!-- Modal Detail Wali -->
-                  <div class="modal fade" id="modal-detail-wli-{{ $g['id'] }}" tabindex="-1" role="dialog">
-                    <div class="modal-dialog" role="document">
-                      <div class="modal-content">
-                        <div class="modal-header bg-primary" style="background:#1a365d; color:#fff;">
-                          <button type="button" class="close" data-dismiss="modal" style="color:#fff;">&times;</button>
-                          <h4 class="modal-title"><i class="fa fa-user"></i> Detail Profil Wali: {{ $g['name'] }}</h4>
-                        </div>
-                        <div class="modal-body">
-                          <table class="table table-bordered table-striped">
-                            <tr><th style="width: 35%;">ID Wali</th><td><code>{{ $g['id'] }}</code></td></tr>
-                            <tr><th>Nama Lengkap</th><td><strong>{{ $g['name'] }}</strong></td></tr>
-                            <tr><th>Santri yang Dinaungi</th><td><strong>{{ $stu['name'] ?? $g['student_name'] ?? '-' }}</strong></td></tr>
-                            <tr><th>Nomor WhatsApp Aktif</th><td><i class="fa fa-whatsapp text-green"></i> {{ $g['phone'] }}</td></tr>
-                            <tr><th>Email Akun Portal</th><td>{{ $g['email'] }}</td></tr>
-                            <tr><th>Pekerjaan / Instansi</th><td>{{ $g['occupation'] }}</td></tr>
-                            <tr><th>Alamat Rumah Lengkap</th><td>{{ $g['address'] }}</td></tr>
-                            <tr><th>Status Akun Portal Orang Tua</th><td><span class="label label-success">Terverifikasi & Aktif</span></td></tr>
-                          </table>
-                        </div>
-                        <div class="modal-footer">
-                          <a href="{{ route('portal.dashboard') }}" class="btn btn-info btn-flat pull-left"><i class="fa fa-mobile-phone"></i> Simulasi Portal Wali</a>
-                          <button type="button" class="btn btn-default btn-flat" data-dismiss="modal">Tutup</button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
                 @endforeach
               </tbody>
             </table>
@@ -174,6 +146,39 @@
       </x-card>
     </div>
   </div>
+
+  <!-- Detail Wali Modals (Moved outside table) -->
+  @foreach($guardians as $g)
+    @php
+      $stu = collect($students)->firstWhere('id', $g['student_id'] ?? '');
+    @endphp
+    <div class="modal fade" id="modal-detail-wli-{{ $g['id'] }}" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header bg-primary" style="background:#1a365d; color:#fff;">
+            <button type="button" class="close" data-dismiss="modal" style="color:#fff;">&times;</button>
+            <h4 class="modal-title"><i class="fa fa-user"></i> Detail Profil Wali: {{ $g['name'] }}</h4>
+          </div>
+          <div class="modal-body">
+            <table class="table table-bordered table-striped">
+              <tr><th style="width: 35%;">ID Wali</th><td><code>{{ $g['id'] }}</code></td></tr>
+              <tr><th>Nama Lengkap</th><td><strong>{{ $g['name'] }}</strong></td></tr>
+              <tr><th>Santri yang Dinaungi</th><td><strong>{{ $stu['name'] ?? $g['student_name'] ?? '-' }}</strong></td></tr>
+              <tr><th>Nomor WhatsApp Aktif</th><td><i class="fa fa-whatsapp text-green"></i> {{ $g['phone'] }}</td></tr>
+              <tr><th>Email Akun Portal</th><td>{{ $g['email'] }}</td></tr>
+              <tr><th>Pekerjaan / Instansi</th><td>{{ $g['occupation'] }}</td></tr>
+              <tr><th>Alamat Rumah Lengkap</th><td>{{ $g['address'] }}</td></tr>
+              <tr><th>Status Akun Portal Orang Tua</th><td><span class="label label-success">Terverifikasi & Aktif</span></td></tr>
+            </table>
+          </div>
+          <div class="modal-footer">
+            <a href="{{ route('portal.dashboard') }}" class="btn btn-info btn-flat pull-left"><i class="fa fa-mobile-phone"></i> Simulasi Portal Wali</a>
+            <button type="button" class="btn btn-default btn-flat" data-dismiss="modal">Tutup</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  @endforeach
 
   <!-- Modal Tambah Orang Tua Baru (Bootstrap 3) -->
   <div class="modal fade" id="modal-add-wali" tabindex="-1" role="dialog">
@@ -242,4 +247,3 @@
   </div>
 
 @endsection
-
