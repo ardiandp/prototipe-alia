@@ -202,57 +202,6 @@
                       </button>
                     </td>
                   </tr>
-
-                  <!-- Modal Detail Formulir Calon Santri -->
-                  <div class="modal fade" id="modal-detail-ap-{{ $ap['id'] }}" tabindex="-1" role="dialog">
-                    <div class="modal-dialog modal-lg" role="document">
-                      <div class="modal-content">
-                        <div class="modal-header bg-primary" style="background:#1a365d; color:#fff;">
-                          <button type="button" class="close" data-dismiss="modal" style="color:#fff;">&times;</button>
-                          <h4 class="modal-title"><i class="fa fa-user-plus"></i> Berkas Formulir PPDB: {{ $ap['name'] }} ({{ $ap['reg_number'] }})</h4>
-                        </div>
-                        <div class="modal-body">
-                          <div class="row">
-                            <div class="col-md-6">
-                              <h5 style="font-weight:bold; color:#2b6cb0; border-bottom:1px solid #ddd; padding-bottom:5px;">A. Data Pribadi Calon Santri</h5>
-                              <table class="table table-bordered table-striped">
-                                <tr><th style="width: 40%;">Nomor Registrasi</th><td><code>{{ $ap['reg_number'] }}</code></td></tr>
-                                <tr><th>Nama Lengkap</th><td><strong>{{ $ap['name'] }}</strong></td></tr>
-                                <tr><th>Jenis Kelamin</th><td>{{ $ap['gender'] == 'L' ? 'Laki-Laki (Ikhwan)' : 'Perempuan (Akhwat)' }}</td></tr>
-                                <tr><th>Unit Pilihan</th><td>{{ $ap['unit_target'] }}</td></tr>
-                                <tr><th>Jalur Seleksi</th><td><span class="label label-primary">{{ $ap['track'] }}</span></td></tr>
-                                <tr><th>Waktu Registrasi</th><td>{{ $ap['registered_at'] }}</td></tr>
-                              </table>
-                            </div>
-                            <div class="col-md-6">
-                              <h5 style="font-weight:bold; color:#2b6cb0; border-bottom:1px solid #ddd; padding-bottom:5px;">B. Data Orang Tua & Hasil Ujian</h5>
-                              <table class="table table-bordered table-striped">
-                                <tr><th style="width: 40%;">Nama Orang Tua/Wali</th><td>{{ $ap['guardian_name'] }}</td></tr>
-                                <tr><th>WhatsApp Aktif</th><td><i class="fa fa-whatsapp text-green"></i> {{ $ap['guardian_phone'] }}</td></tr>
-                                <tr><th>Nilai Tes Seleksi</th><td><span class="badge bg-green" style="font-size:13px;">{{ $ap['exam_score'] ?? '-' }}</span></td></tr>
-                                <tr><th>Verifikasi Berkas</th><td><span class="label label-info">{{ ucfirst($ap['doc_status']) }}</span></td></tr>
-                                <tr><th>Keputusan Seleksi</th><td><span class="label label-success">{{ strtoupper($ap['selection_status']) }}</span></td></tr>
-                                <tr><th>Status Pembayaran</th><td><x-badge :status="$ap['payment_status']" /></td></tr>
-                              </table>
-                            </div>
-                          </div>
-                          
-                          <div class="well well-sm" style="margin-top:10px;">
-                            <strong>Catatan Petugas Panitia PPDB:</strong><br>
-                            <span class="text-muted">{{ $ap['notes'] ?? 'Belum ada catatan khusus dari tim verifikasi.' }}</span>
-                          </div>
-                        </div>
-                        <div class="modal-footer">
-                          @if($ap['selection_status'] === 'lulus' && $ap['payment_status'] === 'lunas')
-                            <a href="{{ route('ppdb.daftar-ulang') }}" class="btn btn-success btn-flat pull-left">
-                              <i class="fa fa-user-check"></i> Proses Konversi Menjadi Santri Aktif
-                            </a>
-                          @endif
-                          <button type="button" class="btn btn-default btn-flat" data-dismiss="modal">Tutup</button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
                 @endforeach
               </tbody>
             </table>
@@ -262,5 +211,57 @@
     </div>
   </div>
 
-@endsection
+  <!-- Detail Formulir Calon Santri Modals (Moved outside table) -->
+  @foreach($applicants as $ap)
+    <div class="modal fade" id="modal-detail-ap-{{ $ap['id'] }}" tabindex="-1" role="dialog">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header bg-primary" style="background:#1a365d; color:#fff;">
+            <button type="button" class="close" data-dismiss="modal" style="color:#fff;">&times;</button>
+            <h4 class="modal-title"><i class="fa fa-user-plus"></i> Berkas Formulir PPDB: {{ $ap['name'] }} ({{ $ap['reg_number'] }})</h4>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-md-6">
+                <h5 style="font-weight:bold; color:#2b6cb0; border-bottom:1px solid #ddd; padding-bottom:5px;">A. Data Pribadi Calon Santri</h5>
+                <table class="table table-bordered table-striped">
+                  <tr><th style="width: 40%;">Nomor Registrasi</th><td><code>{{ $ap['reg_number'] }}</code></td></tr>
+                  <tr><th>Nama Lengkap</th><td><strong>{{ $ap['name'] }}</strong></td></tr>
+                  <tr><th>Jenis Kelamin</th><td>{{ $ap['gender'] == 'L' ? 'Laki-Laki (Ikhwan)' : 'Perempuan (Akhwat)' }}</td></tr>
+                  <tr><th>Unit Pilihan</th><td>{{ $ap['unit_target'] }}</td></tr>
+                  <tr><th>Jalur Seleksi</th><td><span class="label label-primary">{{ $ap['track'] }}</span></td></tr>
+                  <tr><th>Waktu Registrasi</th><td>{{ $ap['registered_at'] }}</td></tr>
+                </table>
+              </div>
+              <div class="col-md-6">
+                <h5 style="font-weight:bold; color:#2b6cb0; border-bottom:1px solid #ddd; padding-bottom:5px;">B. Data Orang Tua & Hasil Ujian</h5>
+                <table class="table table-bordered table-striped">
+                  <tr><th style="width: 40%;">Nama Orang Tua/Wali</th><td>{{ $ap['guardian_name'] }}</td></tr>
+                  <tr><th>WhatsApp Aktif</th><td><i class="fa fa-whatsapp text-green"></i> {{ $ap['guardian_phone'] }}</td></tr>
+                  <tr><th>Nilai Tes Seleksi</th><td><span class="badge bg-green" style="font-size:13px;">{{ $ap['exam_score'] ?? '-' }}</span></td></tr>
+                  <tr><th>Verifikasi Berkas</th><td><span class="label label-info">{{ ucfirst($ap['doc_status']) }}</span></td></tr>
+                  <tr><th>Keputusan Seleksi</th><td><span class="label label-success">{{ strtoupper($ap['selection_status']) }}</span></td></tr>
+                  <tr><th>Status Pembayaran</th><td><x-badge :status="$ap['payment_status']" /></td></tr>
+                </table>
+              </div>
+            </div>
+            
+            <div class="well well-sm" style="margin-top:10px;">
+              <strong>Catatan Petugas Panitia PPDB:</strong><br>
+              <span class="text-muted">{{ $ap['notes'] ?? 'Belum ada catatan khusus dari tim verifikasi.' }}</span>
+            </div>
+          </div>
+          <div class="modal-footer">
+            @if($ap['selection_status'] === 'lulus' && $ap['payment_status'] === 'lunas')
+              <a href="{{ route('ppdb.daftar-ulang') }}" class="btn btn-success btn-flat pull-left">
+                <i class="fa fa-user-check"></i> Proses Konversi Menjadi Santri Aktif
+              </a>
+            @endif
+            <button type="button" class="btn btn-default btn-flat" data-dismiss="modal">Tutup</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  @endforeach
 
+@endsection
