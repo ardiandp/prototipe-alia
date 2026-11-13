@@ -165,37 +165,6 @@
                       </button>
                     </td>
                   </tr>
-
-                  <!-- Modal Detail Pegawai -->
-                  <div class="modal fade" id="modal-detail-gur-{{ $t['id'] }}" tabindex="-1" role="dialog">
-                    <div class="modal-dialog" role="document">
-                      <div class="modal-content">
-                        <div class="modal-header bg-primary" style="background:#1a365d; color:#fff;">
-                          <button type="button" class="close" data-dismiss="modal" style="color:#fff;">&times;</button>
-                          <h4 class="modal-title"><i class="fa fa-user-circle"></i> Profil Pendidik: {{ $t['name'] }}</h4>
-                        </div>
-                        <div class="modal-body">
-                          <div class="text-center" style="margin-bottom: 15px;">
-                            <img src="{{ asset('AdminLTE/dist/img/' . ($t['avatar'] ?? 'avatar5.png')) }}" class="img-circle img-thumbnail" style="width: 80px; height: 80px;" alt="Avatar">
-                            <h4 style="color:#2b6cb0; font-weight:bold; margin-top:5px;">{{ $t['name'] }}</h4>
-                            <p class="text-muted">{{ $t['position'] ?? 'Pendidik' }} &bull; {{ $unitObj['name'] ?? '-' }}</p>
-                          </div>
-                          <table class="table table-bordered table-striped">
-                            <tr><th style="width: 35%;">Nomor Induk Pegawai (NIP)</th><td><code>{{ $t['nip'] }}</code></td></tr>
-                            <tr><th>Mata Pelajaran Utama</th><td><b>{{ $t['subject'] }}</b></td></tr>
-                            <tr><th>Status Kepegawaian</th><td><span class="label label-success">{{ $t['employment_status'] }}</span></td></tr>
-                            <tr><th>Pendidikan Terakhir</th><td>{{ $t['education'] ?? 'S1 Pendidikan' }}</td></tr>
-                            <tr><th>Email Resmi Sekolah</th><td>{{ $t['email'] }}</td></tr>
-                            <tr><th>Nomor Kontak WhatsApp</th><td><i class="fa fa-whatsapp text-green"></i> {{ $t['phone'] }}</td></tr>
-                            <tr><th>Status Presensi & Jadwal</th><td><span class="label label-info">Aktif Mengajar Semester Ini</span></td></tr>
-                          </table>
-                        </div>
-                        <div class="modal-footer">
-                          <button type="button" class="btn btn-default btn-flat" data-dismiss="modal">Tutup</button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
                 @endforeach
               </tbody>
             </table>
@@ -204,6 +173,42 @@
       </x-card>
     </div>
   </div>
+
+  <!-- Detail Pegawai Modals (Moved outside table) -->
+  @foreach($teachers as $t)
+    @php
+      $unitObj = collect($units)->firstWhere('id', $t['unit_id'] ?? '');
+    @endphp
+    <div class="modal fade" id="modal-detail-gur-{{ $t['id'] }}" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header bg-primary" style="background:#1a365d; color:#fff;">
+            <button type="button" class="close" data-dismiss="modal" style="color:#fff;">&times;</button>
+            <h4 class="modal-title"><i class="fa fa-user-circle"></i> Profil Pendidik: {{ $t['name'] }}</h4>
+          </div>
+          <div class="modal-body">
+            <div class="text-center" style="margin-bottom: 15px;">
+              <img src="{{ asset('AdminLTE/dist/img/' . ($t['avatar'] ?? 'avatar5.png')) }}" class="img-circle img-thumbnail" style="width: 80px; height: 80px;" alt="Avatar">
+              <h4 style="color:#2b6cb0; font-weight:bold; margin-top:5px;">{{ $t['name'] }}</h4>
+              <p class="text-muted">{{ $t['position'] ?? 'Pendidik' }} &bull; {{ $unitObj['name'] ?? '-' }}</p>
+            </div>
+            <table class="table table-bordered table-striped">
+              <tr><th style="width: 35%;">Nomor Induk Pegawai (NIP)</th><td><code>{{ $t['nip'] }}</code></td></tr>
+              <tr><th>Mata Pelajaran Utama</th><td><b>{{ $t['subject'] }}</b></td></tr>
+              <tr><th>Status Kepegawaian</th><td><span class="label label-success">{{ $t['employment_status'] }}</span></td></tr>
+              <tr><th>Pendidikan Terakhir</th><td>{{ $t['education'] ?? 'S1 Pendidikan' }}</td></tr>
+              <tr><th>Email Resmi Sekolah</th><td>{{ $t['email'] }}</td></tr>
+              <tr><th>Nomor Kontak WhatsApp</th><td><i class="fa fa-whatsapp text-green"></i> {{ $t['phone'] }}</td></tr>
+              <tr><th>Status Presensi & Jadwal</th><td><span class="label label-info">Aktif Mengajar Semester Ini</span></td></tr>
+            </table>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default btn-flat" data-dismiss="modal">Tutup</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  @endforeach
 
   <!-- Modal Tambah Guru/Pegawai Baru (Bootstrap 3) -->
   <div class="modal fade" id="modal-add-pegawai" tabindex="-1" role="dialog">
@@ -299,4 +304,3 @@
   </div>
 
 @endsection
-
