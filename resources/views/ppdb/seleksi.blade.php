@@ -1,12 +1,13 @@
 @extends('layouts.app')
 
 @section('title', 'Seleksi & Pengumuman PPDB')
-@section('page_title', 'Hasil Ujian Seleksi & Kelulusan')
-@section('page_description', 'Penilaian Potensi Akademik, Tes Al-Qur\'an, Wawancara, dan Keputusan Kelulusan PPDB')
+@section('page_title', 'Hasil Ujian Seleksi & Pengumuman')
+@section('page_description', 'Kelola Skor Tes Potensi Akademik, Baca Al-Qur\'an, Wawancara, dan Status Kelulusan')
 
 @section('breadcrumbs')
   <li><a href="{{ route('ppdb.dashboard') }}">PPDB</a></li>
-  <li class="active">Seleksi & Pengumuman</li>
+  <li><a href="{{ route('ppdb.pendaftar') }}">Data Pendaftar</a></li>
+  <li class="active">Seleksi & Kelulusan</li>
 @endsection
 
 @section('content')
@@ -17,9 +18,9 @@
       <div class="small-box bg-blue" style="background:#2b6cb0 !important;">
         <div class="inner">
           <h3>{{ count($applicants) }}</h3>
-          <p>Total Peserta Ujian Seleksi</p>
+          <p>Total Peserta Ujian</p>
         </div>
-        <div class="icon"><i class="fa fa-pencil-square-o"></i></div>
+        <div class="icon"><i class="fa fa-users"></i></div>
         <a href="#table-seleksi" class="small-box-footer">Tabel Seleksi <i class="fa fa-arrow-circle-right"></i></a>
       </div>
     </div>
@@ -27,9 +28,9 @@
       <div class="small-box bg-green">
         <div class="inner">
           <h3>{{ count(array_filter($applicants, fn($a) => ($a['selection_status'] ?? '') === 'lulus')) }}</h3>
-          <p>Dinyatakan Lulus Seleksi</p>
+          <p>Dinyatakan Diterima (Lulus)</p>
         </div>
-        <div class="icon"><i class="fa fa-trophy"></i></div>
+        <div class="icon"><i class="fa fa-check-circle"></i></div>
         <a href="{{ route('ppdb.seleksi', ['status' => 'lulus']) }}" class="small-box-footer">Filter Lulus <i class="fa fa-arrow-circle-right"></i></a>
       </div>
     </div>
@@ -37,7 +38,7 @@
       <div class="small-box bg-yellow">
         <div class="inner">
           <h3>{{ count(array_filter($applicants, fn($a) => ($a['selection_status'] ?? '') === 'proses')) }}</h3>
-          <p>Ujian Dalam Proses</p>
+          <p>Dalam Proses Rapat Pleno</p>
         </div>
         <div class="icon"><i class="fa fa-clock-o"></i></div>
         <a href="{{ route('ppdb.seleksi', ['status' => 'proses']) }}" class="small-box-footer">Filter Proses <i class="fa fa-arrow-circle-right"></i></a>
@@ -47,10 +48,10 @@
       <div class="small-box bg-red">
         <div class="inner">
           <h3>{{ count(array_filter($applicants, fn($a) => ($a['selection_status'] ?? '') === 'tidak_lulus')) }}</h3>
-          <p>Belum Memenuhi Syarat</p>
+          <p>Tidak Memenuhi Syarat</p>
         </div>
         <div class="icon"><i class="fa fa-times-circle"></i></div>
-        <a href="{{ route('ppdb.seleksi', ['status' => 'tidak_lulus']) }}" class="small-box-footer">Filter Tidak Lulus <i class="fa fa-arrow-circle-right"></i></a>
+        <a href="{{ route('ppdb.seleksi', ['status' => 'tidak_lulus']) }}" class="small-box-footer">Filter Ditolak <i class="fa fa-arrow-circle-right"></i></a>
       </div>
     </div>
   </div>
@@ -58,9 +59,9 @@
   <!-- Main Card with Filter Toolbar & Table -->
   <div class="row" id="table-seleksi">
     <div class="col-md-12">
-      <x-card title="Buku Keputusan Hasil Seleksi Masuk PPDB Alia" type="primary">
+      <x-card title="Daftar Nilai & Keputusan Kelulusan Masuk Alia" type="primary">
         <x-slot:tools>
-          <button type="button" class="btn btn-default btn-sm" onclick="window.print()"><i class="fa fa-print"></i> Cetak Hasil Seleksi</button>
+          <button type="button" class="btn btn-default btn-sm" onclick="window.print()"><i class="fa fa-print"></i> Cetak</button>
         </x-slot:tools>
 
         <!-- Filter & Search Toolbar -->
@@ -68,46 +69,48 @@
           <div class="col-md-8 col-sm-12">
             <form action="{{ route('ppdb.seleksi') }}" method="GET" class="form-inline">
               <div class="input-group" style="width: 240px;">
-                <input type="text" name="search" value="{{ $search }}" class="form-control" placeholder="Cari nama / nomor registrasi...">
+                <input type="text" name="search" value="{{ $search }}" class="form-control" placeholder="Cari nama / no. reg...">
                 <span class="input-group-btn">
                   <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
                 </span>
               </div>
 
-              <!-- Filter Unit -->
-              <div class="form-group" style="margin-left: 8px;">
-                <select name="unit" class="form-control" onchange="this.form.submit()">
-                  <option value="all" {{ $unitFilter == 'all' ? 'selected' : '' }}>Semua Unit</option>
-                  <option value="SD" {{ $unitFilter == 'SD' ? 'selected' : '' }}>SD Islam Alia</option>
-                  <option value="SMP" {{ $unitFilter == 'SMP' ? 'selected' : '' }}>SMP Islam Alia</option>
-                  <option value="SMA" {{ $unitFilter == 'SMA' ? 'selected' : '' }}>SMA Islam Alia Boarding</option>
-                </select>
-              </div>
-
               <!-- Filter Status Kelulusan -->
               <div class="form-group" style="margin-left: 8px;">
                 <select name="status" class="form-control" onchange="this.form.submit()">
-                  <option value="all" {{ $statusFilter == 'all' ? 'selected' : '' }}>Semua Keputusan</option>
-                  <option value="lulus" {{ $statusFilter == 'lulus' ? 'selected' : '' }}>Lulus</option>
+                  <option value="all" {{ $statusFilter == 'all' ? 'selected' : '' }}>Semua Hasil Seleksi</option>
+                  <option value="lulus" {{ $statusFilter == 'lulus' ? 'selected' : '' }}>Lulus (Diterima)</option>
                   <option value="proses" {{ $statusFilter == 'proses' ? 'selected' : '' }}>Dalam Proses</option>
                   <option value="tidak_lulus" {{ $statusFilter == 'tidak_lulus' ? 'selected' : '' }}>Tidak Lulus</option>
                 </select>
               </div>
 
-              @if($search || $unitFilter !== 'all' || $statusFilter !== 'all')
+              <!-- Filter Unit Target -->
+              <div class="form-group" style="margin-left: 8px;">
+                <select name="unit" class="form-control" onchange="this.form.submit()">
+                  <option value="all" {{ $unitFilter == 'all' ? 'selected' : '' }}>Semua Unit</option>
+                  <option value="SD" {{ $unitFilter == 'SD' ? 'selected' : '' }}>SD</option>
+                  <option value="SMP" {{ $unitFilter == 'SMP' ? 'selected' : '' }}>SMP</option>
+                  <option value="SMA" {{ $unitFilter == 'SMA' ? 'selected' : '' }}>SMA</option>
+                </select>
+              </div>
+
+              @if($search || $statusFilter !== 'all' || $unitFilter !== 'all')
                 <a href="{{ route('ppdb.seleksi') }}" class="btn btn-default text-muted" title="Reset filter" style="margin-left: 5px;"><i class="fa fa-times"></i> Reset</a>
               @endif
             </form>
           </div>
           <div class="col-md-4 col-sm-12 text-right">
-            <span class="text-muted"><i class="fa fa-info-circle text-blue"></i> Bobot: Akademik 40%, Al-Qur'an 40%, Wawancara 20%</span>
+            <a href="{{ route('ppdb.daftar-ulang') }}" class="btn btn-success btn-flat">
+              <i class="fa fa-credit-card"></i> Menuju Kasir & Konversi Daftar Ulang
+            </a>
           </div>
         </div>
 
         @if(count($applicants) === 0)
           <x-empty-state 
-            title="Tidak Ada Data Seleksi"
-            message="Tidak ada pendaftar yang cocok dengan filter kriteria hasil seleksi yang Anda pilih."
+            title="Tidak Ada Calon Santri"
+            message="Tidak ada pendaftar yang cocok dengan filter parameter seleksi yang Anda tentukan."
             actionLabel="Reset Filter"
             actionUrl="{{ route('ppdb.seleksi') }}"
           />
@@ -119,12 +122,12 @@
                   <th style="width: 45px;" class="text-center">No</th>
                   <th>No. Registrasi</th>
                   <th>Nama Calon Santri</th>
-                  <th>Jenjang / Unit</th>
+                  <th>Unit Pilihan</th>
                   <th>Jalur Masuk</th>
-                  <th class="text-center">Skor Akhir Ujian</th>
-                  <th class="text-center">Status Keputusan</th>
-                  <th>Keterangan Pengumuman</th>
-                  <th style="width: 160px;" class="text-center">Aksi Seleksi</th>
+                  <th class="text-center">Skor Ujian Masuk</th>
+                  <th class="text-center">Hasil Keputusan</th>
+                  <th>Catatan Hasil Sidang</th>
+                  <th style="width: 150px;" class="text-center">Aksi Penilaian</th>
                 </tr>
               </thead>
               <tbody>
@@ -175,74 +178,6 @@
                       </button>
                     </td>
                   </tr>
-
-                  <!-- Modal Input Nilai & Keputusan Seleksi -->
-                  <div class="modal fade" id="modal-grade-{{ $ap['id'] }}" tabindex="-1" role="dialog">
-                    <div class="modal-dialog modal-md" role="document">
-                      <div class="modal-content">
-                        <div class="modal-header bg-primary" style="background:#1a365d; color:#fff;">
-                          <button type="button" class="close" data-dismiss="modal" style="color:#fff;">&times;</button>
-                          <h4 class="modal-title"><i class="fa fa-pencil"></i> Penilaian Ujian Seleksi: {{ $ap['name'] }}</h4>
-                        </div>
-                        <form action="{{ route('ppdb.seleksi.update', ['id' => $ap['id']]) }}" method="POST">
-                          @csrf
-                          <div class="modal-body">
-                            <div class="callout callout-info" style="background:#f4f6f9; border-left-color:#2b6cb0; padding:10px;">
-                              <p style="margin:0;">No. Registrasi: <b>{{ $ap['reg_number'] }}</b> | Jalur Masuk: <b>{{ $ap['track'] }}</b></p>
-                              <p style="margin:0;">Pilihan Unit: <b>{{ $ap['unit_target'] }}</b></p>
-                            </div>
-
-                            <div class="row">
-                              <div class="col-md-4">
-                                <div class="form-group">
-                                  <label>Tes Potensi Akademik (40%) <span class="text-danger">*</span></label>
-                                  <input type="number" name="academic_score" class="form-control" value="{{ $ap['exam_score'] ? round($ap['exam_score'] * 0.95) : 85 }}" min="0" max="100" step="0.5" required>
-                                </div>
-                              </div>
-                              <div class="col-md-4">
-                                <div class="form-group">
-                                  <label>Tes Baca Al-Qur'an (40%) <span class="text-danger">*</span></label>
-                                  <input type="number" name="quran_score" class="form-control" value="{{ $ap['exam_score'] ?: 90 }}" min="0" max="100" step="0.5" required>
-                                </div>
-                              </div>
-                              <div class="col-md-4">
-                                <div class="form-group">
-                                  <label>Wawancara Santri (20%) <span class="text-danger">*</span></label>
-                                  <input type="number" name="interview_score" class="form-control" value="{{ $ap['exam_score'] ? round($ap['exam_score'] * 1.02) : 88 }}" min="0" max="100" step="0.5" required>
-                                </div>
-                              </div>
-                            </div>
-
-                            <div class="form-group">
-                              <label>Keputusan Dewan Penguji / Panitia <span class="text-danger">*</span></label>
-                              <select name="selection_status" class="form-control" required>
-                                <option value="lulus" {{ ($ap['selection_status'] ?? '') === 'lulus' ? 'selected' : '' }}>
-                                  LULUS SELEKSI (Diterima Sebagai Calon Santri Baru)
-                                </option>
-                                <option value="tidak_lulus" {{ ($ap['selection_status'] ?? '') === 'tidak_lulus' ? 'selected' : '' }}>
-                                  TIDAK LULUS (Nilai Di Bawah Batas Ambang Minimal)
-                                </option>
-                                <option value="proses" {{ ($ap['selection_status'] ?? '') === 'proses' ? 'selected' : '' }}>
-                                  DALAM PROSES (Menunggu Ujian Susulan / Hasil Rapat)
-                                </option>
-                              </select>
-                            </div>
-
-                            <div class="form-group">
-                              <label>Catatan Hasil Ujian & Pengumuman</label>
-                              <textarea name="notes" class="form-control" rows="2" placeholder="Catatan penguji untuk surat pengumuman...">{{ $ap['notes'] }}</textarea>
-                            </div>
-                          </div>
-                          <div class="modal-footer">
-                            <button type="button" class="btn btn-default btn-flat" data-dismiss="modal">Tutup</button>
-                            <button type="submit" class="btn btn-primary btn-flat" style="background:#2b6cb0;">
-                              <i class="fa fa-save"></i> Simpan Keputusan Seleksi
-                            </button>
-                          </div>
-                        </form>
-                      </div>
-                    </div>
-                  </div>
                 @endforeach
               </tbody>
             </table>
@@ -252,5 +187,74 @@
     </div>
   </div>
 
-@endsection
+  <!-- Detail Penilaian Seleksi Calon Santri Modals (Moved outside table) -->
+  @foreach($applicants as $ap)
+    <div class="modal fade" id="modal-grade-{{ $ap['id'] }}" tabindex="-1" role="dialog">
+      <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+          <div class="modal-header bg-primary" style="background:#1a365d; color:#fff;">
+            <button type="button" class="close" data-dismiss="modal" style="color:#fff;">&times;</button>
+            <h4 class="modal-title"><i class="fa fa-pencil"></i> Penilaian Ujian Seleksi: {{ $ap['name'] }}</h4>
+          </div>
+          <form action="{{ route('ppdb.seleksi.update', ['id' => $ap['id']]) }}" method="POST">
+            @csrf
+            <div class="modal-body">
+              <div class="callout callout-info" style="background:#f4f6f9; border-left-color:#2b6cb0; padding:10px;">
+                <p style="margin:0;">No. Registrasi: <b>{{ $ap['reg_number'] }}</b> | Jalur Masuk: <b>{{ $ap['track'] }}</b></p>
+                <p style="margin:0;">Pilihan Unit: <b>{{ $ap['unit_target'] }}</b></p>
+              </div>
 
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>Tes Potensi Akademik (40%) <span class="text-danger">*</span></label>
+                    <input type="number" name="academic_score" class="form-control" value="{{ $ap['exam_score'] ? round($ap['exam_score'] * 0.95) : 85 }}" min="0" max="100" step="0.5" required>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>Tes Baca Al-Qur'an (40%) <span class="text-danger">*</span></label>
+                    <input type="number" name="quran_score" class="form-control" value="{{ $ap['exam_score'] ?: 90 }}" min="0" max="100" step="0.5" required>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>Wawancara Santri (20%) <span class="text-danger">*</span></label>
+                    <input type="number" name="interview_score" class="form-control" value="{{ $ap['exam_score'] ? round($ap['exam_score'] * 1.02) : 88 }}" min="0" max="100" step="0.5" required>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>Keputusan Dewan Penguji / Panitia <span class="text-danger">*</span></label>
+                <select name="selection_status" class="form-control" required>
+                  <option value="lulus" {{ ($ap['selection_status'] ?? '') === 'lulus' ? 'selected' : '' }}>
+                    LULUS SELEKSI (Diterima Sebagai Calon Santri Baru)
+                  </option>
+                  <option value="tidak_lulus" {{ ($ap['selection_status'] ?? '') === 'tidak_lulus' ? 'selected' : '' }}>
+                    TIDAK LULUS (Nilai Di Bawah Batas Ambang Minimal)
+                  </option>
+                  <option value="proses" {{ ($ap['selection_status'] ?? '') === 'proses' ? 'selected' : '' }}>
+                    DALAM PROSES (Menunggu Ujian Susulan / Hasil Rapat)
+                  </option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label>Catatan Hasil Ujian & Pengumuman</label>
+                <textarea name="notes" class="form-control" rows="2" placeholder="Catatan penguji untuk surat pengumuman...">{{ $ap['notes'] }}</textarea>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default btn-flat" data-dismiss="modal">Tutup</button>
+              <button type="submit" class="btn btn-primary btn-flat" style="background:#2b6cb0;">
+                <i class="fa fa-save"></i> Simpan Keputusan Seleksi
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  @endforeach
+
+@endsection
