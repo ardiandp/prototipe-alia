@@ -273,6 +273,7 @@ class DemoDataManager
             ['CLS-SMP-7A', 'Kelas VII Putra (Thariq bin Ziyad)', 'UNIT-SMP', '7', 'GUR-003', 29, 30],
             ['CLS-SMP-7B', 'Kelas VII Putri (Fathimah Az-Zahra)', 'UNIT-SMP', '7', 'GUR-007', 28, 30],
             ['CLS-SMP-8A', 'Kelas VIII Putra (Salahuddin Al-Ayyubi)', 'UNIT-SMP', '8', 'GUR-004', 30, 30],
+            ['CLS-SMP-8B', 'Kelas VIII Putri (Aisyah Ash-Shiddiqah)', 'UNIT-SMP', '8', 'GUR-007', 28, 30],
             ['CLS-SMA-10A', 'Kelas X MIPA 1 (Boarding)', 'UNIT-SMA', '10', 'GUR-001', 28, 30],
             ['CLS-SMA-10B', 'Kelas X MIPA 2 (Boarding)', 'UNIT-SMA', '10', 'GUR-006', 29, 30],
             ['CLS-SMA-11A', 'Kelas XI MIPA (Boarding)', 'UNIT-SMA', '11', 'GUR-004', 27, 30],
@@ -451,7 +452,7 @@ class DemoDataManager
             ['Ahmad Fauzan Al-Ghifari', 'L', 'CLS-SMA-10A', 'KMR-A01', 'Ir. Hendra Gunawan', '081122334455', 'Jakarta', '2010-04-15', 'SMA', '10', 'Boarding', 5, 'lunas', 'avatar5.png'],
             ['Siti Fatimah Az-Zahra', 'P', 'CLS-SMP-7B', 'KMR-B01', 'H. Bambang Sudiro', '081233445566', 'Bandung', '2013-08-20', 'SMP', '7', 'Boarding', 4, 'lunas', 'avatar3.png'],
             ['Muhammad Bilal Ramadhan', 'L', 'CLS-SMA-10A', 'KMR-A01', 'Drs. Ridwan Hakim', '081344556677', 'Bekasi', '2010-09-12', 'SMA', '10', 'Boarding', 6, 'belum_lunas', 'avatar.png'],
-            ['Zaskia Nur Ramadhani', 'P', 'CLS-SMP-8A', null, 'H. Agus Hermawan', '081455667788', 'Depok', '2012-11-05', 'SMP', '8', 'Non-Boarding (Full Day)', 3, 'lunas', 'avatar2.png'],
+            ['Zaskia Nur Ramadhani', 'P', 'CLS-SMP-8B', null, 'H. Agus Hermawan', '081455667788', 'Depok', '2012-11-05', 'SMP', '8', 'Non-Boarding (Full Day)', 3, 'lunas', 'avatar2.png'],
             ['Faris Abdurrahman', 'L', 'CLS-SD-1A', null, 'Yudi Pratama, S.T.', '081566778899', 'Jakarta Timur', '2019-03-25', 'SD', '1', 'Non-Boarding (Full Day)', 1, 'lunas', 'avatar04.png'],
             ['Salma Khairunnisa', 'P', 'CLS-SMA-10B', 'KMR-B02', 'Dr. Tri Wibowo', '081677889900', 'Tangerang', '2010-07-18', 'SMA', '10', 'Boarding', 5, 'belum_lunas', 'avatar3.png'],
             ['Rayhan Pratama', 'L', 'CLS-SMA-11A', 'KMR-A02', 'H. Joko Susilo', '081788990011', 'Bogor', '2009-02-14', 'SMA', '11', 'Boarding', 7, 'lunas', 'avatar5.png'],
@@ -2017,6 +2018,24 @@ class DemoDataManager
                 'certificate_number' => 'KKG-PAI/X/2026/054',
                 'status' => 'terverifikasi',
                 'notes' => 'Menjawab cepat pada babak rebutan kisah 25 Nabi dan Rasul.'
+            ],
+            [
+                'id' => 'ACH-007',
+                'student_id' => 'SIS-0007', // Rayhan Pratama
+                'title' => 'Medali Emas International Islamic School Robotic Olympiad (IISRO)',
+                'category' => 'Teknologi & Robotik',
+                'competition_name' => 'International Islamic School Robotic Olympiad (IISRO) Kuala Lumpur',
+                'level' => 'Internasional',
+                'rank' => 'Juara 1 / Gold Medal',
+                'year' => 2026,
+                'date' => '2026-10-25',
+                'organizer' => 'International Islamic School Alliance & Universiti Malaya',
+                'coach_name' => 'Ahmad Dahlan, M.T.',
+                'reward' => 'Trophy Kejuaraan Internasional, Medali Emas, & Hadiah Tunai USD 1,000',
+                'points' => 150,
+                'certificate_number' => 'IISRO-KL/X/2026/GOLD-08',
+                'status' => 'terverifikasi',
+                'notes' => 'Robot pemadam api otonom santri meraih poin tertinggi pada babak final internasional di Malaysia.'
             ]
         ];
 
@@ -2096,6 +2115,36 @@ class DemoDataManager
                 'status' => 'dalam_proses',
                 'follow_up_date' => '2026-11-15',
                 'notes' => 'Respons positif saat diajak berbicara santai di gazebo perpustakaan.'
+            ],
+            [
+                'id' => 'BK-006',
+                'student_id' => 'SIS-0002', // Siti Fatimah Az-Zahra
+                'counselor_name' => 'Ustadzah Siti Rahmah, S.Psi., M.A.',
+                'date' => '2026-11-15',
+                'time' => '13:00 - 14:00',
+                'category' => 'Belajar & Akademik',
+                'service_type' => 'Konseling Individu',
+                'referral_from' => 'Inisiatif Mandiri Santri',
+                'problem_summary' => 'Konsultasi kiat meningkatkan konsistensi murajaah tahfidz 5 juz menjelang ujian tasmi\' akbar santri.',
+                'action_plan' => 'Bimbingan teknik penjadwalan murajaah mandiri bakda Subuh dan Ashar, serta pemantauan buku mutabaah mingguan.',
+                'status' => 'dijadwalkan',
+                'follow_up_date' => '2026-11-22',
+                'notes' => 'Sesi pertama telah dijadwalkan di ruang bimbingan konseling putri.'
+            ],
+            [
+                'id' => 'BK-007',
+                'student_id' => 'SIS-0008', // Aisyah Humaira
+                'counselor_name' => 'Drs. H. Mulyadi, M.Pd., Kons.',
+                'date' => '2026-11-09',
+                'time' => '09:00 - 10:30',
+                'category' => 'Belajar & Akademik',
+                'service_type' => 'Konferensi Kasus',
+                'referral_from' => 'Wali Kelas 2 SD & Psikolog Sekolah',
+                'problem_summary' => 'Gangguan pemusatan perhatian dan hiperaktivitas ringan saat jam belajar tematik Al-Qur\'an di kelas.',
+                'action_plan' => 'Konferensi kasus terpadu bersama orang tua, rujukan asesmen lanjutan ke klinik tumbuh kembang anak & psikolog pendidikan.',
+                'status' => 'dirujuk',
+                'follow_up_date' => '2026-11-25',
+                'notes' => 'Surat rujukan ahli resmi diterbitkan untuk evaluasi psikologis komprehensif.'
             ]
         ];
 
@@ -2326,6 +2375,23 @@ class DemoDataManager
                 'referral_hospital' => 'RS Islam Karawang (Instalasi Gawat Darurat)',
                 'parent_notified' => true,
                 'notes' => 'Wali santri telah dihubungi via telepon dan sedang dalam perjalanan menuju rumah sakit.'
+            ],
+            [
+                'id' => 'UKS-005',
+                'student_id' => 'SIS-0005', // Faris Abdurrahman
+                'paramedic_name' => 'Ns. Rahmatia Hidayah, S.Kep.',
+                'visit_date' => '2026-11-10 11:15:00',
+                'symptoms' => 'Pusing berputar (vertigo ringan), badan lemas, dan dehidrasi setelah upacara bendera dan kegiatan olahraga.',
+                'diagnosis' => 'Cephalea Tegang & Dehidrasi Ringan',
+                'temperature' => '37.4 °C',
+                'blood_pressure' => '100/65 mmHg',
+                'treatment_given' => 'Istirahat baring di Bed 1 UKS, rehidrasi cairan elektrolit oral, relaksasi ruang ber-AC.',
+                'medicines_prescribed' => 'Paracetamol 500mg (1 tab), Larutan Elektrolit Oralit 250ml',
+                'action_taken' => 'Sedang diobservasi di Ruang UKS (Bed 1), evaluasi tanda vital setiap 1 jam.',
+                'status' => 'diobservasi', // diobservasi, selesai, dirujuk_faskes
+                'referral_hospital' => null,
+                'parent_notified' => false,
+                'notes' => 'Pasien dianjurkan istirahat baring 1-2 jam dan tidak kembali ke kelas sebelum pusing mereda.'
             ]
         ];
 
@@ -2599,7 +2665,7 @@ class DemoDataManager
                 'date_end' => '2026-11-07 17:00:00',
                 'pickup_person' => 'Mandiri (Bersama Regu Santri)',
                 'pickup_phone' => '081234567890',
-                'approval_status' => 'disetujui', // diajukan, disetujui, ditolak, kembali
+                'approval_status' => 'kembali', // diajukan, disetujui, ditolak, kembali
                 'approver_name' => 'Ust. Salman Al-Farisi, S.Sos. (Musyrif Asrama)',
                 'security_check_out' => '2026-11-07 13:35:10',
                 'security_check_in' => '2026-11-07 16:45:20',
@@ -2660,6 +2726,24 @@ class DemoDataManager
                 'late_minutes' => 0,
                 'gate_pass_code' => 'GP-PENDING',
                 'notes' => 'Permohonan masuk via portal orang tua / wali santri.'
+            ],
+            [
+                'id' => 'IZN-005',
+                'permit_number' => 'IZN/ASR/2026/11/028',
+                'student_id' => 'SIS-0007', // Zaid bin Tsabit
+                'type' => 'keluar_sebentar',
+                'reason' => 'Izin keluar malam mencari kuliner tanpa pendamping setelah pukul 21:00.',
+                'date_start' => '2026-11-08 21:00:00',
+                'date_end' => '2026-11-08 23:00:00',
+                'pickup_person' => 'Mandiri (Tanpa Pendamping)',
+                'pickup_phone' => '081288990011',
+                'approval_status' => 'ditolak',
+                'approver_name' => 'Ust. Salman Al-Farisi, S.Sos. (Musyrif Asrama)',
+                'security_check_out' => null,
+                'security_check_in' => null,
+                'late_minutes' => 0,
+                'gate_pass_code' => 'GP-DITOLAK',
+                'notes' => 'Permohonan ditolak karena melanggar jam malam asrama (maksimal pkl 17:30 WIB) dan tanpa wali.'
             ]
         ];
 

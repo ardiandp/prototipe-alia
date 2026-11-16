@@ -143,7 +143,7 @@
                             <th>Konselor & Waktu</th>
                             <th>Ringkasan Masalah & RTL</th>
                             <th style="text-align: center;">Status</th>
-                            <th style="width: 85px; text-align: center;">Aksi</th>
+                            <th style="width: 95px; text-align: center;">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -202,107 +202,6 @@
                                     </div>
                                 </td>
                             </tr>
-
-                            {{-- Modal Detail Rekam Konseling Santri --}}
-                            <div class="modal fade" id="modalDetailKonseling{{ $cs['id'] }}" tabindex="-1" role="dialog">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header" style="background-color: #1a365d; color: #fff;">
-                                            <button type="button" class="close" data-dismiss="modal" style="color: #fff;">&times;</button>
-                                            <h4 class="modal-title"><i class="fa fa-user-md text-yellow"></i> Berkas Layanan Bimbingan & Konseling [{{ $cs['id'] }}]</h4>
-                                        </div>
-                                        <div class="modal-body" style="background-color: #fdfdfd;">
-                                            <div class="text-center" style="margin-bottom: 15px; padding: 12px; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 6px;">
-                                                <h4 style="margin: 0 0 5px 0; font-weight: bold; color: #1e3a8a;">{{ $std['name'] ?? '-' }}</h4>
-                                                <span class="label label-primary">{{ $cls['name'] ?? '-' }}</span> &nbsp;
-                                                <span class="label label-info">NIS: {{ $std['nis'] ?? '-' }}</span> &nbsp;
-                                                {!! $statusBadge !!}
-                                            </div>
-
-                                            <table class="table table-bordered table-striped" style="font-size: 13px;">
-                                                <tr>
-                                                    <th style="width: 35%;">Guru BK / Konselor</th>
-                                                    <td><strong>{{ $cs['counselor_name'] }}</strong></td>
-                                                </tr>
-                                                <tr>
-                                                    <th>Waktu Pertemuan</th>
-                                                    <td>{{ date('l, d F Y', strtotime($cs['date'])) }} | Pukul {{ $cs['time'] }} WIB</td>
-                                                </tr>
-                                                <tr>
-                                                    <th>Bidang Masalah</th>
-                                                    <td><span class="label label-warning">{{ $cs['category'] }}</span></td>
-                                                </tr>
-                                                <tr>
-                                                    <th>Jenis Layanan</th>
-                                                    <td><span class="badge bg-purple">{{ $cs['service_type'] }}</span></td>
-                                                </tr>
-                                                <tr>
-                                                    <th>Asal Rujukan</th>
-                                                    <td>{{ $cs['referral_from'] }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <th>Uraian Permasalahan / Keluhan</th>
-                                                    <td style="background: #fff; line-height: 1.5;">{{ $cs['problem_summary'] }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <th>Rencana Tindak Lanjut (RTL) & Solusi</th>
-                                                    <td style="background: #f0fdf4; color: #166534; font-weight: 500;">{{ $cs['action_plan'] }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <th>Tanggal Evaluasi Lanjutan</th>
-                                                    <td><strong>{{ date('d F Y', strtotime($cs['follow_up_date'])) }}</strong></td>
-                                                </tr>
-                                                <tr>
-                                                    <th>Catatan Kerahasiaan Konselor</th>
-                                                    <td><em>"{{ $cs['notes'] }}"</em></td>
-                                                </tr>
-                                            </table>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Tutup</button>
-                                            <button type="button" class="btn btn-primary" onclick="window.print()"><i class="fa fa-print"></i> Cetak Berkas Konseling</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {{-- Modal Update Status & RTL --}}
-                            <div class="modal fade" id="modalUpdateStatus{{ $cs['id'] }}" tabindex="-1" role="dialog">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <form method="POST" action="{{ route('kesiswaan.konseling.update-status', $cs['id']) }}">
-                                            @csrf
-                                            <div class="modal-header" style="background-color: #3b82f6; color: #fff;">
-                                                <button type="button" class="close" data-dismiss="modal" style="color: #fff;">&times;</button>
-                                                <h4 class="modal-title"><i class="fa fa-edit"></i> Update Progres & RTL Konseling [{{ $cs['id'] }}]</h4>
-                                            </div>
-                                            <div class="modal-body">
-                                                <div class="form-group">
-                                                    <label for="status_{{ $cs['id'] }}">Status Penanganan <span class="text-danger">*</span></label>
-                                                    <select name="status" id="status_{{ $cs['id'] }}" class="form-control" required>
-                                                        <option value="dijadwalkan" {{ $cs['status'] === 'dijadwalkan' ? 'selected' : '' }}>Dijadwalkan</option>
-                                                        <option value="dalam_proses" {{ $cs['status'] === 'dalam_proses' ? 'selected' : '' }}>Dalam Proses (Pendampingan Berjalan)</option>
-                                                        <option value="selesai" {{ $cs['status'] === 'selesai' ? 'selected' : '' }}>Selesai / Tuntas</option>
-                                                        <option value="dirujuk" {{ $cs['status'] === 'dirujuk' ? 'selected' : '' }}>Dirujuk ke Psikolog Luar / Orang Tua</option>
-                                                    </select>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="action_plan_{{ $cs['id'] }}">Perbarui Rencana Tindak Lanjut (RTL)</label>
-                                                    <textarea name="action_plan" id="action_plan_{{ $cs['id'] }}" rows="3" class="form-control">{{ $cs['action_plan'] }}</textarea>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="notes_{{ $cs['id'] }}">Catatan Tambahan Konselor</label>
-                                                    <textarea name="notes" id="notes_{{ $cs['id'] }}" rows="2" class="form-control">{{ $cs['notes'] }}</textarea>
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-default" data-dismiss="modal">Batal</button>
-                                                <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Simpan Pembaruan</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
                         @empty
                             <tr>
                                 <td colspan="7" class="text-center text-muted" style="padding: 30px;">
@@ -318,6 +217,123 @@
                 <span class="text-muted pull-left">Menampilkan <strong>{{ count($sessions) }}</strong> dari <strong>{{ count($allSessions) }}</strong> rekam layanan BK santri.</span>
             </div>
         </div>
+
+        {{-- Modals Detail & Update Status (Ditempatkan di luar table agar DOM valid) --}}
+        @foreach($sessions as $cs)
+            @php
+                $std = $studentMap[$cs['student_id']] ?? null;
+                $cls = $std && isset($classMap[$std['class_id']]) ? $classMap[$std['class_id']] : null;
+                
+                $statusBadge = match($cs['status']) {
+                    'selesai' => '<span class="label label-success"><i class="fa fa-check"></i> Selesai</span>',
+                    'dalam_proses' => '<span class="label label-warning"><i class="fa fa-clock-o"></i> Dalam Proses</span>',
+                    'dijadwalkan' => '<span class="label label-info"><i class="fa fa-calendar"></i> Dijadwalkan</span>',
+                    'dirujuk' => '<span class="label label-danger"><i class="fa fa-ambulance"></i> Dirujuk</span>',
+                    default => '<span class="label label-default">Draft</span>'
+                };
+            @endphp
+
+            {{-- Modal Detail Rekam Konseling Santri --}}
+            <div class="modal fade" id="modalDetailKonseling{{ $cs['id'] }}" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header" style="background-color: #1a365d; color: #fff;">
+                            <button type="button" class="close" data-dismiss="modal" style="color: #fff;">&times;</button>
+                            <h4 class="modal-title"><i class="fa fa-user-md text-yellow"></i> Berkas Layanan Bimbingan & Konseling [{{ $cs['id'] }}]</h4>
+                        </div>
+                        <div class="modal-body" style="background-color: #fdfdfd;">
+                            <div class="text-center" style="margin-bottom: 15px; padding: 12px; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 6px;">
+                                <h4 style="margin: 0 0 5px 0; font-weight: bold; color: #1e3a8a;">{{ $std['name'] ?? '-' }}</h4>
+                                <span class="label label-primary">{{ $cls['name'] ?? '-' }}</span> &nbsp;
+                                <span class="label label-info">NIS: {{ $std['nis'] ?? '-' }}</span> &nbsp;
+                                {!! $statusBadge !!}
+                            </div>
+
+                            <table class="table table-bordered table-striped" style="font-size: 13px;">
+                                <tr>
+                                    <th style="width: 35%;">Guru BK / Konselor</th>
+                                    <td><strong>{{ $cs['counselor_name'] }}</strong></td>
+                                </tr>
+                                <tr>
+                                    <th>Waktu Pertemuan</th>
+                                    <td>{{ date('l, d F Y', strtotime($cs['date'])) }} | Pukul {{ $cs['time'] }} WIB</td>
+                                </tr>
+                                <tr>
+                                    <th>Bidang Masalah</th>
+                                    <td><span class="label label-warning">{{ $cs['category'] }}</span></td>
+                                </tr>
+                                <tr>
+                                    <th>Jenis Layanan</th>
+                                    <td><span class="badge bg-purple">{{ $cs['service_type'] }}</span></td>
+                                </tr>
+                                <tr>
+                                    <th>Asal Rujukan</th>
+                                    <td>{{ $cs['referral_from'] }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Uraian Permasalahan / Keluhan</th>
+                                    <td style="background: #fff; line-height: 1.5;">{{ $cs['problem_summary'] }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Rencana Tindak Lanjut (RTL) & Solusi</th>
+                                    <td style="background: #f0fdf4; color: #166534; font-weight: 500;">{{ $cs['action_plan'] }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Tanggal Evaluasi Lanjutan</th>
+                                    <td><strong>{{ date('d F Y', strtotime($cs['follow_up_date'])) }}</strong></td>
+                                </tr>
+                                <tr>
+                                    <th>Catatan Kerahasiaan Konselor</th>
+                                    <td><em>"{{ $cs['notes'] }}"</em></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Tutup</button>
+                            <button type="button" class="btn btn-primary" onclick="window.print()"><i class="fa fa-print"></i> Cetak Berkas Konseling</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Modal Update Status & RTL --}}
+            <div class="modal fade" id="modalUpdateStatus{{ $cs['id'] }}" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <form method="POST" action="{{ route('kesiswaan.konseling.update-status', $cs['id']) }}">
+                            @csrf
+                            <div class="modal-header" style="background-color: #3b82f6; color: #fff;">
+                                <button type="button" class="close" data-dismiss="modal" style="color: #fff;">&times;</button>
+                                <h4 class="modal-title"><i class="fa fa-edit"></i> Update Progres & RTL Konseling [{{ $cs['id'] }}]</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label for="status_{{ $cs['id'] }}">Status Penanganan <span class="text-danger">*</span></label>
+                                    <select name="status" id="status_{{ $cs['id'] }}" class="form-control" required>
+                                        <option value="dijadwalkan" {{ $cs['status'] === 'dijadwalkan' ? 'selected' : '' }}>Dijadwalkan</option>
+                                        <option value="dalam_proses" {{ $cs['status'] === 'dalam_proses' ? 'selected' : '' }}>Dalam Proses (Pendampingan Berjalan)</option>
+                                        <option value="selesai" {{ $cs['status'] === 'selesai' ? 'selected' : '' }}>Selesai / Tuntas</option>
+                                        <option value="dirujuk" {{ $cs['status'] === 'dirujuk' ? 'selected' : '' }}>Dirujuk ke Psikolog Luar / Orang Tua</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="action_plan_{{ $cs['id'] }}">Perbarui Rencana Tindak Lanjut (RTL)</label>
+                                    <textarea name="action_plan" id="action_plan_{{ $cs['id'] }}" rows="3" class="form-control">{{ $cs['action_plan'] }}</textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="notes_{{ $cs['id'] }}">Catatan Tambahan Konselor</label>
+                                    <textarea name="notes" id="notes_{{ $cs['id'] }}" rows="2" class="form-control">{{ $cs['notes'] }}</textarea>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Batal</button>
+                                <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Simpan Pembaruan</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        @endforeach
     </div>
 
     {{-- Kolom Kanan: 4 Pilar Layanan BK & Alur Rujukan Terpadu --}}

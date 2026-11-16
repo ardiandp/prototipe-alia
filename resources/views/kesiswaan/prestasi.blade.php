@@ -194,77 +194,6 @@
                                     </div>
                                 </td>
                             </tr>
-
-                            {{-- Modal Detail Sertifikat & Rincian Prestasi --}}
-                            <div class="modal fade" id="modalDetailPrestasi{{ $ach['id'] }}" tabindex="-1" role="dialog">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header" style="background-color: #1a365d; color: #fff;">
-                                            <button type="button" class="close" data-dismiss="modal" style="color: #fff;">&times;</button>
-                                            <h4 class="modal-title"><i class="fa fa-certificate text-yellow"></i> Rincian Arsip Prestasi & Portofolio</h4>
-                                        </div>
-                                        <div class="modal-body" style="background-color: #fdfdfd;">
-                                            <div class="text-center" style="margin-bottom: 20px; padding: 15px; background: #f8fafc; border: 2px dashed #cbd5e1; border-radius: 6px;">
-                                                <i class="fa fa-trophy fa-3x text-yellow"></i>
-                                                <h4 style="margin: 10px 0 5px 0; font-weight: bold; color: #1e293b;">{{ $ach['title'] }}</h4>
-                                                <span class="label {{ $levelBadgeClass }}" style="font-size: 12px;">Tingkat {{ $ach['level'] }}</span> &nbsp;
-                                                <span class="label label-warning" style="font-size: 12px;"><i class="fa fa-award"></i> {{ $ach['rank'] }}</span>
-                                            </div>
-
-                                            <table class="table table-bordered table-striped">
-                                                <tr>
-                                                    <th style="width: 35%;">Nama Santri</th>
-                                                    <td><strong>{{ $std['name'] ?? '-' }}</strong> (NIS: {{ $std['nis'] ?? '-' }})</td>
-                                                </tr>
-                                                <tr>
-                                                    <th>Rombel / Kelas</th>
-                                                    <td>{{ $cls['name'] ?? '-' }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <th>Ajang / Kompetisi</th>
-                                                    <td>{{ $ach['competition_name'] }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <th>Bidang / Kategori</th>
-                                                    <td>{{ $ach['category'] }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <th>Penyelenggara</th>
-                                                    <td>{{ $ach['organizer'] }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <th>Waktu Pelaksanaan</th>
-                                                    <td>{{ date('d F Y', strtotime($ach['date'])) }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <th>Guru Pembimbing</th>
-                                                    <td>{{ $ach['coach_name'] }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <th>Hadiah / Reward</th>
-                                                    <td><span class="text-green" style="font-weight: bold;">{{ $ach['reward'] }}</span></td>
-                                                </tr>
-                                                <tr>
-                                                    <th>Nomor Sertifikat/SK</th>
-                                                    <td><code>{{ $ach['certificate_number'] }}</code></td>
-                                                </tr>
-                                                <tr>
-                                                    <th>Poin Apresiasi</th>
-                                                    <td><span class="badge bg-green">+{{ $ach['points'] }} Poin Portofolio</span></td>
-                                                </tr>
-                                                <tr>
-                                                    <th>Catatan Dewan Juri / Pembina</th>
-                                                    <td><em>"{{ $ach['notes'] }}"</em></td>
-                                                </tr>
-                                            </table>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Tutup</button>
-                                            <button type="button" class="btn btn-primary" onclick="window.print()"><i class="fa fa-print"></i> Cetak Lembar Portofolio</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                         @empty
                             <tr>
                                 <td colspan="7" class="text-center text-muted" style="padding: 30px;">
@@ -280,6 +209,90 @@
                 <span class="text-muted pull-left">Menampilkan <strong>{{ count($achievements) }}</strong> dari <strong>{{ count($allAchievements) }}</strong> arsip kejuaraan santri.</span>
             </div>
         </div>
+
+        {{-- Modal Detail Sertifikat & Rincian Prestasi (Ditempatkan di luar elemen table) --}}
+        @foreach($achievements as $ach)
+            @php
+                $std = $studentMap[$ach['student_id']] ?? null;
+                $cls = $std && isset($classMap[$std['class_id']]) ? $classMap[$std['class_id']] : null;
+                $levelBadgeClass = match($ach['level']) {
+                    'Internasional' => 'label-danger',
+                    'Nasional' => 'label-warning',
+                    'Provinsi' => 'label-primary',
+                    'Kota/Kab' => 'label-info',
+                    default => 'label-default'
+                };
+            @endphp
+            <div class="modal fade" id="modalDetailPrestasi{{ $ach['id'] }}" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header" style="background-color: #1a365d; color: #fff;">
+                            <button type="button" class="close" data-dismiss="modal" style="color: #fff;">&times;</button>
+                            <h4 class="modal-title"><i class="fa fa-certificate text-yellow"></i> Rincian Arsip Prestasi & Portofolio</h4>
+                        </div>
+                        <div class="modal-body" style="background-color: #fdfdfd;">
+                            <div class="text-center" style="margin-bottom: 20px; padding: 15px; background: #f8fafc; border: 2px dashed #cbd5e1; border-radius: 6px;">
+                                <i class="fa fa-trophy fa-3x text-yellow"></i>
+                                <h4 style="margin: 10px 0 5px 0; font-weight: bold; color: #1e293b;">{{ $ach['title'] }}</h4>
+                                <span class="label {{ $levelBadgeClass }}" style="font-size: 12px;">Tingkat {{ $ach['level'] }}</span> &nbsp;
+                                <span class="label label-warning" style="font-size: 12px;"><i class="fa fa-award"></i> {{ $ach['rank'] }}</span>
+                            </div>
+
+                            <table class="table table-bordered table-striped">
+                                <tr>
+                                    <th style="width: 35%;">Nama Santri</th>
+                                    <td><strong>{{ $std['name'] ?? '-' }}</strong> (NIS: {{ $std['nis'] ?? '-' }})</td>
+                                </tr>
+                                <tr>
+                                    <th>Rombel / Kelas</th>
+                                    <td>{{ $cls['name'] ?? '-' }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Ajang / Kompetisi</th>
+                                    <td>{{ $ach['competition_name'] }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Bidang / Kategori</th>
+                                    <td>{{ $ach['category'] }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Penyelenggara</th>
+                                    <td>{{ $ach['organizer'] }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Waktu Pelaksanaan</th>
+                                    <td>{{ date('d F Y', strtotime($ach['date'])) }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Guru Pembimbing</th>
+                                    <td>{{ $ach['coach_name'] }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Hadiah / Reward</th>
+                                    <td><span class="text-green" style="font-weight: bold;">{{ $ach['reward'] }}</span></td>
+                                </tr>
+                                <tr>
+                                    <th>Nomor Sertifikat/SK</th>
+                                    <td><code>{{ $ach['certificate_number'] }}</code></td>
+                                </tr>
+                                <tr>
+                                    <th>Poin Apresiasi</th>
+                                    <td><span class="badge bg-green">+{{ $ach['points'] }} Poin Portofolio</span></td>
+                                </tr>
+                                <tr>
+                                    <th>Catatan Dewan Juri / Pembina</th>
+                                    <td><em>"{{ $ach['notes'] }}"</em></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Tutup</button>
+                            <button type="button" class="btn btn-primary" onclick="window.print()"><i class="fa fa-print"></i> Cetak Lembar Portofolio</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endforeach
     </div>
 
     {{-- Kolom Kanan: Top Peraih Prestasi & Panduan Poin Apresiasi --}}

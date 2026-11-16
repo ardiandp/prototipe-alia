@@ -178,6 +178,7 @@ Route::prefix('kesiswaan')->name('kesiswaan.')->group(function () {
     Route::get('/uks', [KesiswaanController::class, 'uks'])->name('uks');
     Route::post('/uks/kunjungan', [KesiswaanController::class, 'storeUksVisit'])->name('uks.visit.store');
     Route::post('/uks/obat', [KesiswaanController::class, 'storeUksMedicine'])->name('uks.medicine.store');
+    Route::get('/uks/kunjungan/{id}/selesai', [KesiswaanController::class, 'completeUksVisit'])->name('uks.visit.complete');
     Route::get('/uks/kunjungan/{id}/destroy', [KesiswaanController::class, 'destroyUksVisit'])->name('uks.visit.destroy');
     Route::get('/mutasi', [KesiswaanController::class, 'mutasi'])->name('mutasi');
     Route::post('/mutasi', [KesiswaanController::class, 'storeMutasi'])->name('mutasi.store');
@@ -199,6 +200,8 @@ Route::prefix('asrama')->name('asrama.')->group(function () {
     Route::get('/aktivitas/{id}/destroy', [AsramaController::class, 'destroyAktivitas'])->name('aktivitas.destroy');
     Route::get('/perizinan', [AsramaController::class, 'perizinan'])->name('perizinan');
     Route::post('/perizinan', [AsramaController::class, 'storePerizinan'])->name('perizinan.store');
+    Route::get('/perizinan/{id}/approve', [AsramaController::class, 'approvePerizinan'])->name('perizinan.approve');
+    Route::get('/perizinan/{id}/reject', [AsramaController::class, 'rejectPerizinan'])->name('perizinan.reject');
     Route::get('/perizinan/{id}/checkin', [AsramaController::class, 'checkInPerizinan'])->name('perizinan.checkin');
     Route::get('/perizinan/{id}/destroy', [AsramaController::class, 'destroyPerizinan'])->name('perizinan.destroy');
     Route::get('/presensi', [AsramaController::class, 'presensi'])->name('presensi');

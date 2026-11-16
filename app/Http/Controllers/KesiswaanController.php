@@ -930,6 +930,32 @@ class KesiswaanController extends Controller
     }
 
     /**
+     * Selesaikan Observasi Santri di UKS (Session-based)
+     */
+    public function completeUksVisit(string $id)
+    {
+        $demo = DemoDataManager::getInstance();
+        $visit = $demo->findUksVisit($id);
+
+        if (!$visit) {
+            return redirect()->route('kesiswaan.uks', ['tab' => 'kunjungan'])->with('error', 'Data kunjungan medis tidak ditemukan!');
+        }
+
+        $sessionUpdated = session('demo_uks_visits_updated', []);
+        $sessionUpdated[$id] = array_merge($visit, [
+            'status' => 'selesai',
+            'action_taken' => 'Observasi di Bed UKS selesai. Kondisi santri membaik dan telah diizinkan kembali ke kelas/asrama.',
+            'notes' => ($visit['notes'] ?? '') . ' (Observasi dinyatakan tuntas pkl ' . date('H:i') . ' WIB).'
+        ]);
+        session(['demo_uks_visits_updated' => $sessionUpdated]);
+
+        $std = $demo->findStudent($visit['student_id']);
+
+        return redirect()->route('kesiswaan.uks', ['tab' => 'kunjungan'])
+            ->with('success', "Observasi santri " . ($std['name'] ?? '') . " [{$id}] telah selesai dan kondisi stabil!");
+    }
+
+    /**
      * Hapus Kunjungan UKS (Session-based)
      */
     public function destroyUksVisit(string $id)

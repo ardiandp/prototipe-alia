@@ -621,6 +621,15 @@ class AsramaController extends Controller
             return true;
         });
 
+        $assignments = $demo->getResidentAssignments();
+        $studentRoomMap = [];
+        foreach ($assignments as $a) {
+            $r = $roomMap[$a['room_id']] ?? null;
+            if ($r) {
+                $studentRoomMap[$a['student_id']] = $r['name'];
+            }
+        }
+
         // Metrik statistik
         $totalIzin = count($permissions);
         $totalDiajukan = count(array_filter($permissions, fn($p) => $p['approval_status'] === 'diajukan'));
@@ -632,6 +641,7 @@ class AsramaController extends Controller
             'allPermissions' => $permissions,
             'students' => $students,
             'studentMap' => $studentMap,
+            'studentRoomMap' => $studentRoomMap,
             'classMap' => $classMap,
             'roomMap' => $roomMap,
             'typeFilter' => $typeFilter,
@@ -694,6 +704,63 @@ class AsramaController extends Controller
 
         return redirect()->route('asrama.perizinan')
             ->with('success', "Surat izin santri " . ($std['name'] ?? '') . " [{$permitNumber}] berhasil disetujui & Gate Pass aktif!");
+    }
+
+    /**
+     * Setujui Izin Santri & Terbitkan Gate Pass (Session-based)
+     */
+    public function approvePerizinan(string $id)
+    {
+        $demo = DemoDataManager::getInstance();
+        $permission = $demo->findLeavePermission($id);
+
+        if (!$permission) {
+            return redirect()->route('asrama.perizinan')->with('error', 'Data surat izin tidak ditemukan!');
+        }
+
+        $sessionUpdated = session('demo_leave_permissions_updated', []);
+        $gatePassCode = 'GP-' . rand(1000, 9999) . '-' . strtoupper(substr(md5($id), 0, 2));
+
+        $sessionUpdated[$id] = array_merge($permission, [
+            'approval_status' => 'disetujui',
+            'approver_name' => 'Ust. Salman Al-Farisi, S.Sos. (Musyrif Asrama)',
+            'gate_pass_code' => $gatePassCode,
+            'security_check_out' => date('Y-m-d H:i:s'),
+            'notes' => ($permission['notes'] ?? '') . ' (Disetujui oleh Musyrif Asrama pada ' . date('d/m/Y H:i') . ' WIB).'
+        ]);
+        session(['demo_leave_permissions_updated' => $sessionUpdated]);
+
+        $std = $demo->findStudent($permission['student_id']);
+
+        return redirect()->route('asrama.perizinan')
+            ->with('success', "Surat izin santri " . ($std['name'] ?? '') . " [{$permission['permit_number']}] berhasil diverifikasi & disetujui! Gate Pass aktif: {$gatePassCode}");
+    }
+
+    /**
+     * Tolak Permohonan Izin Santri (Session-based)
+     */
+    public function rejectPerizinan(string $id)
+    {
+        $demo = DemoDataManager::getInstance();
+        $permission = $demo->findLeavePermission($id);
+
+        if (!$permission) {
+            return redirect()->route('asrama.perizinan')->with('error', 'Data surat izin tidak ditemukan!');
+        }
+
+        $sessionUpdated = session('demo_leave_permissions_updated', []);
+        $sessionUpdated[$id] = array_merge($permission, [
+            'approval_status' => 'ditolak',
+            'approver_name' => 'Ust. Salman Al-Farisi, S.Sos. (Musyrif Asrama)',
+            'gate_pass_code' => 'GP-DITOLAK',
+            'notes' => ($permission['notes'] ?? '') . ' (Pengajuan izin ditolak oleh Musyrif Asrama pada ' . date('d/m/Y H:i') . ' WIB).'
+        ]);
+        session(['demo_leave_permissions_updated' => $sessionUpdated]);
+
+        $std = $demo->findStudent($permission['student_id']);
+
+        return redirect()->route('asrama.perizinan')
+            ->with('info', "Surat izin santri " . ($std['name'] ?? '') . " [{$permission['permit_number']}] telah ditolak.");
     }
 
     /**

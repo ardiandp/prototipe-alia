@@ -134,13 +134,13 @@
                 <tr style="background-color: #f4f6f9; color: #334155;">
                     <th style="width: 40px; text-align: center;">#</th>
                     <th>Nomor Izin & Gate Pass</th>
-                    <th>Santri & Kelas</th>
+                    <th>Santri, Kelas & Kamar</th>
                     <th>Jenis Izin</th>
                     <th>Waktu Berangkat s/d Kembali</th>
                     <th>Penjemput / Pendamping</th>
                     <th>Alasan Keperluan</th>
                     <th style="text-align: center;">Status</th>
-                    <th style="width: 95px; text-align: center;">Aksi</th>
+                    <th style="width: 120px; text-align: center;">Aksi</th>
                 </tr>
             </thead>
             <tbody>
@@ -148,6 +148,7 @@
                     @php
                         $std = $studentMap[$p['student_id']] ?? null;
                         $cls = $std && isset($classMap[$std['class_id']]) ? $classMap[$std['class_id']] : null;
+                        $roomName = $studentRoomMap[$p['student_id']] ?? 'Kamar Asrama';
                         
                         $typeBadge = match($p['type']) {
                             'keluar_sebentar' => '<span class="label label-info"><i class="fa fa-clock-o"></i> Keluar Sebentar</span>',
@@ -168,11 +169,20 @@
                         <td style="text-align: center; vertical-align: middle;">{{ $loop->iteration }}</td>
                         <td style="vertical-align: middle;">
                             <strong><code>{{ $p['permit_number'] }}</code></strong><br>
-                            <span class="badge bg-navy" style="font-size: 10px; margin-top: 2px;"><i class="fa fa-barcode"></i> {{ $p['gate_pass_code'] }}</span>
+                            @if($p['approval_status'] === 'disetujui')
+                                <span class="badge bg-blue" style="font-size: 10px; margin-top: 2px;"><i class="fa fa-barcode"></i> {{ $p['gate_pass_code'] }}</span>
+                            @elseif($p['approval_status'] === 'kembali')
+                                <span class="badge bg-green" style="font-size: 10px; margin-top: 2px;"><i class="fa fa-check"></i> {{ $p['gate_pass_code'] }}</span>
+                            @elseif($p['approval_status'] === 'ditolak')
+                                <span class="badge bg-red" style="font-size: 10px; margin-top: 2px;"><i class="fa fa-ban"></i> {{ $p['gate_pass_code'] }}</span>
+                            @else
+                                <span class="badge bg-gray" style="font-size: 10px; margin-top: 2px;"><i class="fa fa-clock-o"></i> {{ $p['gate_pass_code'] }}</span>
+                            @endif
                         </td>
                         <td style="vertical-align: middle;">
-                            <strong>{{ $std['name'] ?? 'Santri #'.$p['student_id'] }}</strong><br>
-                            <small class="text-muted"><i class="fa fa-id-badge"></i> NIS: {{ $std['nis'] ?? '-' }} | {{ $cls['name'] ?? '-' }}</small>
+                            <strong style="color: #1e3a8a; font-size: 13px;">{{ $std['name'] ?? 'Santri #'.$p['student_id'] }}</strong><br>
+                            <small class="text-muted"><i class="fa fa-id-badge"></i> NIS: {{ $std['nis'] ?? '-' }} &bull; {{ $cls['name'] ?? '-' }}</small><br>
+                            <small class="text-navy" style="font-weight: 600;"><i class="fa fa-bed"></i> {{ $roomName }}</small>
                         </td>
                         <td style="vertical-align: middle;">
                             {!! $typeBadge !!}
@@ -192,15 +202,27 @@
                         </td>
                         <td style="text-align: center; vertical-align: middle;">
                             {!! $statusBadge !!}
+                            @if($p['approval_status'] === 'kembali' && !empty($p['security_check_in']))
+                                <br><small class="text-muted" style="font-size: 10px;"><i class="fa fa-clock-o"></i> Masuk: {{ date('d/m H:i', strtotime($p['security_check_in'])) }}</small>
+                            @elseif($p['approval_status'] === 'disetujui' && !empty($p['security_check_out']))
+                                <br><small class="text-muted" style="font-size: 10px;"><i class="fa fa-clock-o"></i> Keluar: {{ date('d/m H:i', strtotime($p['security_check_out'])) }}</small>
+                            @endif
                         </td>
                         <td style="text-align: center; vertical-align: middle;">
                             <div class="btn-group">
                                 <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-target="#modalGatePass{{ $p['id'] }}" title="Lihat Surat & Gate Pass Satpam">
                                     <i class="fa fa-eye text-primary"></i>
                                 </button>
-                                @if($p['approval_status'] === 'disetujui')
-                                    <a href="{{ route('asrama.perizinan.checkin', $p['id']) }}" class="btn btn-success btn-xs" onclick="return confirm('Konfirmasi bahwa santri telah kembali di asrama?')" title="Konfirmasi Kembali (Check-In)">
+                                @if($p['approval_status'] === 'diajukan')
+                                    <a href="{{ route('asrama.perizinan.approve', $p['id']) }}" class="btn btn-success btn-xs" onclick="return confirm('Verifikasi & setujui izin santri ini? Gate Pass akan langsung diaktifkan.')" title="Setujui Izin & Terbitkan Gate Pass">
                                         <i class="fa fa-check"></i>
+                                    </a>
+                                    <a href="{{ route('asrama.perizinan.reject', $p['id']) }}" class="btn btn-warning btn-xs" onclick="return confirm('Tolak permohonan izin santri ini?')" title="Tolak Permohonan Izin">
+                                        <i class="fa fa-ban"></i>
+                                    </a>
+                                @elseif($p['approval_status'] === 'disetujui')
+                                    <a href="{{ route('asrama.perizinan.checkin', $p['id']) }}" class="btn btn-success btn-xs" onclick="return confirm('Konfirmasi bahwa santri telah kembali di asrama?')" title="Konfirmasi Kembali (Check-In)">
+                                        <i class="fa fa-sign-in"></i>
                                     </a>
                                 @endif
                                 <a href="{{ route('asrama.perizinan.destroy', $p['id']) }}" class="btn btn-default btn-xs" onclick="return confirm('Hapus berkas izin ini?')" title="Hapus">
@@ -209,75 +231,6 @@
                             </div>
                         </td>
                     </tr>
-
-                    {{-- Modal Gate Pass & Surat Izin Satpam --}}
-                    <div class="modal fade" id="modalGatePass{{ $p['id'] }}" tabindex="-1" role="dialog">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header" style="background-color: #1a365d; color: #fff;">
-                                    <button type="button" class="close" data-dismiss="modal" style="color: #fff;">&times;</button>
-                                    <h4 class="modal-title"><i class="fa fa-id-card text-yellow"></i> Surat Izin & Gate Pass Keamanan Pondok</h4>
-                                </div>
-                                <div class="modal-body" style="background-color: #fdfdfd;">
-                                    {{-- Tiket Gate Pass Mini --}}
-                                    <div class="text-center" style="background: #eff6ff; border: 2px dashed #3b82f6; border-radius: 8px; padding: 15px; margin-bottom: 15px;">
-                                        <span class="badge bg-blue" style="font-size: 12px; padding: 6px 12px; text-transform: uppercase;">
-                                            GATE PASS SANTRI: {{ $p['gate_pass_code'] }}
-                                        </span>
-                                        <h3 style="margin: 10px 0 3px 0; font-weight: bold; color: #1e3a8a;">{{ $std['name'] ?? '-' }}</h3>
-                                        <p style="margin: 0; color: #64748b; font-size: 12px;">NIS: {{ $std['nis'] ?? '-' }} | {{ $cls['name'] ?? '-' }}</p>
-                                    </div>
-
-                                    <table class="table table-bordered table-striped" style="font-size: 13px;">
-                                        <tr>
-                                            <th style="width: 35%;">Nomor Surat Izin</th>
-                                            <td><strong>{{ $p['permit_number'] }}</strong></td>
-                                        </tr>
-                                        <tr>
-                                            <th>Jenis Izin</th>
-                                            <td>{!! $typeBadge !!}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Keperluan / Alasan</th>
-                                            <td><em>"{{ $p['reason'] }}"</em></td>
-                                        </tr>
-                                        <tr>
-                                            <th>Batas Waktu Keluar</th>
-                                            <td><strong>{{ date('d F Y H:i', strtotime($p['date_start'])) }} WIB</strong></td>
-                                        </tr>
-                                        <tr>
-                                            <th>Batas Waktu Kembali</th>
-                                            <td><strong class="text-red">{{ date('d F Y H:i', strtotime($p['date_end'])) }} WIB</strong></td>
-                                        </tr>
-                                        <tr>
-                                            <th>Penjemput / Kontak</th>
-                                            <td>{{ $p['pickup_person'] }} (Telp: {{ $p['pickup_phone'] }})</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Diverifikasi Oleh</th>
-                                            <td><strong>{{ $p['approver_name'] }}</strong></td>
-                                        </tr>
-                                        <tr>
-                                            <th>Waktu Keluar Pos Satpam</th>
-                                            <td>{{ !empty($p['security_check_out']) ? date('d/m/Y H:i:s', strtotime($p['security_check_out'])) : 'Belum Melintasi Pos Satpam' }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Waktu Kembali Pos Satpam</th>
-                                            <td>{{ !empty($p['security_check_in']) ? date('d/m/Y H:i:s', strtotime($p['security_check_in'])) : 'Masih di luar kampus' }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Catatan Khusus</th>
-                                            <td>{{ $p['notes'] }}</td>
-                                        </tr>
-                                    </table>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Tutup</button>
-                                    <button type="button" class="btn btn-primary" onclick="window.print()"><i class="fa fa-print"></i> Cetak Lembar Gate Pass</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 @empty
                     <tr>
                         <td colspan="9" class="text-center text-muted" style="padding: 30px;">
@@ -293,6 +246,136 @@
         <span class="text-muted pull-left">Menampilkan <strong>{{ count($permissions) }}</strong> dari <strong>{{ count($allPermissions) }}</strong> berkas perizinan santri.</span>
     </div>
 </div>
+
+{{-- Modals Gate Pass & Surat Izin Satpam (Ditempatkan di luar table agar DOM valid) --}}
+@foreach($permissions as $p)
+    @php
+        $std = $studentMap[$p['student_id']] ?? null;
+        $cls = $std && isset($classMap[$std['class_id']]) ? $classMap[$std['class_id']] : null;
+        $roomName = $studentRoomMap[$p['student_id']] ?? 'Kamar Asrama';
+
+        $typeBadge = match($p['type']) {
+            'keluar_sebentar' => '<span class="label label-info"><i class="fa fa-clock-o"></i> Keluar Sebentar</span>',
+            'pulang' => '<span class="label label-primary"><i class="fa fa-home"></i> Pulang Bermalam</span>',
+            'darurat' => '<span class="label label-danger"><i class="fa fa-ambulance"></i> Izin Darurat</span>',
+            default => '<span class="label label-default">Lainnya</span>'
+        };
+
+        $statusBadge = match($p['approval_status']) {
+            'disetujui' => '<span class="label label-warning"><i class="fa fa-sign-out"></i> Di Luar Kampus</span>',
+            'diajukan' => '<span class="label label-info"><i class="fa fa-hourglass-start"></i> Menunggu Verifikasi</span>',
+            'kembali' => '<span class="label label-success"><i class="fa fa-check"></i> Sudah Kembali</span>',
+            'ditolak' => '<span class="label label-danger"><i class="fa fa-times"></i> Ditolak</span>',
+            default => '<span class="label label-default">Draft</span>'
+        };
+    @endphp
+    <div class="modal fade" id="modalGatePass{{ $p['id'] }}" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color: #1a365d; color: #fff;">
+                    <button type="button" class="close" data-dismiss="modal" style="color: #fff;">&times;</button>
+                    <h4 class="modal-title"><i class="fa fa-id-card text-yellow"></i> Surat Izin & Gate Pass Keamanan Pondok</h4>
+                </div>
+                <div class="modal-body" style="background-color: #fdfdfd; padding: 20px;">
+                    {{-- Tiket Gate Pass Mini --}}
+                    @if($p['approval_status'] === 'disetujui')
+                        <div class="text-center" style="background: #eff6ff; border: 2px dashed #3b82f6; border-radius: 8px; padding: 15px; margin-bottom: 15px;">
+                            <span class="badge bg-blue" style="font-size: 12px; padding: 6px 12px; text-transform: uppercase;">
+                                <i class="fa fa-barcode"></i> GATE PASS AKTIF: {{ $p['gate_pass_code'] }}
+                            </span>
+                            <h3 style="margin: 10px 0 3px 0; font-weight: bold; color: #1e3a8a;">{{ $std['name'] ?? '-' }}</h3>
+                            <p style="margin: 0; color: #64748b; font-size: 12px;">NIS: {{ $std['nis'] ?? '-' }} &bull; {{ $cls['name'] ?? '-' }} &bull; {{ $roomName }}</p>
+                        </div>
+                    @elseif($p['approval_status'] === 'kembali')
+                        <div class="text-center" style="background: #f0fdf4; border: 2px dashed #22c55e; border-radius: 8px; padding: 15px; margin-bottom: 15px;">
+                            <span class="badge bg-green" style="font-size: 12px; padding: 6px 12px; text-transform: uppercase;">
+                                <i class="fa fa-check-circle"></i> STATUS: TELAH KEMBALI DI ASRAMA
+                            </span>
+                            <h3 style="margin: 10px 0 3px 0; font-weight: bold; color: #15803d;">{{ $std['name'] ?? '-' }}</h3>
+                            <p style="margin: 0; color: #64748b; font-size: 12px;">NIS: {{ $std['nis'] ?? '-' }} &bull; {{ $cls['name'] ?? '-' }} &bull; {{ $roomName }}</p>
+                        </div>
+                    @elseif($p['approval_status'] === 'ditolak')
+                        <div class="text-center" style="background: #fef2f2; border: 2px dashed #ef4444; border-radius: 8px; padding: 15px; margin-bottom: 15px;">
+                            <span class="badge bg-red" style="font-size: 12px; padding: 6px 12px; text-transform: uppercase;">
+                                <i class="fa fa-ban"></i> STATUS: PENGAJUAN DITOLAK
+                            </span>
+                            <h3 style="margin: 10px 0 3px 0; font-weight: bold; color: #b91c1c;">{{ $std['name'] ?? '-' }}</h3>
+                            <p style="margin: 0; color: #64748b; font-size: 12px;">NIS: {{ $std['nis'] ?? '-' }} &bull; {{ $cls['name'] ?? '-' }} &bull; {{ $roomName }}</p>
+                        </div>
+                    @else
+                        <div class="text-center" style="background: #fffbeb; border: 2px dashed #f59e0b; border-radius: 8px; padding: 15px; margin-bottom: 15px;">
+                            <span class="badge bg-yellow" style="font-size: 12px; padding: 6px 12px; text-transform: uppercase;">
+                                <i class="fa fa-hourglass-start"></i> STATUS: MENUNGGU VERIFIKASI
+                            </span>
+                            <h3 style="margin: 10px 0 3px 0; font-weight: bold; color: #b45309;">{{ $std['name'] ?? '-' }}</h3>
+                            <p style="margin: 0; color: #64748b; font-size: 12px;">NIS: {{ $std['nis'] ?? '-' }} &bull; {{ $cls['name'] ?? '-' }} &bull; {{ $roomName }}</p>
+                        </div>
+                    @endif
+
+                    <table class="table table-bordered table-striped" style="font-size: 13px;">
+                        <tr>
+                            <th style="width: 35%;">Nomor Surat Izin</th>
+                            <td><strong>{{ $p['permit_number'] }}</strong></td>
+                        </tr>
+                        <tr>
+                            <th>Status Izin</th>
+                            <td>{!! $statusBadge !!}</td>
+                        </tr>
+                        <tr>
+                            <th>Jenis Izin</th>
+                            <td>{!! $typeBadge !!}</td>
+                        </tr>
+                        <tr>
+                            <th>Keperluan / Alasan</th>
+                            <td><em>"{{ $p['reason'] }}"</em></td>
+                        </tr>
+                        <tr>
+                            <th>Batas Waktu Keluar</th>
+                            <td><strong>{{ date('d F Y H:i', strtotime($p['date_start'])) }} WIB</strong></td>
+                        </tr>
+                        <tr>
+                            <th>Batas Waktu Kembali</th>
+                            <td><strong class="text-red">{{ date('d F Y H:i', strtotime($p['date_end'])) }} WIB</strong></td>
+                        </tr>
+                        <tr>
+                            <th>Penjemput / Kontak</th>
+                            <td>{{ $p['pickup_person'] }} (Telp: {{ $p['pickup_phone'] }})</td>
+                        </tr>
+                        <tr>
+                            <th>Diverifikasi Oleh</th>
+                            <td><strong>{{ $p['approver_name'] }}</strong></td>
+                        </tr>
+                        <tr>
+                            <th>Waktu Keluar Pos Satpam</th>
+                            <td>{{ !empty($p['security_check_out']) ? date('d/m/Y H:i:s', strtotime($p['security_check_out'])) . ' WIB' : 'Belum Melintasi Pos Satpam' }}</td>
+                        </tr>
+                        <tr>
+                            <th>Waktu Kembali Pos Satpam</th>
+                            <td>{{ !empty($p['security_check_in']) ? date('d/m/Y H:i:s', strtotime($p['security_check_in'])) . ' WIB' : 'Belum Kembali ke Asrama' }}</td>
+                        </tr>
+                        <tr>
+                            <th>Catatan Khusus</th>
+                            <td>{{ $p['notes'] ?? '-' }}</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    @if($p['approval_status'] === 'diajukan')
+                        <a href="{{ route('asrama.perizinan.approve', $p['id']) }}" class="btn btn-success pull-left" onclick="return confirm('Verifikasi & setujui izin santri ini? Gate Pass akan langsung diaktifkan.')">
+                            <i class="fa fa-check"></i> Setujui & Terbitkan Gate Pass
+                        </a>
+                    @elseif($p['approval_status'] === 'disetujui')
+                        <a href="{{ route('asrama.perizinan.checkin', $p['id']) }}" class="btn btn-success pull-left" onclick="return confirm('Konfirmasi bahwa santri telah kembali di asrama?')">
+                            <i class="fa fa-sign-in"></i> Konfirmasi Kembali (Check-In)
+                        </a>
+                    @endif
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
+                    <button type="button" class="btn btn-primary" onclick="window.print()"><i class="fa fa-print"></i> Cetak Lembar Gate Pass</button>
+                </div>
+            </div>
+        </div>
+    </div>
+@endforeach
 
 {{-- Modal Ajukan Surat Izin Baru --}}
 <div class="modal fade" id="modalTambahPerizinan" tabindex="-1" role="dialog">

@@ -138,7 +138,7 @@
                                 <th>Keluhan & Diagnosis Medis</th>
                                 <th>Terapi & Tindakan</th>
                                 <th style="text-align: center;">Status</th>
-                                <th style="width: 85px; text-align: center;">Aksi</th>
+                                <th style="width: 105px; text-align: center;">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -194,94 +194,17 @@
                                             <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-target="#modalDetailKunjungan{{ $v['id'] }}" title="Lihat Rekam Medis">
                                                 <i class="fa fa-eye text-primary"></i>
                                             </button>
+                                            @if($v['status'] === 'diobservasi')
+                                                <a href="{{ route('kesiswaan.uks.visit.complete', $v['id']) }}" class="btn btn-success btn-xs" onclick="return confirm('Konfirmasi bahwa observasi santri telah selesai dan diizinkan kembali?')" title="Selesaikan Observasi Bed UKS">
+                                                    <i class="fa fa-check"></i>
+                                                </a>
+                                            @endif
                                             <a href="{{ route('kesiswaan.uks.visit.destroy', $v['id']) }}" class="btn btn-default btn-xs" onclick="return confirm('Hapus rekam medis kunjungan ini?')" title="Hapus">
                                                 <i class="fa fa-trash text-danger"></i>
                                             </a>
                                         </div>
                                     </td>
                                 </tr>
-
-                                {{-- Modal Detail Rekam Medis Santri --}}
-                                <div class="modal fade" id="modalDetailKunjungan{{ $v['id'] }}" tabindex="-1" role="dialog">
-                                    <div class="modal-dialog" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header" style="background-color: #1a365d; color: #fff;">
-                                                <button type="button" class="close" data-dismiss="modal" style="color: #fff;">&times;</button>
-                                                <h4 class="modal-title"><i class="fa fa-file-text-o text-yellow"></i> Rekam Medis Pemeriksaan UKS [{{ $v['id'] }}]</h4>
-                                            </div>
-                                            <div class="modal-body" style="background-color: #fdfdfd;">
-                                                <div class="text-center" style="margin-bottom: 15px; padding: 12px; background: #fef2f2; border: 1px solid #fecaca; border-radius: 6px;">
-                                                    <h4 style="margin: 0 0 5px 0; font-weight: bold; color: #991b1b;">{{ $std['name'] ?? '-' }}</h4>
-                                                    <span class="label label-primary">{{ $cls['name'] ?? '-' }}</span> &nbsp;
-                                                    <span class="label label-info">NIS: {{ $std['nis'] ?? '-' }}</span> &nbsp;
-                                                    {!! $statusBadge !!}
-                                                </div>
-
-                                                <table class="table table-bordered table-striped" style="font-size: 13px;">
-                                                    <tr>
-                                                        <th style="width: 35%;">Waktu Kunjungan</th>
-                                                        <td>{{ date('l, d F Y H:i', strtotime($v['visit_date'])) }} WIB</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>Tenaga Medis / Paramedis</th>
-                                                        <td><strong>{{ $v['paramedic_name'] }}</strong></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>Tanda-tanda Vital</th>
-                                                        <td>
-                                                            Suhu Tubuh: <strong>{{ $v['temperature'] }}</strong> | 
-                                                            Tekanan Darah: <strong>{{ $v['blood_pressure'] }}</strong>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>Keluhan Santri (Anamnesis)</th>
-                                                        <td style="background: #fff; line-height: 1.5;">{{ $v['symptoms'] }}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>Diagnosis Medis</th>
-                                                        <td><span class="label label-danger" style="font-size: 12px;">{{ $v['diagnosis'] }}</span></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>Terapi & Tindakan Medis</th>
-                                                        <td style="background: #f0fdf4; color: #166534;">{{ $v['treatment_given'] }}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>Resep Obat yang Diberikan</th>
-                                                        <td><strong>{{ $v['medicines_prescribed'] }}</strong></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>Tindakan Lanjutan / Disposisi</th>
-                                                        <td>{{ $v['action_taken'] }}</td>
-                                                    </tr>
-                                                    @if($v['referral_hospital'])
-                                                        <tr>
-                                                            <th>Rumah Sakit Rujukan</th>
-                                                            <td><strong class="text-red"><i class="fa fa-ambulance"></i> {{ $v['referral_hospital'] }}</strong></td>
-                                                        </tr>
-                                                    @endif
-                                                    <tr>
-                                                        <th>Notifikasi Wali Santri</th>
-                                                        <td>
-                                                            @if($v['parent_notified'])
-                                                                <span class="text-green"><i class="fa fa-check-circle"></i> Sudah dihubungi via telepon</span>
-                                                            @else
-                                                                <span class="text-muted"><i class="fa fa-times-circle"></i> Tidak memerlukan pemberitahuan darurat</span>
-                                                            @endif
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>Catatan Tambahan Paramedis</th>
-                                                        <td><em>"{{ $v['notes'] }}"</em></td>
-                                                    </tr>
-                                                </table>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Tutup</button>
-                                                <button type="button" class="btn btn-primary" onclick="window.print()"><i class="fa fa-print"></i> Cetak Surat Keterangan Sakit</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
                             @empty
                                 <tr>
                                     <td colspan="8" class="text-center text-muted" style="padding: 30px;">
@@ -293,6 +216,106 @@
                         </tbody>
                     </table>
                 </div>
+
+                {{-- Modals Detail Rekam Medis Santri (Ditempatkan di luar table agar DOM valid) --}}
+                @foreach($visits as $v)
+                    @php
+                        $std = $studentMap[$v['student_id']] ?? null;
+                        $cls = $std && isset($classMap[$std['class_id']]) ? $classMap[$std['class_id']] : null;
+                        
+                        $statusBadge = match($v['status']) {
+                            'selesai' => '<span class="label label-success"><i class="fa fa-check"></i> Selesai</span>',
+                            'diobservasi' => '<span class="label label-warning"><i class="fa fa-bed"></i> Observasi</span>',
+                            'dirujuk_faskes' => '<span class="label label-danger"><i class="fa fa-ambulance"></i> Rujukan RS</span>',
+                            default => '<span class="label label-default">Draft</span>'
+                        };
+                    @endphp
+                    <div class="modal fade" id="modalDetailKunjungan{{ $v['id'] }}" tabindex="-1" role="dialog">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header" style="background-color: #1a365d; color: #fff;">
+                                    <button type="button" class="close" data-dismiss="modal" style="color: #fff;">&times;</button>
+                                    <h4 class="modal-title"><i class="fa fa-file-text-o text-yellow"></i> Rekam Medis Pemeriksaan UKS [{{ $v['id'] }}]</h4>
+                                </div>
+                                <div class="modal-body" style="background-color: #fdfdfd;">
+                                    <div class="text-center" style="margin-bottom: 15px; padding: 12px; background: #fef2f2; border: 1px solid #fecaca; border-radius: 6px;">
+                                        <h4 style="margin: 0 0 5px 0; font-weight: bold; color: #991b1b;">{{ $std['name'] ?? '-' }}</h4>
+                                        <span class="label label-primary">{{ $cls['name'] ?? '-' }}</span> &nbsp;
+                                        <span class="label label-info">NIS: {{ $std['nis'] ?? '-' }}</span> &nbsp;
+                                        {!! $statusBadge !!}
+                                    </div>
+
+                                    <table class="table table-bordered table-striped" style="font-size: 13px;">
+                                        <tr>
+                                            <th style="width: 35%;">Waktu Kunjungan</th>
+                                            <td>{{ date('l, d F Y H:i', strtotime($v['visit_date'])) }} WIB</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Tenaga Medis / Paramedis</th>
+                                            <td><strong>{{ $v['paramedic_name'] }}</strong></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Tanda-tanda Vital</th>
+                                            <td>
+                                                Suhu Tubuh: <strong>{{ $v['temperature'] }}</strong> | 
+                                                Tekanan Darah: <strong>{{ $v['blood_pressure'] }}</strong>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>Keluhan Santri (Anamnesis)</th>
+                                            <td style="background: #fff; line-height: 1.5;">{{ $v['symptoms'] }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Diagnosis Medis</th>
+                                            <td><span class="label label-danger" style="font-size: 12px;">{{ $v['diagnosis'] }}</span></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Terapi & Tindakan Medis</th>
+                                            <td style="background: #f0fdf4; color: #166534;">{{ $v['treatment_given'] }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Resep Obat yang Diberikan</th>
+                                            <td><strong>{{ $v['medicines_prescribed'] }}</strong></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Tindakan Lanjutan / Disposisi</th>
+                                            <td>{{ $v['action_taken'] }}</td>
+                                        </tr>
+                                        @if($v['referral_hospital'])
+                                            <tr>
+                                                <th>Rumah Sakit Rujukan</th>
+                                                <td><strong class="text-red"><i class="fa fa-ambulance"></i> {{ $v['referral_hospital'] }}</strong></td>
+                                            </tr>
+                                        @endif
+                                        <tr>
+                                            <th>Notifikasi Wali Santri</th>
+                                            <td>
+                                                @if($v['parent_notified'])
+                                                    <span class="text-green"><i class="fa fa-check-circle"></i> Sudah dihubungi via telepon</span>
+                                                @else
+                                                    <span class="text-muted"><i class="fa fa-times-circle"></i> Tidak memerlukan pemberitahuan darurat</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>Catatan Tambahan Paramedis</th>
+                                            <td><em>"{{ $v['notes'] }}"</em></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="modal-footer">
+                                    @if($v['status'] === 'diobservasi')
+                                        <a href="{{ route('kesiswaan.uks.visit.complete', $v['id']) }}" class="btn btn-success pull-left" onclick="return confirm('Konfirmasi bahwa observasi santri telah selesai dan diizinkan kembali?')">
+                                            <i class="fa fa-check"></i> Selesaikan Observasi
+                                        </a>
+                                    @endif
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
+                                    <button type="button" class="btn btn-primary" onclick="window.print()"><i class="fa fa-print"></i> Cetak Surat Keterangan Sakit</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
             </div>
         @else
             {{-- TAB 2: INVENTARIS OBAT --}}

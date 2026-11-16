@@ -331,6 +331,28 @@ Catatan pemantauan progres implementasi prototipe Alia Islamic School.
     - **T17.9 Demo Walkthrough Ready**: Prototipe siap dipresentasikan secara mulus di hadapan stakeholder.
   - **PROYEK PROTOTIPE ALIA ISLAMIC SCHOOL 100% SELESAI & TUNTAS.**
 
+---
+
+### Perbaikan Tampilan & Konsistensi Data (Post-Final QA)
+- `[x] Fix Table Markup & Data Consistency`:
+  - **Daftar Ulang PPDB** ([`ppdb/daftar-ulang.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/ppdb/daftar-ulang.blade.php)):
+    - Memindahkan elemen modal surat kelulusan & modal pembayaran kasir ke luar tag `<table>` / `.table-responsive` sehingga baris kedua dan seterusnya tidak lagi rusak akibat HTML foster parenting tabel bersarang.
+  - **Perizinan Santri Asrama** ([`asrama/perizinan.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/asrama/perizinan.blade.php)):
+    - Memindahkan modal `modalGatePass` ke luar elemen `<table>` dan `.table-responsive` agar struktur tabel `<tbody>` bersih (dari 45 baris terkorupsi menjadi 5 baris data valid berkolom seragam).
+    - Menyelaraskan konsistensi data di [`app/Support/DemoData/DemoDataManager.php`](file:///c:/laragon/www/prototipe-alia/app/Support/DemoData/DemoDataManager.php): data `IZN-001` disesuaikan statusnya menjadi `kembali` karena riwayat waktu kepulangan satpam telah tercatat (`16:45 WIB`), serta menambahkan sampel data status `ditolak` (`IZN-005`) sehingga seluruh metrik statistik, filter jenis izin, dan filter status akurat.
+    - Menambahkan rute dan aksi verifikasi `perizinan.approve` dan `perizinan.reject` di [`app/Http/Controllers/AsramaController.php`](file:///c:/laragon/www/prototipe-alia/app/Http/Controllers/AsramaController.php) dan [`routes/web.php`](file:///c:/laragon/www/prototipe-alia/routes/web.php), serta menampilkan nama kamar santri asrama di kolom tabel.
+  - **Unit Kesehatan Sekolah (UKS)** ([`kesiswaan/uks.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/kesiswaan/uks.blade.php)):
+    - Memindahkan modal `modalDetailKunjungan` ke luar tag `<table>` dan `.table-responsive` pada Tab Register Kunjungan Medis sehingga baris tabel tidak terpecah dan kembali rapi dengan 8 kolom seragam.
+    - Menambahkan data kunjungan status `diobservasi` (`UKS-005` - Faris Abdurrahman) di [`DemoDataManager.php`](file:///c:/laragon/www/prototipe-alia/app/Support/DemoData/DemoDataManager.php) agar seluruh filter status (`selesai`, `diobservasi`, `dirujuk_faskes`) memiliki representasi data yang akurat.
+    - Menambahkan kelas `CLS-SMP-8B` (*Kelas VIII Putri - Aisyah Ash-Shiddiqah*) dan menyelaraskan kelas santri putri Zaskia Nur Ramadhani (`SIS-0004`) agar konsisten dengan jenis kelaminnya.
+    - Menambahkan rute dan aksi `uks.visit.complete` di [`KesiswaanController.php`](file:///c:/laragon/www/prototipe-alia/app/Http/Controllers/KesiswaanController.php) dan [`routes/web.php`](file:///c:/laragon/www/prototipe-alia/routes/web.php) sehingga paramedis dapat menyelesaikan masa observasi santri di Bed UKS secara interaktif.
+  - **Bimbingan Konseling (BK)** ([`kesiswaan/konseling.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/kesiswaan/konseling.blade.php)):
+    - Memindahkan modal `modalDetailKonseling` dan modal `modalUpdateStatus` ke luar tag `<table>` dan `.table-responsive` sehingga tabel register bimbingan konseling kembali rapi dengan 7 kolom seragam (bebas dari 9 baris modal yang terpecah di tiap baris).
+    - Menambahkan data sesi status `dijadwalkan` (`BK-006` - Siti Fatimah Az-Zahra) dan status `dirujuk` (`BK-007` - Aisyah Humaira) di [`DemoDataManager.php`](file:///c:/laragon/www/prototipe-alia/app/Support/DemoData/DemoDataManager.php) agar seluruh 4 opsi filter status (`dijadwalkan`, `dalam_proses`, `selesai`, `dirujuk`) memiliki data konkret yang sinkron.
+  - **Prestasi & Penghargaan Santri** ([`kesiswaan/prestasi.blade.php`](file:///c:/laragon/www/prototipe-alia/resources/views/kesiswaan/prestasi.blade.php)):
+    - Memindahkan modal `modalDetailPrestasi` ke luar tag `<table>` dan `.table-responsive` sehingga tabel register arsip prestasi santri bersih dan presisi (dari 91 baris HTML terinjeksi menjadi 8 baris tabel: 1 baris header + 7 baris prestasi valid berkolom seragam).
+    - Menambahkan data prestasi level `Internasional` (`ACH-007` - Medali Emas International Islamic School Robotic Olympiad di Kuala Lumpur oleh Rayhan Pratama) di [`DemoDataManager.php`](file:///c:/laragon/www/prototipe-alia/app/Support/DemoData/DemoDataManager.php) agar filter tingkat kejuaraan `Internasional`, lencana bobot poin (150 poin), dan metrik kejuaraan internasional sinkron dengan UI.
+
 
 
 
